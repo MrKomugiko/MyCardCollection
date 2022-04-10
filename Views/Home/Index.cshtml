@@ -1,0 +1,36 @@
+﻿@using MyCardCollection.ViewModel
+
+@model IEnumerable<SetListViewModel>
+
+<h1>Home page</h1>
+
+<div class="list-group">
+    @{
+        int standardCount = 0;
+    }
+    @foreach(var set in Model)
+    {
+        if(standardCount < 6)
+        {
+            if (@set.released_at.Date <= DateTime.Now.Date)
+            {
+                <a asp-action="List" asp-route-set="@set.setcode" class="list-group-item list-group-item-action bg-success p-2 text-dark bg-opacity-25" class="fs-3" style="max-height:50px">
+                    <img style="height:40px; width:40px" src="@set.icon_svg_uri" alt="img"> <text>| @set.setcode.ToUpper() | <b> @set.name</b> Cards:@set.card_count | Release date: @set.released_at.ToShortDateString() | STANDARD </text>
+                </a>
+                standardCount += 1;
+            }
+            else
+            {
+                <a asp-action="List" asp-route-set="@set.setcode" class="list-group-item list-group-item-action bg-primary p-2 text-dark bg-opacity-10" class="fs-3" style="max-height:50px">
+                    <img style="height:40px; width:40px" src="@set.icon_svg_uri" alt="img"> | @set.setcode.ToUpper() | <b> @set.name</b> | Cards:@set.card_count | Release date: @set.released_at.ToShortDateString();
+                </a>    
+            }
+        }
+        else
+        {
+            <a asp-action="List" asp-route-set="@set.setcode" class="list-group-item list-group-item-action bg-secondary p-2 text-dark bg-opacity-10" class="fs-3" style="max-height:50px">
+                <img style="height:40px; width:40px" src="@set.icon_svg_uri" alt="img"> | @set.setcode.ToUpper() | <b> @set.name</b> | Cards:@set.card_count | Release date: @set.released_at.ToShortDateString();
+            </a>
+        }
+    }
+</div>
