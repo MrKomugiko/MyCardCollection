@@ -1,0 +1,116 @@
+﻿@model IEnumerable<MyCardCollection.ViewModel.CardListViewModel>
+
+@{
+    ViewData["Title"] = "List";
+}
+@*<div class="toast-container">
+    <div class="toast fade show">
+width!-- Toast -->
+
+    <div id="toastnotice" class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 25px; right: 20px;">
+        <div class="toast-header" >
+            <strong style="width:75%">Added to Collection</strong>
+            <button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+            <div class="toast-body text-center" >
+                <h4 id="cardName">CARD_NAME</h4>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<table class="table table-striped table-responsive">
+    <thead>
+        <tr>
+            <th> Name           </th>
+            <th> CMC            </th>
+            <th class="text-truncate" style="max-width: 75px;"> type_line      </th>
+            <th> set            </th>
+            <th> #              </th>
+            <th> rarity         </th>
+            <th class="text-truncate" style="max-width: 75px;"> Image          </th>
+            <th class="text-truncate" style="max-width: 75px;"> mana_cost      </th>
+            <th class="text-truncate" style="max-width: 75px;"> oracle_text    </th>
+            <th > power          </th>
+            <th > Health         </th>
+            <th class="text-truncate" style="max-width: 75px;"> flavor_text    </th>
+            <th class="text-truncate" style="max-width: 75px;"> price          </th>
+
+           @* <th>Add to collection</t1h>*@
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+        <tr >
+            @if (item.Card.HasTransform == false)
+            {
+                <td> @item.Card.Name                            </td>
+                <td> @item.Card.CMC                             </td>
+                <td class="text-truncate" style="max-width:75px;"> @item.Card.Type                            </td>
+                <td >@item.Card.SetCode                         </td>
+                <td >@item.Card.CollectionNumber                </td>
+                <td >@item.Card.Rarity                          </td>
+                <td class="text-truncate" style="max-width:75px;"> @item.Card.ImageURL                        </td>
+                <td class="text-truncate" style="max-width:75px;"> @item.Card.Mana_Cost                       </td>
+                <td class="text-truncate" style="max-width:75px;"> @item.Card.Description                     </td>
+                <td >@item.Card.Power                           </td>
+                <td >@item.Card.Health                          </td>
+                <td class="text-truncate" style="max-width:75px;"> @item.Card.FlavorDescription               </td>
+                <td class="text-truncate" style="max-width:75px;"> @item.Card.Price_USD                       </td>
+            }
+            else // back side, revers, transformation...
+            {
+                <td> @item.Card.Transform_Name                 </td>
+                <td> @item.Card.CMC                             </td>
+                <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_Type                  </td>
+                <td> @item.Card.SetCode                         </td>
+                <td> @item.Card.CollectionNumber                </td>
+                <td> @item.Card.Rarity                          </td>
+                <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_ImageURL              </td>
+                <td class="text-truncate" style="max-width:75px;"> @item.Card.Mana_Cost                       </td>
+                <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_Description           </td>
+                <td> @item.Card.Transform_Power                 </td>
+                <td> @item.Card.Transform_Health                </td>
+                <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_FlavorDescription     </td>
+                <td class="text-truncate" style="max-width:75px;"> @item.Card.Price_USD                       </td>
+            }
+        </tr>
+        }
+    </tbody>
+</table>
+
+
+@*
+@section Scripts{
+     <script>
+        $(function(){
+            $("a.addToCollection").click(function(e){
+                e.preventDefault();
+
+                let id = $(this).data("cardid");
+                var options={
+                    animation: true,
+                    autohide:true
+                };
+
+                var name = $(e.target).data('cardname');
+                var myAlert = document.getElementById("toastnotice"); // select id of toast
+                var bsAlert = new bootstrap.Toast(myAlert,options); // initializing
+                document.getElementById("cardName").innerHTML = name;
+                bsAlert.show();
+                    $.get('/Home/AddToCollection?cardId='+id, {}, function(data){
+                });
+            });
+        });
+
+           // popovers initialization - on hover
+    $('[data-toggle="popover-hover"]').popover({
+      html: true,
+      trigger: 'hover',
+      placement: 'bottom',
+      content: function () { return '<img src="' + $(this).data('img') + '" />'; }
+    });
+    </script>
+}*@

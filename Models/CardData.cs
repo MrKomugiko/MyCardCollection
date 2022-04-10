@@ -11,8 +11,13 @@ namespace MyCardCollection.Models
         }
         public CardData(Root CardObject)
         {
+            try
+            {
+
+         
             CardId = CardObject.Id;
-            CollectionNumber = int.Parse(CardObject.collector_number);
+                
+            CollectionNumber = int.TryParse(CardObject.collector_number, out int res)?res:-1;
             SetCode = CardObject.set;
             CMC = CardObject.cmc;
             Price_USD = CardObject.prices.usd != null ? float.Parse(CardObject.prices.usd.Replace(".", ",").Trim()) : null;
@@ -29,7 +34,6 @@ namespace MyCardCollection.Models
 
             if (CardObject.card_faces == null)
             {
-
                 Name = CardObject.Name;
                 Type = CardObject.type_line;
                 Health = CardObject.toughness != null ? int.Parse(CardObject.toughness) : null;
@@ -38,7 +42,6 @@ namespace MyCardCollection.Models
                 ImageURL = CardObject.image_uris.normal;
                 Description = CardObject.oracle_text;
                 FlavorDescription = CardObject.flavor_text;
-
             }
             else
             {
@@ -58,7 +61,9 @@ namespace MyCardCollection.Models
                 {
                     CardObject.card_faces[1].toughness = "0";
                 }
+                
                 HasTransform = true;
+               
                 //front
                 Name = CardObject.card_faces[0].Name;
                 Type = CardObject.card_faces[0].type_line;
@@ -79,7 +84,12 @@ namespace MyCardCollection.Models
                 Description = CardObject.card_faces[1].oracle_text;
                 FlavorDescription = CardObject.card_faces[1].flavor_text;
             }
-
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ex", ex);
+                throw;
+            }
             CardDataUpdated = DateTime.Now;
         }
 

@@ -28,7 +28,6 @@
             public bool reserved { get; set; }
             public bool foil { get; set; }
             public bool nonfoil { get; set; }
-            
             public List<string> finishes { get; set; }
             public bool oversized { get; set; }
             public bool promo { get; set; }

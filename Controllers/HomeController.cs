@@ -31,12 +31,30 @@ namespace MyCardCollection.Controllers
                         card_count = set.card_count,
                         icon_svg_uri = set.icon_svg_uri,
                         name = set.name,
-                        released_at = @DateTime.Parse(set.released_at),
+                        released_at = DateTime.Parse(set.released_at),
                         setcode = set.code
                     }
                 );
             }
             return View(listdata);
+        }
+
+        public async Task<IActionResult> List(string set = "mid")
+        {
+            var respond = await _scryfall.GetCardsListBySet(set);
+            List<CardListViewModel> listCards = new List<CardListViewModel>();
+
+            foreach (var card_raw in respond)
+            {
+
+                    listCards.Add (
+                        new CardListViewModel()
+                        {
+                            Card = new CardData(card_raw)
+                        });
+  
+            }
+            return View(listCards);
         }
 
         public IActionResult Privacy()
