@@ -1,0 +1,121 @@
+﻿@model IEnumerable<MyCardCollection.Models.CardsCollection> 
+
+    <row class="justify-content-center"> 
+<div class="col">
+    <table class="table table-hover table-dark table-stripped">
+        <thead>
+            <tr class="d-flex">
+                <th class="col-1">pcs.</th>
+                <th class="col-4">Name</th>
+                <th class="col-3">Type</th>
+                <th class="col-2">Rarirty</th>
+                <th class="col-2">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model)
+            {
+                string status = "";
+                    if (item.CardId == ViewBag.RecentlyAddedCard)
+                    {
+                        status = "table-info";
+                    }
+                    <tr class="d-flex @status" id='@item.CardId' >
+                        <td class="col-1 text-center quantity">@item.Quantity</td>
+                        <td class="col-4">@item.CardData.Name</td>
+                        <td class="col-3" style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">@item.CardData.Type</td>
+                        <td class="col-2 text-center">@item.CardData.Rarity</td>
+                        <td class="col-2 text-center"> 
+                            <a class="btn btn-success ChangeQuantity" data-id="@item.CardId" data-qtchange="1" data-deckname="@ViewBag.CurrentDeckName">+</a>
+                            <a class="btn btn-danger ChangeQuantity" data-id="@item.CardId" data-qtchange="-1" data-deckname="@ViewBag.CurrentDeckName">-</a>
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@if (ViewBag.TotalPages > 1)
+{
+    <div class="d-flex justify-content-center">
+        <partial-pagination page-count="@ViewBag.TotalPages" 
+        page-onclick-event="getCardsInDeck" 
+        page-number="@ViewBag.DeckPageNumber" page-range="@ViewBag.PageRange/2"></partial-pagination>
+    </div>
+}
+    </row>
+
+    <script>
+        $("a.ChangeQuantity").click(function(e){
+        e.preventDefault();
+        let _cardId = $(this).data("id");
+        let _deckName = $(this).data("deckname");
+        let _qtChange = $(this).data("qtchange");
+
+        $.ajax({
+            url:'@Url.Action("ChangeQuantity","DeckBuilder")',
+            method: 'POST',
+            data: {
+                id: _cardId,
+                qtChange: _qtChange,
+                deckName: _deckName
+            },
+            success: function(res) {               
+                if(res.result !== undefined) {
+                    e.target.closest('tr').querySelector('.quantity').innerHTML = res.result;
+                    if(res.result == 0)
+                    {
+                        getCardsInDeck('@ViewBag.DeckPageNumber');
+                    }
+                    RefreshCollectionTable(res.cardId, res.cardLeftInCollection);
+
+                    UpdateSaveButton();
+                }
+            },
+            error: function(err){
+                console.log(err); 
+            }
+        })
+    })
+
+    
+    function UpdateSaveButton()
+    {
+        var saveButton = $("button.SaveDeck");
+
+        saveButton.removeClass("btn-primary");
+        saveButton.removeClass("btn-danger");
+        saveButton.addClass("btn-warning");
+    }
+
+    function RefreshCollectionTable(cardId, quantity)
+    {
+        var collectionRow = $("tr.collection#"+cardId).find('td.quantity');
+        collectionRow[0].innerHTML = quantity;
+        var _cardRecord = collectionRow.closest('tr')[0];
+
+        var fine = "";
+        var danger = "table-danger";
+        var warning = "table-warning";
+
+        if (quantity == 0) 
+        {
+           $(_cardRecord).removeClass(danger);
+           $(_cardRecord).addClass(warning);
+        
+        }
+
+        if (quantity < 0) {
+            $(_cardRecord).removeClass(warning);
+            $(_cardRecord).addClass(danger);
+        }
+
+        if(quantity > 0)
+        {
+            $(_cardRecord).removeClass(danger);
+            $(_cardRecord).removeClass(warning);
+        }
+    }
+
+    </script>

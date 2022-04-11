@@ -122,6 +122,8 @@ namespace MyCardCollection.Controllers
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
             Root _card = null;
             string data = "";
+            var cacheKey = _userId + "Collection";
+
             using (var memoryStream = new MemoryStream())
             {
                 await file.CopyToAsync(memoryStream);
@@ -149,6 +151,7 @@ namespace MyCardCollection.Controllers
             var cardsListToImport = new List<CardsCollection>();
             var newCardsListToAdd = new List<CardData>();
             int counter = 0;
+
             foreach (var carddata in dataArr)
             {
                 counter++;
@@ -161,6 +164,9 @@ namespace MyCardCollection.Controllers
 
                     cardsListToImport.Clear();
                     newCardsListToAdd.Clear();
+
+                    // po imporcie cache zostanie wyczyszczony, zeby po odswiezeniu miec aktualne dane
+                    _memoryCache.Remove(cacheKey);
                 }
 
                 string[] card = carddata.TrimStart().Split(" ");
@@ -196,6 +202,8 @@ namespace MyCardCollection.Controllers
             await context.CardsDatabase.AddRangeAsync(newCardsListToAdd);
 
             context.SaveChanges();
+            // po imporcie cache zostanie wyczyszczony, po przekierowaniu zostanie ponownie zapelniony danymi uzupelnionymi o wczesniej zaimportowane
+            _memoryCache.Remove(cacheKey);
 
             return Redirect(Request.Headers["Referer"].ToString());
         }
@@ -203,22 +211,72 @@ namespace MyCardCollection.Controllers
         public IActionResult Increase(string cardid)
         {
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
-            context.Collection.Where(x => x.CardId == cardid && x.UserId == _userId).First().Quantity += 1;
+            var _card = context.Collection.Where(x => x.CardId == cardid && x.UserId == _userId).First();
+            var updatedCardID = _card.CardId;
             context.SaveChanges();
 
+            //update cache
+            var cacheKey = _userId + "Collection";
+            if (_memoryCache.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
+            {
+                //setting up cache options
+                var cacheExpiryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
+                    Priority = CacheItemPriority.High,
+                    SlidingExpiration = TimeSpan.FromSeconds(3600)
+                };
+
+                var cardToUpdate = cachedAllCards.FirstOrDefault(c => c.CardId == updatedCardID);
+                if (cardToUpdate != null)
+                {
+                    cachedAllCards.First(c => c.CardId == cardToUpdate.CardId).Quantity += 1;
+                    _memoryCache.Set(cacheKey, cachedAllCards, cacheExpiryOptions);
+                }
+            }
             return Redirect(Request.Headers["Referer"].ToString());
         }
         public IActionResult Decrease(string cardid)
         {
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
             var _card = context.Collection.Where(x => x.CardId == cardid && x.UserId == _userId).First();
+            var updatedCardID = _card.CardId;
+            bool deleteflag = false;
 
             if (_card.Quantity > 1)
                 _card.Quantity -= 1;
             else
+            {
                 context.Collection.Remove(_card);
+                deleteflag = true;
+            }
 
             context.SaveChanges();
+
+            //update cache
+            var cacheKey = _userId + "Collection";
+            if (_memoryCache.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
+            {
+                //setting up cache options
+                var cacheExpiryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
+                    Priority = CacheItemPriority.High,
+                    SlidingExpiration = TimeSpan.FromSeconds(3600)
+                };
+
+                var cardToUpdate = cachedAllCards.FirstOrDefault(c => c.CardId == updatedCardID);
+                if(cardToUpdate != null)
+                {
+                    if (deleteflag)
+                        cachedAllCards.Remove(cardToUpdate);
+                    else
+                        cachedAllCards.First(c => c.CardId == cardToUpdate.CardId).Quantity -= 1;
+
+                  _memoryCache.Set(cacheKey, cachedAllCards, cacheExpiryOptions);
+                }
+            }
+
             return Redirect(Request.Headers["Referer"].ToString());
         }
         public IActionResult Remove(string cardid)
@@ -226,12 +284,33 @@ namespace MyCardCollection.Controllers
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var _card = context.Collection.Where(x => x.CardId == cardid && x.UserId == _userId).First();
+            var removedCardID = _card.CardId;
 
             if (_card.Quantity >= 0)
             {
                 context.Collection.Remove(_card);
             }
             context.SaveChanges();
+
+            //update cache
+            var cacheKey = _userId + "Collection";
+            if (_memoryCache.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
+            {
+                //setting up cache options
+                var cacheExpiryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
+                    Priority = CacheItemPriority.High,
+                    SlidingExpiration = TimeSpan.FromSeconds(3600)
+                };
+
+                var cardToDelete = cachedAllCards.FirstOrDefault(c=>c.CardId==removedCardID);
+                if(cardToDelete!=null)
+                {
+                    cachedAllCards.Remove(cardToDelete);
+                    _memoryCache.Set(cacheKey, cachedAllCards, cacheExpiryOptions);
+                }
+            }
 
             return Redirect(Request.Headers["Referer"].ToString());
         }

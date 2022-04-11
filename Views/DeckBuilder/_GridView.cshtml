@@ -1,0 +1,90 @@
+﻿@model IEnumerable<MyCardCollection.Models.CardsCollection> 
+
+<row class="justify-content-center"> 
+    <div class="col">
+        <table class="table table-hover table-dark">
+            <thead>
+                <tr class="d-flex">
+                    <th class="col-1">qty.</th>
+                    <th class="col-4">Name</th>
+                    <th class="col-3">Type</th>
+                    <th class="col-2">Rarirty</th>
+                    <th class="col">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var item in Model)
+                {
+                    string status = "";
+                    if (item.Quantity == 0)
+                    {
+                        status = "table-warning";
+                    }
+
+                    if (item.Quantity < 0){
+                        status = "table-danger";
+                        }
+                    
+                    <tr class="d-flex @status collection" id="@item.CardId">
+                        <td class="col-1 text-center quantity">@item.Quantity</td>
+                        <td class="col-4">@item.CardData.Name</td>
+                        <td class="col-3" style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">@item.CardData.Type</td>
+                        <td class="col-2 text-center">@item.CardData.Rarity</td>
+                        <td class="col-2 text-center"> 
+                            <a class="btn btn-primary AddToDeck" data-id="@item.CardId">-></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    @if (ViewBag.TotalPages > 1)
+    {
+        <div class="d-flex justify-content-center">
+            <partial-pagination page-count="@ViewBag.TotalPages" 
+            page-onclick-event="getCards" 
+            page-number="@ViewBag.PageNumber" page-range="@ViewBag.PageRange/2"></partial-pagination>
+        </div>
+    }
+</row>
+
+
+<script>
+    console.log("=>"+'@ViewBag.CurrentDeckName');
+
+    $("a.AddToDeck").click(function(e){
+        e.preventDefault();
+        let _cardId = $(this).data("id");
+
+        $.ajax({
+            url:'@Url.Action("AddToDeck","DeckBuilder")',
+            method: 'POST',
+            data: {
+                id: _cardId,
+                deckName: '@ViewBag.CurrentDeckName'
+            },
+            success: function(res){
+
+                $('#cardsGrid_deck').html('').html(res); 
+                getCards('@ViewBag.PageNumber');
+
+                UpdateSaveButton();
+            },
+            error: function(err){
+                console.log(err); 
+            }
+        })
+    })
+
+    function UpdateSaveButton()
+    {
+        var saveButton = $("button.SaveDeck");
+
+        saveButton.removeClass("btn-primary");
+        saveButton.removeClass("btn-danger");
+        saveButton.addClass("btn-warning");
+    }
+
+</script>

@@ -32,17 +32,20 @@
 
         <div class="row">
             <div class="col-2" >
-               @* <div class="TopCards">
+                <div class="TopCards">
                     @if(ViewBag.Count > 6 )
                     {
                         @await Component.InvokeAsync("CardsTop", new {_userId = UserManager.GetUserId(User)})
                     }
-                </div>*@
+                </div>
             </div>
             <div class="col-10" >
+            <br />
                  <div class="row">
                     <input type="text" placeholder="SEARCH..." class="form-control" id="textSearch" />
                 </div>
+            <br />
+                
                 <div class="row" id="cardsFullGrid">
                         full cards list here
                 </div>
@@ -78,7 +81,6 @@
                     },
                 success: function(res){
                     $('#cardsFullGrid').html('').html(res);
-                    console.log(res);
                     },
                 error: function(err){
                         console.log(err);

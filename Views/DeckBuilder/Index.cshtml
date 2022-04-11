@@ -1,0 +1,436 @@
+﻿@model IEnumerable<MyCardCollection.Models.CardsCollection>
+@*@{
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+}*@
+
+<div class="toast-container">
+    <div class="toast fade show">
+    <!-- Toast -->
+
+    <div id="toastnotice" class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 25px; right: 20px;">
+        <div class="toast-header">
+            <strong style="width:100%" id="toast-title"></strong>
+            <button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+            <div class="toast-body text-center" >
+                <h4 id="cardName">CARD_NAME</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div id="chartSection">
+        Wykresy
+    </div>
+
+    <div class="row">
+        <div class="form-inline col-md-12 col-sm-12">
+            <div class="row">
+                <button class="btn btn-primary col m-2" type="submit">New</button>
+                <button class="btn btn-primary col m-2" type="submit">Clear</button>
+                <button class="btn btn-primary col m-2 SaveDeck"  type="submit">Save</button>
+            </div>
+               @* <select asp-items="@ViewBag.MyDecks" class="form-control select col m-2"></select> *@
+               <form method="post" asp-controller="DeckBuilder" asp-action="LoadDeck" role="post">
+                    <div class="row">
+                        <div class="col"></div>
+
+                        <select name="deckName" class="form-control select col m-2" id="deckSelection">
+                        @{
+                            foreach(var item in @ViewBag.MyDecks)
+                            {
+                                if(item.Value == ViewBag.CurrentDeckName)
+                                {
+                                    <option selected val="@item.Value">@item.Text</option>
+                                }
+                                else
+                                {
+                                    <option val="@item.Value">@item.Text</option>
+                                }
+                            }
+                        }
+                        </select>
+                          
+                        <input type="submit" value="Load" class="col-2 m-2 btn btn-primary" />
+                        <div class="col"></div>
+                    </div>   
+                </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-inline pull-left col-md-6 col-sm-12">
+            <input type="text" class="form-control" id="textSearch" placeholder="Search card from collection..." />
+        </div>
+        <div class=col-sm-12>
+            <div class="row">
+               <div class="col-md-6 col-sm-12" id="cardsGrid">
+                   TEST
+               </div>
+
+               <div class="col-md-6 col-sm-12" id="cardsGrid_deck">
+                   TEST 2
+               </div>
+            </div>
+        </div>
+    </div>
+
+     <div class="row d-flex">
+        <a class="btn btn-primary col mx-1" onClick="GetFirstDraw()">
+            First draw ( 7x ) & Shuffle
+        </a>
+         <a class="btn btn-warning col mx-1 disabled" id="multigainButton" onClick="GetMultigain()"> 
+            Multigain ( 6x ) & Shuffle
+        </a>
+         <a class="btn btn-info col mx-1" onClick="GetDrawOneCardMore()">
+            Draw new Card ( 1x )
+        </a>
+
+    </div>
+    <div id="cardsHolder" class="row seven-cols"></div>
+    <div id="drawCards" class="row seven-cols"></div>
+@*    
+    <div class="col-md-3 col-sm-12">
+        Kolekcja obejmuje @ViewBag.LiczbaKart szt kart<br/>
+        Posiadasz: @ViewBag.LiczbaWariacji wariacji kart <br />
+        Unikalnych ( według Nazwy karty ) : @ViewBag.LiczbaUnikalnych <br />
+        * z wykluczeniem lądów : @ViewBag.LiczbaBezLadow <br />
+        <br />
+        Statystyki (dla bez lądów): <br />
+        * Commons:  @ViewBag.Commons <br />
+        * Unommons: @ViewBag.Uncommons <br />
+        * Rares:    @ViewBag.Rares <br />
+        * Mythics:  @ViewBag.Mythics <br />
+    </div>*@
+
+<!--Button to Trigger Modal-->
+<div style="text-align:center; margin-top:10%">
+    <button id="btnShow" class="btn btn-primary btn-lg">
+        Show Modal Popup
+    </button>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="demoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    MODAL TITLE
+                </h4>
+            </div>
+            <div class="modal-body">
+                MODAL BODY
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default close">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary">
+                    Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+
+        @section Scripts{
+
+<script>
+
+    $(function () {
+        $("#btnShow").click(function(){
+            $('#demoModal').modal('show');
+        });
+        
+        $("button.close").click(function(){
+           $('#demoModal').modal('hide');
+        });
+    });
+
+    function listenForImageHover(){
+        $(()=>{
+        var xOff = -488/2;
+        var yOff = 700;
+
+        $(".text-hover-image").hover(function (e) {
+        var pathToImage = e.target.src;
+        $("body").append("<p id='image-when-hovering-text'><img style='z-index:1;' src='" + pathToImage + "' width='488' height='680'/></p>");
+        $("#image-when-hovering-text")
+            .css("position", "absolute")
+            .css("top", (e.pageY - yOff) + "px")
+            .css("left", (e.pageX + xOff) + "px");
+        },
+
+        function () {
+            $("#image-when-hovering-text").remove();
+            });
+
+            $(".text-hover-image").mousemove(function (e) {
+                $("#image-when-hovering-text")
+                    .css("top", (e.pageY - yOff) + "px")
+                    .css("left", (e.pageX + xOff) + "px");
+            });
+        });
+    }
+
+        var multigainAttempts = 6;
+        var myCards = [];
+        function GetFirstDraw() {
+
+            var target = $('#cardsHolder')[0];
+             $.ajax({
+                url:'@Url.Action("GetFirstDrawUrls","DeckBuilder")',
+                datatype:'html',
+                method: 'GET',
+                data: {
+                        deckName:'@ViewBag.CurrentDeckName',
+                    },
+                success: function(items){
+                    target.innerHTML = "";
+
+                        myCards = items;
+                         console.log("GetFirstDraw");    
+                        var cardsCount = myCards.length;
+                        if(cardsCount >= 7)
+                        {
+                            multigainAttempts = 7;
+                            startingCards = myCards.slice(0,7);
+                            $('#multigainButton').removeClass("disabled")
+                        }
+                        else
+                        {
+                            startingCards = myCards.slice(0,cardsCount);
+                            $('#multigainButton').addClass("disabled")
+                        }
+
+                        var template = '<img class=\"col-md-1 text-hover-image\" src=\"~URL~\" alt=\"img\"/>';
+                        startingCards.forEach(function(card) {
+                            target.insertAdjacentHTML("beforeend", template.replace(/~URL~/g, card.cardData.imageURL));
+                        });
+
+                        listenForImageHover();
+                    },
+                error: function(err){
+                        console.log(err);
+                    }
+            })
+
+        }
+
+        function GetMultigain(attemptNumber)  {
+            console.log("GetMultigain");    
+            if(multigainAttempts < 1)
+            {
+                console.log("nie ma juz prób, zablokuj przycisk");
+                target.addClass("disabled");
+                return;
+            }
+
+            var target = $('#multigainButton')[0];
+            multigainAttempts--;
+            target.innerHTML = 'Multigain ( '+(multigainAttempts)+'x ) & Shuffle ';
+
+            $.ajax({
+                url:'@Url.Action("GetFirstDrawUrls","DeckBuilder")',
+                datatype:'html',
+                method: 'GET',
+                data: {
+                        deckName:'@ViewBag.CurrentDeckName',
+                    },
+                success: function(items){
+                    target = $("#cardsHolder")[0];
+                    target.innerHTML = ""; // clear
+
+                    myCards = items; // cards refreshed
+
+                    startingCards = myCards.slice(0,multigainAttempts+1);
+                    $('#multigainButton').removeClass("disabled")
+              
+                    var template = "<img class=\"col-md-1 text-hover-image\" src=\"~URL~\" alt=\"img\"/>";
+                    startingCards.forEach(function(card) {
+                        target.insertAdjacentHTML("beforeend", template.replace(/~URL~/g, card.cardData.imageURL));
+                    });
+        
+                    listenForImageHover();
+                },
+                error: function(err){
+                        console.log(err);
+                    }
+            })
+            
+        }
+
+        function GetDrawOneCardMore() {
+            console.log("GetDrawOneCardMore");    
+        }
+
+
+        $(()=>{
+            getCards();
+            getCardsInDeck();
+     
+            $('#textSearch').on('keyup',()=>{
+                getCards();
+            })
+        });
+
+        function getCards(page=1){
+            $.ajax({
+                url:'@Url.Action("SearchCards","DeckBuilder")',
+                datatype:'html',
+                method: 'GET',
+                data: {
+                    searchText:$('#textSearch').val(),
+                    page: page,
+                    },
+                success: function(res){
+                    $('#cardsGrid').html('').html(res);
+                    },
+                error: function(err){
+                        console.log(err);
+                    }
+            })
+        }
+
+        function getCardsInDeck(page=1){
+            $.ajax({
+                url:'@Url.Action("SearchCardsInDeck","DeckBuilder")',
+                datatype:'html',
+                method: 'GET',
+                data: {
+                    searchText:$('#textSearch').val(),
+                    page: page,
+                    deckName: '@ViewBag.CurrentDeckName'
+                    },
+                success: function(res){
+                    $('#cardsGrid_deck').html('').html(res);
+                    },
+                error: function(err){
+                        console.log(err);
+                    }
+            })
+        }
+        
+    $("button.SaveDeck").click(function(e){
+        e.preventDefault();
+        console.log("save");
+        if(myCards.length === 0){
+            $.ajax({
+            url:'@Url.Action("GetFirstDrawUrls","DeckBuilder")',
+            datatype:'html',
+            method: 'GET',
+            data: {
+                    deckName:'@ViewBag.CurrentDeckName',
+                },
+                success: function(items){
+                    console.log("cards refreshed");
+                    myCards = items; 
+
+                    savedeck();
+                },
+            error: function(err){
+                    console.log(err);
+                    
+                }
+            })
+        }
+        else
+        {
+            savedeck();
+        }
+    });
+
+
+
+    function savedeck()
+    {
+        var array = [];
+        var payload = {
+                deckName: '@ViewBag.CurrentDeckName',
+                cardInfos: []
+            }
+
+        myCards.forEach((x)=>{
+                var item = {
+                    cardId: x.cardId,
+                    quantity: x.quantity
+                }
+                array.push(item);
+            })
+
+        const key = 'cardId';
+        var arrayUniqueByKey = [...new Map(array.map(item =>
+            [item.cardId, item])).values()];
+
+        console.log(arrayUniqueByKey);
+
+        payload.cardInfos = arrayUniqueByKey;
+        payload = JSON.stringify(payload);
+
+        var saveButton = $("button.SaveDeck");
+
+        $.ajax({
+            url:'@Url.Action("SaveDeck","DeckBuilder")',
+            method: 'POST',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: payload,
+            success: function(result){
+                console.log("succesfully saved");
+
+                saveButton.removeClass("btn-warning");
+                saveButton.removeClass("btn-danger");
+                saveButton.addClass("btn-success");
+
+                ShowToast('Succesfully saved deck.');
+            },
+            error: function(err){
+                console.log(err); 
+
+                saveButton.removeClass("btn-primary");
+                saveButton.removeClass("btn-warning");
+                saveButton.addClass("btn-danger");
+
+                ShowToast(err.responseJSON.errorMessage);
+
+            }
+        })
+    };
+
+           $(document).ready(function () {
+                var _url = '@Url.Action("GetStatisticsComponent", "Collection")';
+                $.ajax({
+                    type: "GET",
+                    url: _url,
+                    success: function (result) {
+                        $("#chartSection").html(result);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        var errorMsg = 'Ajax request failed: ' + xhr.responseText;
+                        $('#chartSection').html(errorMsg);
+                    }
+                });
+            });
+
+        function ShowToast(message)
+        {
+            let id = $(this).data("cardid");
+            var options={
+                animation: true,
+                autohide:true
+            };
+
+            var myAlert = document.getElementById("toastnotice"); // select id of toast
+            var bsAlert = new bootstrap.Toast(myAlert,options); // initializing
+            document.getElementById("cardName").innerHTML = message;
+            bsAlert.show();            
+        };
+    </script>
+    }
