@@ -17,5 +17,6 @@ namespace MyCardCollection.Data
         }
 
         public DbSet<CardData> CardsDatabase { get; set; }
+        public DbSet<CardsCollection> Collection { get; set; }
     }
 }

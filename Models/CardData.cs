@@ -20,7 +20,11 @@ namespace MyCardCollection.Models
             CollectionNumber = int.TryParse(CardObject.collector_number, out int res)?res:-1;
             SetCode = CardObject.set;
             CMC = CardObject.cmc;
-            Price_USD = CardObject.prices.usd != null ? float.Parse(CardObject.prices.usd.Replace(".", ",").Trim()) : null;
+                if(CardObject.prices != null)
+                {
+                    Price_USD = CardObject.prices.usd != null ? float.Parse(CardObject.prices.usd.Replace(".", ",").Trim()) : null;
+                }
+                    
             Rarity = CardObject.rarity;
 
             if (CardObject.power == "*")
@@ -90,7 +94,7 @@ namespace MyCardCollection.Models
                 Console.WriteLine("ex", ex);
                 throw;
             }
-            CardDataUpdated = DateTime.Now;
+            CardDataUpdated = DateTime.UtcNow;
         }
 
         [Key]

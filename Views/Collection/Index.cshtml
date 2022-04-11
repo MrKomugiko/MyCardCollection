@@ -1,0 +1,121 @@
+﻿@model IEnumerable<MyCardCollection.Models.CardsCollection>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+
+    @{
+        ViewData["Title"] = "My collection";
+    }
+    <div class="row text-center" >
+        <div class="col-2">
+             <form method="get" asp-controller="Collection" asp-action="Add" class="col">
+                <div class="row">
+                    <input name="set" class="form-control col" type="text" placeholder="set" >
+                    <input name="number" class="form-control col" type="text" placeholder="number" >
+                    <input class="btn btn-primary" type="submit" value="Add" />
+                </div>
+            </form>
+        </div>
+
+        <div class="col-7">
+            <h1> Cards: @ViewBag.Count | Unique: @ViewBag.DistinctCount</h1>
+        </div>
+
+        <div class="col-3">
+            <form method="post" asp-controller="Collection" asp-action="Import" class="col" enctype="multipart/form-data">
+                <div class="row">
+                    <input name="file" type="file" class="form-control col pb-2"/>
+                    <input class="btn btn-primary" type="submit" value="Import" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+        <div class="row">
+            <div class="col-2" >
+               @* <div class="TopCards">
+                    @if(ViewBag.Count > 6 )
+                    {
+                        @await Component.InvokeAsync("CardsTop", new {_userId = UserManager.GetUserId(User)})
+                    }
+                </div>*@
+            </div>
+            <div class="col-10" >
+                 <div class="row">
+                    <input type="text" placeholder="SEARCH..." class="form-control" id="textSearch" />
+                </div>
+                <div class="row" id="cardsFullGrid">
+                        full cards list here
+                </div>
+            </div>
+        </div>
+
+            <div id="chartSection" />
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+ 
+        @section Scripts{
+
+            
+<script>
+
+     console.log("tesT");
+        $(()=>{
+            getCards();
+     
+            $('#textSearch').on('keyup',()=>{
+                getCards();
+            })
+        });
+         function getCards(page=1){
+            $.ajax({
+                url:'@Url.Action("SearchCards","Collection")',
+                datatype:'html',
+                method: 'GET',
+                data: {
+                    searchText:$('#textSearch').val(),
+                    page: page
+                    },
+                success: function(res){
+                    $('#cardsFullGrid').html('').html(res);
+                    console.log(res);
+                    },
+                error: function(err){
+                        console.log(err);
+                    }
+            })
+        }
+ 
+ </script>
+
+           @* <script type="text/javascript">  
+                $(function(){
+                    $("a.LoadTopCards").click(function(e){
+                        e.preventDefault();
+                        let id = $(this).data("id");
+                        $.get('/collection/GetTopCards/'+id);
+                    })
+                })
+            </script> *@
+
+           @* <script>
+           $(document).ready(function () {
+
+                var _url = '@Url.Action("GetStatisticsComponent", "Collection")';
+                $.ajax({
+                    type: "GET",
+                    url: _url,
+                    success: function (result) {
+                        $("#chartSection").html(result);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        var errorMsg = 'Ajax request failed: ' + xhr.responseText;
+                        $('#chartSection').html(errorMsg);
+                    }
+                });
+            });
+            </script>*@
+
+    }
+
+

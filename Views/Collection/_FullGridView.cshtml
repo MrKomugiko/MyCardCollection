@@ -1,0 +1,143 @@
+﻿@model IEnumerable<MyCardCollection.Models.CardsCollection> 
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+
+        <div class="col-10">
+            <table class="table table-hover table-sm table-striped" style="white-space:nowrap;">
+                <thead>
+                    <tr>
+                        <th> Set        </th>
+                        <th> #          </th>
+                        <th> Name       </th>
+                        <th> Rarity     </th>
+                        <th> Type       </th>
+                        <th> CMC        </th>
+                        <th> Mana       </th>
+                        <th> Power      </th>
+                        <th> Health     </th>
+                        <th> Price      </th>
+                        <th> Quantity   </th>
+                        <th class="text-center"> Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var whiteIMG = "https://images.ctfassets.net/s5n2t79q9icq/7misDwf4mwnXghCh5vkGw6/0debf7ae3f13d0e706b5df8cbdbe2172/plain.svg";
+                        var blackIMG= "https://images.ctfassets.net/s5n2t79q9icq/45958FxkGokQAacUNVQ1Bh/a611cf3f197e9a8352fd2fe591097704/swamp.svg";
+                        var redIMG= "https://images.ctfassets.net/s5n2t79q9icq/192VSSLFeZSzAKZGOXrHCG/dec6be6eb6a80a40e156ecbf2cd385cf/mountain.svg";
+                        var greenIMG= "https://images.ctfassets.net/s5n2t79q9icq/1wrQKxhCNchqYyDOMG9mm3/26e51f7d9e0bc20874b004cd4b93568c/forest.svg";
+                        var blueIMG = "https://images.ctfassets.net/s5n2t79q9icq/4HiU35WSbQDiLxLGyGlipf/1c3f9bb830d2f6c4299c30b974d27fc3/water.svg";
+                    }
+                    @foreach (var item in Model) 
+                    {
+                        <tr>
+                            @if (item.CardData.HasTransform == false)
+                            {
+                                <td> @Html.DisplayFor(modelItem => item.CardData.SetCode)                           </td>
+                                <th> @Html.DisplayFor(modelItem => item.CardData.CollectionNumber)              </th>
+                                <td> @Html.DisplayFor(modelItem => item.CardData.Name)            </td>
+                                <td> @Html.DisplayFor(modelItem => item.CardData.Rarity)                        </td>
+                                <td> @Html.DisplayFor(modelItem => item.CardData.Type)                     </td>
+                                <td> @Html.DisplayFor(modelItem => item.CardData.CMC)                           </td>
+                                <td> 
+                                 @{
+                                    if(item.CardData.Mana_Cost != null)
+                                    {
+                                        string[] colorArray = item.CardData.Mana_Cost.Replace("}", "").Split("{");
+                                        foreach(var color in colorArray)
+                                        {
+                                            switch(color)
+                                            {
+                                                case "W": <img src="@whiteIMG" style="height:20px" alt="[W]"> 
+                                                
+                                                    break;
+                                                case "R": <img src="@redIMG" style="height:20px" alt="[R]"> 
+                                                
+                                                    break;
+                                                case "B": <img src="@blackIMG" style="height:20px" alt="[B]"> 
+                                                
+                                                    break;
+                                                case "G": <img src="@greenIMG" style="height:20px" alt="[G]"> 
+                                                
+                                                    break;
+                                                case "U": <img src="@blueIMG" style="height:20px" alt="[U]">
+
+                                                    break;
+                                                default: // numbers
+
+                                                            int result= -1;
+
+                                                            if(Int32.TryParse(color,out result))
+                                                            {
+                                                                <text>[@color] </text>
+                                                            }
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+                                </td>
+                                <td> @Html.DisplayFor(modelItem => item.CardData.Power)           </td>
+                                <td> @Html.DisplayFor(modelItem => item.CardData.Health)       </td>
+                            } 
+                            else
+                            {
+                                <td> @Html.DisplayFor(modelItem => item.CardData.SetCode)                           </td>
+                                <th> @Html.DisplayFor(modelItem => item.CardData.CollectionNumber)              </th>
+                                <td> @item.CardData.Name <br/> @item.CardData.Transform_Name                          </td>
+                                <td> @Html.DisplayFor(modelItem => item.CardData.Rarity)                        </td>
+                                <td> @Html.DisplayFor(modelItem => item.CardData.Type)<br />
+                                     @Html.DisplayFor(modelItem => item.CardData.Transform_Type)                       </td>
+                                <td> @Html.DisplayFor(modelItem => item.CardData.CMC)                           </td>
+                                <td> 
+                                    @{
+                                        string[] colorArray = item.CardData.Mana_Cost.Replace("}", "").Split("{");
+                                        foreach(var color in colorArray)
+                                        {
+                                            switch(color)
+                                            {
+                                                case "W": <img src="@whiteIMG" style="height:20px" alt="[W]"> break;
+                                                case "R": <img src="@redIMG" style="height:20px" alt="[R]"> break;
+                                                case "B": <img src="@blackIMG" style="height:20px" alt="[B]">break;
+                                                case "G": <img src="@greenIMG" style="height:20px" alt="[G]">break;
+                                            case "U": <img src="@blueIMG" style="height:20px" alt="[U]">
+                                                break;
+                                            default: 
+                                                int result= -1;
+                                                if(Int32.TryParse(color,out result))
+                                                {
+                                                    <text>[@color] </text>
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                </td>
+                                <td> @Html.DisplayFor(modelItem => item.CardData.Power)  <br />
+                                    @Html.DisplayFor(modelItem => item.CardData.Transform_Power)          </td>
+                                <td> @Html.DisplayFor(modelItem => item.CardData.Health) <br />
+                                    @Html.DisplayFor(modelItem => item.CardData.Transform_Health)              </td>
+                            }
+                                <td> @Html.DisplayFor(modelItem => item.CardData.Price_USD)$                   </td>
+                                <td> @Html.DisplayFor(modelItem => item.Quantity)                           </td>
+                                <td class="text-center">
+
+                                    <a class="btn btn-success" asp-controller="Collection" asp-action="Increase" asp-route-cardid="@item.CardData.CardId">+</a>
+                                    <a class="btn btn-primary" asp-controller="Collection" asp-action="Decrease" asp-route-cardid="@item.CardData.CardId">-</a>
+                                    <a class="btn btn-danger"  asp-controller="Collection" asp-action="Remove"   asp-route-cardid="@item.CardData.CardId">x</a>
+                
+                                </td>
+                            </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+          
+    @if (ViewBag.TotalPages > 1)
+    {
+        <div class="d-flex justify-content-center">
+            <partial-pagination page-count="@ViewBag.TotalPages" 
+            page-onclick-event="getCards" 
+            page-number="@ViewBag.PageNumber" page-range="@ViewBag.PageRange/2"></partial-pagination>
+        </div>
+    }

@@ -1,0 +1,30 @@
+﻿@model IEnumerable<MyCardCollection.Models.CardData>
+
+  
+@if(Model != null)
+{
+    <div class="list-group" style="padding-top:20px; padding-bottom:20px;">
+        <div type="button" class="list-group-item text-center">
+            Total value:<b> @ViewBag.sum$</b>
+        </div>
+        <div type="button" class="list-group-item list-group-item-action active text-center">
+            Top @ViewBag.Count cards:
+        </div>
+      
+        @{ var dataArr = Model.ToArray(); }
+        @for(int i = 0; i<6; i++)
+        {
+            <div class="row">
+                <button type="button" class="col list-group-item list-group-item-action text-center"> 
+                    <img class="img-fluid" src="@dataArr[i].ImageURL" alt="img"/>
+                   <text class="fw-bold fs-6 ">@dataArr[i].Price_USD $ </text>
+                </button>
+                @{ i++; }
+                <button type="button" class="col list-group-item list-group-item-action text-center"> 
+                    <img class="img-fluid" src="@dataArr[i].ImageURL" alt="img"/>
+                    <text class="fw-bold fs-6">@dataArr[i].Price_USD $ </text>
+                </button>
+            </div>
+        }
+    </div>
+}   

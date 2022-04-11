@@ -20,68 +20,107 @@ width!-- Toast -->
         </div>
     </div>
 </div>*@
+<div style="text-align:right;">
+    <a class="btn tglList btn-info" style="display:none;">Toggle List</a>
+    <a class="btn tglGallery btn-success ">Toggle Gallery</a>
+</div>
 
-<table class="table table-striped table-responsive">
-    <thead>
-        <tr>
-            <th> Name           </th>
-            <th> CMC            </th>
-            <th class="text-truncate" style="max-width: 75px;"> type_line      </th>
-            <th> set            </th>
-            <th> #              </th>
-            <th> rarity         </th>
-            <th class="text-truncate" style="max-width: 75px;"> Image          </th>
-            <th class="text-truncate" style="max-width: 75px;"> mana_cost      </th>
-            <th class="text-truncate" style="max-width: 75px;"> oracle_text    </th>
-            <th > power          </th>
-            <th > Health         </th>
-            <th class="text-truncate" style="max-width: 75px;"> flavor_text    </th>
-            <th class="text-truncate" style="max-width: 75px;"> price          </th>
+<div id="contentList">
+    <table class="table table-striped table-responsive">
+        <thead>
+            <tr>
+                <th> Name           </th>
+                <th> CMC            </th>
+                <th class="text-truncate" style="max-width: 75px;"> type_line      </th>
+                <th> set            </th>
+                <th> #              </th>
+                <th> rarity         </th>
+                <th class="text-truncate" style="max-width: 75px;"> Image          </th>
+                <th class="text-truncate" style="max-width: 75px;"> mana_cost      </th>
+                <th class="text-truncate" style="max-width: 75px;"> oracle_text    </th>
+                <th > power          </th>
+                <th > Health         </th>
+                <th class="text-truncate" style="max-width: 75px;"> flavor_text    </th>
+                <th class="text-truncate" style="max-width: 75px;"> price          </th>
 
-           @* <th>Add to collection</t1h>*@
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model) {
-        <tr >
-            @if (item.Card.HasTransform == false)
-            {
-                <td> @item.Card.Name                            </td>
-                <td> @item.Card.CMC                             </td>
-                <td class="text-truncate" style="max-width:75px;"> @item.Card.Type                            </td>
-                <td >@item.Card.SetCode                         </td>
-                <td >@item.Card.CollectionNumber                </td>
-                <td >@item.Card.Rarity                          </td>
-                <td class="text-truncate" style="max-width:75px;"> @item.Card.ImageURL                        </td>
-                <td class="text-truncate" style="max-width:75px;"> @item.Card.Mana_Cost                       </td>
-                <td class="text-truncate" style="max-width:75px;"> @item.Card.Description                     </td>
-                <td >@item.Card.Power                           </td>
-                <td >@item.Card.Health                          </td>
-                <td class="text-truncate" style="max-width:75px;"> @item.Card.FlavorDescription               </td>
-                <td class="text-truncate" style="max-width:75px;"> @item.Card.Price_USD                       </td>
+               @* <th>Add to collection</t1h>*@
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+            <tr >
+                @if (item.Card.HasTransform == false)
+                {
+                    <td> @item.Card.Name                            </td>
+                    <td> @item.Card.CMC                             </td>
+                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Type                            </td>
+                    <td >@item.Card.SetCode                         </td>
+                    <td >@item.Card.CollectionNumber                </td>
+                    <td >@item.Card.Rarity                          </td>
+                    <td class="text-truncate" style="max-width:75px;"> @item.Card.ImageURL                        </td>
+                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Mana_Cost                       </td>
+                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Description                     </td>
+                    <td >@item.Card.Power                           </td>
+                    <td >@item.Card.Health                          </td>
+                    <td class="text-truncate" style="max-width:75px;"> @item.Card.FlavorDescription               </td>
+                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Price_USD                       </td>
+                }
+                else // back side, revers, transformation...
+                {
+                    <td> @item.Card.Transform_Name                 </td>
+                    <td> @item.Card.CMC                             </td>
+                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_Type                  </td>
+                    <td> @item.Card.SetCode                         </td>
+                    <td> @item.Card.CollectionNumber                </td>
+                    <td> @item.Card.Rarity                          </td>
+                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_ImageURL              </td>
+                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Mana_Cost                       </td>
+                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_Description           </td>
+                    <td> @item.Card.Transform_Power                 </td>
+                    <td> @item.Card.Transform_Health                </td>
+                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_FlavorDescription     </td>
+                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Price_USD                       </td>
+                }
+            </tr>
             }
-            else // back side, revers, transformation...
-            {
-                <td> @item.Card.Transform_Name                 </td>
-                <td> @item.Card.CMC                             </td>
-                <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_Type                  </td>
-                <td> @item.Card.SetCode                         </td>
-                <td> @item.Card.CollectionNumber                </td>
-                <td> @item.Card.Rarity                          </td>
-                <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_ImageURL              </td>
-                <td class="text-truncate" style="max-width:75px;"> @item.Card.Mana_Cost                       </td>
-                <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_Description           </td>
-                <td> @item.Card.Transform_Power                 </td>
-                <td> @item.Card.Transform_Health                </td>
-                <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_FlavorDescription     </td>
-                <td class="text-truncate" style="max-width:75px;"> @item.Card.Price_USD                       </td>
-            }
-        </tr>
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
 
+<div class="container" id="contentGallery" style="display:none;">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+    @foreach (var item in Model) {
+        <div class="col">
+            <img src="@item.Card.ImageURL" style="border-radius:8px; width:100%; padding:5px;"/>
+        </div>
+    }
+  </div>
+</div>
 
+@section Scripts{
+    <script>
+         $(function(){
+            $("a.tglGallery").click(function(e){
+                e.preventDefault();
+                $(this).css("display","none");
+                $(".tglList").css("display","");
+
+                $("#contentGallery").css("display","");
+                $("#contentList").css("display","none");
+            });
+        });
+        $(function(){
+            $("a.tglList").click(function(e){
+                e.preventDefault();
+                $(this).css("display","none");
+                $(".tglGallery").css("display","");
+
+                $("#contentList").css("display","");
+                $("#contentGallery").css("display","none");
+            });
+        });
+    </script>
+}
 @*
 @section Scripts{
      <script>
