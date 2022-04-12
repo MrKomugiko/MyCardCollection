@@ -13,10 +13,10 @@ namespace MyCardCollection.Controllers
     public class CollectionController : Controller
     {
         private readonly IScryfallService _mtgApi;
-        private readonly ICollectionService collectionService;
+        private readonly ICollectionRepository collectionService;
         private readonly IMemoryCache _memoryCache;
         private readonly ApplicationDbContext context;
-        public CollectionController(ApplicationDbContext context, IScryfallService mtgApi, ICollectionService collectionService, IMemoryCache memoryCache)
+        public CollectionController(ApplicationDbContext context, IScryfallService mtgApi, ICollectionRepository collectionService, IMemoryCache memoryCache)
         {
             this.context = context;
             _mtgApi = mtgApi;

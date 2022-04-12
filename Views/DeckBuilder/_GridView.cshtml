@@ -57,6 +57,11 @@
     $("a.AddToDeck").click(function(e){
         e.preventDefault();
         let _cardId = $(this).data("id");
+        if("@ViewBag.CurrentDeckName" == '- not selected -')
+        {
+            alert("No deck selected. Load or create new deck.");
+            return;
+        }
 
         $.ajax({
             url:'@Url.Action("AddToDeck","DeckBuilder")',
@@ -64,6 +69,7 @@
             data: {
                 id: _cardId,
                 deckName: '@ViewBag.CurrentDeckName'
+
             },
             success: function(res){
 

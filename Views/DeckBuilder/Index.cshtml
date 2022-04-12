@@ -1,4 +1,6 @@
-﻿@model IEnumerable<MyCardCollection.Models.CardsCollection>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@model IEnumerable<MyCardCollection.Models.CardsCollection>
 @*@{
     Layout = "~/Views/Shared/_NewLayout.cshtml";
 }*@
@@ -39,15 +41,18 @@
 
                         <select name="deckName" class="form-control select col m-2" id="deckSelection">
                         @{
+                        if(@ViewBag.MyDecks != null)
+                        {
                             foreach(var item in @ViewBag.MyDecks)
-                            {
-                                if(item.Value == ViewBag.CurrentDeckName)
                                 {
-                                    <option selected val="@item.Value">@item.Text</option>
-                                }
-                                else
-                                {
-                                    <option val="@item.Value">@item.Text</option>
+                                    if(item.Value == ViewBag.CurrentDeckName)
+                                    {
+                                        <option selected val="@item.Value">@item.Text</option>
+                                    }
+                                    else
+                                    {
+                                        <option val="@item.Value">@item.Text</option>
+                                    }
                                 }
                             }
                         }

@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MyCardCollection.Data;
 using MyCardCollection.Models;
+using MyCardCollection.Repository;
 using MyCardCollection.Services;
+using System;
 using System.Net;
 using System.Security.Claims;
 
@@ -11,12 +13,14 @@ namespace MyCardCollection.Controllers
     public partial class DeckBuilderController : Controller
     {
         private readonly ApplicationDbContext context;
-        private readonly ICollectionService collectionService;
+        private readonly ICollectionRepository collectionService;
+        private readonly IDeckRepository _deckRepository;
 
-        public DeckBuilderController(ApplicationDbContext context, ICollectionService collectionService)
+        public DeckBuilderController(ApplicationDbContext context, ICollectionRepository collectionService, IDeckRepository deckRepository)
         {
             this.context = context;
             this.collectionService = collectionService;
+            this._deckRepository = deckRepository;
         }
         public async Task<PartialViewResult> SearchCards(string searchText, int page = 1)
         {
@@ -78,24 +82,13 @@ namespace MyCardCollection.Controllers
         [HttpPost]
         public async Task<JsonResult> SaveDeckAsync([FromBody] DeckModel deck)
         {
-            if(String.IsNullOrEmpty(deck.deckName))
+            deck.userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (String.IsNullOrEmpty(deck.deckName))
             {
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return Json(new { IsCreated = false, ErrorMessage = "Deck name cannot be empty." });
             }
-
-            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (_userId == null)
-            {
-                _userId = "625bb508-09c8-442f-aa96-f0fddcef4707"; // as default MrKomugiko
-            }
-
-            var currentDeckData = context.DecksCollections.Where(x => x.UserId == _userId && x.DeckName == deck.deckName);
-            List<DecksCollection> updatedDeckData = deck.cardInfos.Select(card => new DecksCollection(_userId, card.cardId, card.quantity, deck.deckName)).ToList();
-
-            context.RemoveRange(currentDeckData);
-            await context.AddRangeAsync(updatedDeckData);
-            await context.SaveChangesAsync();
+            await _deckRepository.Update(deck, deck.userId);
            
             return Json("success");
         }
@@ -149,35 +142,40 @@ namespace MyCardCollection.Controllers
         {
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var cardsInCollection = await collectionService.GetAll_SearchCardsFromCollection(_userId);
+            // Load available decks names
 
-            ViewBag.LiczbaKart = cardsInCollection.Sum(x => x.Quantity);
-            ViewBag.LiczbaWariacji = cardsInCollection.Count;
-            ViewBag.LiczbaUnikalnych = cardsInCollection.GroupBy(x => x.CardData.Name).Count();
 
-            var bezLadow = cardsInCollection.Where(x => x.CardData.Type.Contains("Land") == false);
-            ViewBag.LiczbaBezLadow = bezLadow.Count();
-            ViewBag.Commons = bezLadow.Where(x => x.CardData.Rarity == "common").Sum(x => x.Quantity);
-            ViewBag.Uncommons= bezLadow.Where(x=>x.CardData.Rarity == "uncommon").Sum(x=>x.Quantity);
-            ViewBag.Rares = bezLadow.Where(x=>x.CardData.Rarity == "rare").Sum(x=>x.Quantity);
-            ViewBag.Mythics = bezLadow.Where(x=>x.CardData.Rarity == "mythic").Sum(x=>x.Quantity);
+            //var cardsInCollection = await collectionService.GetAll_SearchCardsFromCollection(_userId);
+
+            //ViewBag.LiczbaKart = cardsInCollection.Sum(x => x.Quantity);
+            //ViewBag.LiczbaWariacji = cardsInCollection.Count;
+            //ViewBag.LiczbaUnikalnych = cardsInCollection.GroupBy(x => x.CardData.Name).Count();
+
+            //var bezLadow = cardsInCollection.Where(x => x.CardData.Type.Contains("Land") == false);
+            //ViewBag.LiczbaBezLadow = bezLadow.Count();
+            //ViewBag.Commons = bezLadow.Where(x => x.CardData.Rarity == "common").Sum(x => x.Quantity);
+            //ViewBag.Uncommons= bezLadow.Where(x=>x.CardData.Rarity == "uncommon").Sum(x=>x.Quantity);
+            //ViewBag.Rares = bezLadow.Where(x=>x.CardData.Rarity == "rare").Sum(x=>x.Quantity);
+            //ViewBag.Mythics = bezLadow.Where(x=>x.CardData.Rarity == "mythic").Sum(x=>x.Quantity);
 
 
             // selecting deck:
-            List<SelectListItem> userDecks = await collectionService.GetPlayerDecksNames(_userId);
-            ViewBag.MyDecks = userDecks;
+            var userDecks = await _deckRepository.GetUserDecks(_userId);
+            List<SelectListItem> data = new();
+            data.Add(new SelectListItem { Value = null, Text = "- not selected -" });
+            for (int i = 0; i < userDecks.Length; i++)
+            {
+                data.Add(new SelectListItem { Value = userDecks[i].ToString(), Text = userDecks[i].ToString() });
+            }
+            ViewBag.MyDecks = data;
 
-            // string? currentDeck = HttpContext.Session.GetString("CurrentSelectedDeck") ?? null;
-            string currentDeck = "deckTestowy_debug";
+            string? currentDeck = HttpContext.Session.GetString("CurrentSelectedDeck") ?? "- not selected -";
+
             HttpContext.Session.SetString("CurrentSelectedDeck", currentDeck);
-
             ViewBag.CurrentDeckName = currentDeck;
-
 
             return View();
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> LoadDeck(string? deckName)

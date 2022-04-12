@@ -7,8 +7,8 @@ namespace MyCardCollection.Infrastructure
 {
     public class StatisticsChartsViewComponent : ViewComponent
     {
-        private readonly ICollectionService _collection;
-        public StatisticsChartsViewComponent(ICollectionService collection)
+        private readonly ICollectionRepository _collection;
+        public StatisticsChartsViewComponent(ICollectionRepository collection)
         {
             _collection = collection;
         }

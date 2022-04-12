@@ -1,7 +1,5 @@
 ﻿namespace MyCardCollection.Controllers
 {
-    public partial class DeckBuilderController
-    {
         public class DeckModel
         {
             public string userId {get;set;}
@@ -43,8 +41,5 @@
                     ]
                 }
              */
-        }
-
-        
+        } 
     }
-}

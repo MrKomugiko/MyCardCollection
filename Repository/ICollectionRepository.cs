@@ -1,11 +1,11 @@
 ﻿
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MyCardCollection.Models;
-using static MyCardCollection.Services.CollectionService;
+using static MyCardCollection.Services.CollectionRepository;
 
 namespace MyCardCollection.Services
 {
-    public interface ICollectionService
+    public interface ICollectionRepository
     {
         //Task<CollectionStatistic> GetFullStatistics_v2(string _userId);
         
@@ -16,7 +16,6 @@ namespace MyCardCollection.Services
         Task<(List<CardsCollection> cardsOnPage, int totalMatches)> SearchCardsFromCollection(string collectionOwnerId, string? searchQuery=null, int page = 1, int itemsPerPage = 10);
         Task<(List<CardsCollection> cardsOnPage, int totalMatches)> SearchCardsFromDeck(string collectionOwnerId, string? searchQuery, int page = 1, int itemsPerPage = 10, string? deckName = null);
         (string cardId, int? updatedQuantity, int? cardLeftInCollection, string response) UpdateQuantityFromDeck(string userId, string id, string? deckName, int qtChange);
-        Task<List<SelectListItem>> GetPlayerDecksNames(string userId);
         Task ClearCollectionAsync(string collectionOwnerId);
     }
 }

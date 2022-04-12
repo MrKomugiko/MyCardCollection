@@ -6,11 +6,11 @@ using MyCardCollection.Models;
 
 namespace MyCardCollection.Services
 {
-    public class CollectionService : ICollectionService
+    public class CollectionRepository : ICollectionRepository
     {
         private readonly ApplicationDbContext context;
         private readonly IMemoryCache _memoryCache;
-        public CollectionService(ApplicationDbContext context, IMemoryCache memoryCache)
+        public CollectionRepository(ApplicationDbContext context, IMemoryCache memoryCache)
         {
             this.context = context;
             _memoryCache = memoryCache;
@@ -375,16 +375,7 @@ namespace MyCardCollection.Services
             return (cardFromDeck.CardId, cardFromDeck.Quantity, cardFromCollection.Quantity, "Ok");
 
         }
-        public async Task<List<SelectListItem>> GetPlayerDecksNames(string userId)
-        {
-            var x = context.DecksCollections.Where(x => x.UserId == userId).Select(x => x.DeckName).Distinct().ToList();
-            List<SelectListItem> data = new();
-
-            data.Add(new SelectListItem { Value = null, Text = "- not selected -" });
-            x.ForEach(x => data.Add(new SelectListItem { Value = x.ToString(), Text = x.ToString() }));
-
-            return data;
-        }
+   
 
         [Keyless]
         public class CollectionDetails
