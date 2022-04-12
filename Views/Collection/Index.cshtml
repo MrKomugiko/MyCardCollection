@@ -5,46 +5,52 @@
     @{
         ViewData["Title"] = "My collection";
     }
-    <div class="row text-center" >
-        <div class="col-2">
-             <form method="get" asp-controller="Collection" asp-action="Add" class="col">
-                <div class="row">
-                    <input name="set" class="form-control col" type="text" placeholder="set" >
-                    <input name="number" class="form-control col" type="text" placeholder="number" >
-                    <input class="btn btn-primary" type="submit" value="Add" />
-                </div>
-            </form>
-        </div>
 
+    <div class="row text-center" >
+        <div class="col-3"></div>
         <div class="col-7">
             <h1> Cards: @ViewBag.Count | Unique: @ViewBag.DistinctCount</h1>
         </div>
 
-        <div class="col-3">
-            <form method="post" asp-controller="Collection" asp-action="Import" class="col" enctype="multipart/form-data">
-                <div class="row">
-                    <input name="file" type="file" class="form-control col pb-2"/>
-                    <input class="btn btn-primary" type="submit" value="Import" />
-                </div>
-            </form>
-        </div>
     </div>
-
         <div class="row">
             <div class="col-2" >
+                                <!-- Top value cards section -->
                 <div class="TopCards">
                     @if(ViewBag.Count > 6 )
                     {
                         @await Component.InvokeAsync("CardsTop", new {_userId = UserManager.GetUserId(User)})
                     }
                 </div>
+      
+                <!-- Add section -->
+                <div>
+                    <form method="get" asp-controller="Collection" asp-action="Add" class="col">
+                        <div class="row">
+                            <input name="set" class="form-control col" type="text" placeholder="set" >
+                            <input name="number" class="form-control col" type="text" placeholder="number" >
+                            <input class="btn btn-primary" type="submit" value="Add" />
+                        </div>
+                    </form>
+                </div>
+                <br />
+                <!-- Import section -->
+                <div>
+                    <form method="post" asp-controller="Collection" asp-action="Import" class="col" enctype="multipart/form-data">
+                        <div class="row">
+                            <input name="file" type="file" class="form-control col"/>
+                            <input class="btn btn-primary" type="submit" value="Import" />
+                        </div>
+                    </form>
+                </div>
+
+
             </div>
             <div class="col-10" >
-            <br />
-                 <div class="row">
-                    <input type="text" placeholder="SEARCH..." class="form-control" id="textSearch" />
-                </div>
-            <br />
+                <br />
+                     <div class="row w-100 align-content-end" style="padding-left:2rem;">
+                        <input type="text" placeholder="SEARCH..." class="form-control" id="textSearch" />
+                    </div>
                 
                 <div class="row" id="cardsFullGrid">
                         full cards list here
@@ -55,8 +61,11 @@
             <div id="chartSection" />
 
 
+    
+
+
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
- 
         @section Scripts{
 
             

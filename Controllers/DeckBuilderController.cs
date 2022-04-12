@@ -167,7 +167,10 @@ namespace MyCardCollection.Controllers
             List<SelectListItem> userDecks = await collectionService.GetPlayerDecksNames(_userId);
             ViewBag.MyDecks = userDecks;
 
-            string? currentDeck = HttpContext.Session.GetString("CurrentSelectedDeck") ?? null;
+            // string? currentDeck = HttpContext.Session.GetString("CurrentSelectedDeck") ?? null;
+            string currentDeck = "deckTestowy_debug";
+            HttpContext.Session.SetString("CurrentSelectedDeck", currentDeck);
+
             ViewBag.CurrentDeckName = currentDeck;
 
 
