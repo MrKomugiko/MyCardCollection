@@ -81,7 +81,6 @@
             </div>
         </div>
     </div>
-
      <div class="row d-flex">
         <a class="btn btn-primary col mx-1" onClick="GetFirstDraw()">
             First draw ( 7x ) & Shuffle
@@ -94,6 +93,7 @@
         </a>
 
     </div>
+    <br />
     <div id="cardsHolder" class="row seven-cols"></div>
     <div id="drawCards" class="row seven-cols"></div>
 @*    
@@ -215,7 +215,7 @@
                             $('#multigainButton').addClass("disabled")
                         }
 
-                        var template = '<img class=\"col-md-1 text-hover-image\" src=\"~URL~\" alt=\"img\"/>';
+                        var template = '<img class=\"col text-hover-image\" style=\"max-width:14.2%\"  src=\"~URL~\" alt=\"img\"/>';
                         startingCards.forEach(function(card) {
                             target.insertAdjacentHTML("beforeend", template.replace(/~URL~/g, card.cardData.imageURL));
                         });
@@ -258,7 +258,7 @@
                     startingCards = myCards.slice(0,multigainAttempts+1);
                     $('#multigainButton').removeClass("disabled")
               
-                    var template = "<img class=\"col-md-1 text-hover-image\" src=\"~URL~\" alt=\"img\"/>";
+                    var template = "<img class=\"col text-hover-image\" style=\"max-width:14.2%;\" src=\"~URL~\" alt=\"img\"/>";
                     startingCards.forEach(function(card) {
                         target.insertAdjacentHTML("beforeend", template.replace(/~URL~/g, card.cardData.imageURL));
                     });
