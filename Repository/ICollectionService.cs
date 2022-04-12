@@ -17,5 +17,6 @@ namespace MyCardCollection.Services
         Task<(List<CardsCollection> cardsOnPage, int totalMatches)> SearchCardsFromDeck(string collectionOwnerId, string? searchQuery, int page = 1, int itemsPerPage = 10, string? deckName = null);
         (string cardId, int? updatedQuantity, int? cardLeftInCollection, string response) UpdateQuantityFromDeck(string userId, string id, string? deckName, int qtChange);
         Task<List<SelectListItem>> GetPlayerDecksNames(string userId);
+        Task ClearCollectionAsync(string collectionOwnerId);
     }
 }

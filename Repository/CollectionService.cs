@@ -61,6 +61,34 @@ namespace MyCardCollection.Services
         //    return data;
         //}
 
+        public async Task ClearCollectionAsync(string collectionOwnerId)
+        {
+            var deletedCards = context.Collection.Where(x => x.UserId == collectionOwnerId);
+            var userDecks = context.DecksCollections.Where(x => x.UserId == collectionOwnerId);
+
+            context.RemoveRange(userDecks.Where(x => deletedCards.Any(c => c.CardId == x.CardId)));           
+
+            context.Collection.RemoveRange(deletedCards);
+            var cacheKeyDeck = collectionOwnerId + "Deck";
+            foreach(var deckName in userDecks.Select(x=>x.DeckName).Distinct())
+            {
+                var selected_deck_cacheKey = collectionOwnerId + "Deck" + deckName;
+
+                if (_memoryCache.TryGetValue(selected_deck_cacheKey, out List<CardsCollection> deckcards))
+                {
+                    _memoryCache.Remove(selected_deck_cacheKey);
+                }
+            }
+
+            var cacheKey = collectionOwnerId + "Collection";
+
+            if (_memoryCache.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
+            {
+                _memoryCache.Remove(cacheKey);
+            }
+
+            await context.SaveChangesAsync();
+        }
         // -------------------------------------------------------------------
         public async Task<(List<CardsCollection> cardsOnPage, int totalMatches)> SearchCardsFromCollection(string collectionOwnerId, string? searchQuery, int page = 1, int itemsPerPage = 10)
         {

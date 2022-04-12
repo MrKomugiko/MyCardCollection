@@ -10,9 +10,9 @@
         <div type="button" class="list-group-item list-group-item-action active text-center">
             Top @ViewBag.Count cards:
         </div>
-      
+        
         @{ var dataArr = Model.ToArray(); }
-        @for(int i = 0; i<6; i++)
+        @for(int i = 0; i<Math.Min(dataArr.Length,6); i++)
         {
             <div class="row">
                 <button type="button" class="col list-group-item list-group-item-action text-center"> 

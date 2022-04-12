@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using MyCardCollection.Data;
@@ -112,12 +113,17 @@ namespace MyCardCollection.Controllers
                 _memoryCache.Set(cacheKey, cachedAllCards, cacheExpiryOptions);
             }
 
+            int count = HttpContext.Session.GetInt32("count") ?? 0;
+            HttpContext.Session.SetInt32("count", (int)count+1);
+
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
         [HttpPost]
         public async Task<ActionResult> Import(IFormFile file)
         {
+            if(file == null) return Redirect(Request.Headers["Referer"].ToString());
+
             //List<Cards> cards = HttpContext.Session.GetJson<List<Cards>>("Cards") ?? new List<Cards>();
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
             Root _card = null;
@@ -152,6 +158,7 @@ namespace MyCardCollection.Controllers
             var newCardsListToAdd = new List<CardData>();
             int counter = 0;
 
+            int count = HttpContext.Session.GetInt32("count") ?? 0;
             foreach (var carddata in dataArr)
             {
                 counter++;
@@ -167,11 +174,19 @@ namespace MyCardCollection.Controllers
 
                     // po imporcie cache zostanie wyczyszczony, zeby po odswiezeniu miec aktualne dane
                     _memoryCache.Remove(cacheKey);
-                }
+                    HttpContext.Session.SetInt32("count", (int)count + cardsListToImport.Sum(x=>x.Quantity));
 
-                string[] card = carddata.TrimStart().Split(" ");
+                }
+                // cleaning
+                //if (carddata.Contains("\r\n"))
+                //{
+                //    carddata.Replace("\r\n","");
+                //}
+
+                string[] card = carddata.Trim().Split(" ").Where(x => x != "").ToArray();
 
                 _card = await _mtgApi.FindCard(set: card[1].ToLower(), number: Int32.Parse(card[2]));
+
 
                 var _cardData = new CardData(_card);
 
@@ -205,6 +220,14 @@ namespace MyCardCollection.Controllers
             // po imporcie cache zostanie wyczyszczony, po przekierowaniu zostanie ponownie zapelniony danymi uzupelnionymi o wczesniej zaimportowane
             _memoryCache.Remove(cacheKey);
 
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+        [Authorize]
+        public async Task<IActionResult> Clear()
+        {
+            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await collectionService.ClearCollectionAsync(_userId);
+    
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
