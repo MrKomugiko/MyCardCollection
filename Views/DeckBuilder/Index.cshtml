@@ -164,9 +164,9 @@
                 url:'@Url.Action("RevertLocalChangesCardsQuantity","DeckBuilder")',
                 method: 'POST',
                 data:{
-                    lastModifiedDeck:"@ViewBag.CurrentDeckName",
+                    deckname:'@ViewBag.CurrentDeckName'
                 },
-                success: function(items){
+                success: function(){
                     console.log("ok");
                     UnsavedModifications = {};
                     },

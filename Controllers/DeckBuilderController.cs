@@ -129,10 +129,10 @@ namespace MyCardCollection.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> RevertLocalChangesCardsQuantity(string lastModifiedDeck)
+        public JsonResult RevertLocalChangesCardsQuantity(string deckname)
         {
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var deck_cacheKey = _userId + "Deck" + lastModifiedDeck;
+            var deck_cacheKey = _userId + "Deck" + deckname;
             _memoryCache.Remove(deck_cacheKey);
 
             return Json("Succesfully reverted.");
@@ -192,8 +192,24 @@ namespace MyCardCollection.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewDeckName(string deckTitle)
         {
-            HttpContext.Session.SetString("CurrentSelectedDeck", deckTitle);
+            var collectionOwnerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var all_cacheKey = collectionOwnerId + "Collection";
             ViewBag.CurrentDeckName = deckTitle;
+            HttpContext.Session.SetString("CurrentSelectedDeck", deckTitle);
+
+            var allCards = await context.Collection
+                   .Where(x => x.UserId == collectionOwnerId)
+                   .Include(x => x.CardData)
+                   .ToListAsync();
+
+            var cacheExpiryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
+                Priority = CacheItemPriority.High,
+                SlidingExpiration = TimeSpan.FromSeconds(3600)
+            };
+
+            _memoryCache.Set(all_cacheKey, allCards, cacheExpiryOptions);
 
             return RedirectToAction("Index");
         }
