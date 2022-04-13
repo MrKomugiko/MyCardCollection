@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Caching.Memory;
 using MyCardCollection.Data;
 using MyCardCollection.Models;
 using MyCardCollection.Repository;
@@ -15,12 +16,14 @@ namespace MyCardCollection.Controllers
         private readonly ApplicationDbContext context;
         private readonly ICollectionRepository collectionService;
         private readonly IDeckRepository _deckRepository;
+        private readonly IMemoryCache _memoryCache;
 
-        public DeckBuilderController(ApplicationDbContext context, ICollectionRepository collectionService, IDeckRepository deckRepository)
+        public DeckBuilderController(ApplicationDbContext context, ICollectionRepository collectionService, IDeckRepository deckRepository, IMemoryCache memoryCache)
         {
             this.context = context;
             this.collectionService = collectionService;
             this._deckRepository = deckRepository;
+            _memoryCache = memoryCache;
         }
         public async Task<PartialViewResult> SearchCards(string searchText, int page = 1)
         {
@@ -44,7 +47,7 @@ namespace MyCardCollection.Controllers
             
             HttpContext.Session.SetInt32("lastDeckPage", page);
 
-            var (cardsOnPage, totalMatches) = await collectionService.SearchCardsFromDeck(_userId, searchText, page, pageSize, deckName: deckName);
+            var (cardsOnPage, totalMatches) = await _deckRepository.SearchCardsFromDeck(_userId, searchText, page, pageSize, deckName: deckName);
 
             ViewBag.DeckPageNumber = page;
             ViewBag.PageRange = pageSize > 6 ? 6 : pageSize;
@@ -67,9 +70,9 @@ namespace MyCardCollection.Controllers
             ViewBag.CurrentDeckName = currentDeck;
             string? deckName = currentDeck;
 
-            await collectionService.AddCardToDeckAsync(_userId, id, deckName);
+            await _deckRepository.AddCardToDeckAsync(_userId, id, deckName);
             
-            var (cardsOnPage, totalMatches) = await collectionService.SearchCardsFromDeck(_userId, null, lastDeckPage, pageSize, deckName);
+            var (cardsOnPage, totalMatches) = await _deckRepository.SearchCardsFromDeck(_userId, null, lastDeckPage, pageSize, deckName);
 
             ViewBag.DeckPageNumber = lastDeckPage;
             ViewBag.RecentlyAddedCard = id;
@@ -98,7 +101,7 @@ namespace MyCardCollection.Controllers
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             // Change current quantity from deck
-            (string cardId, int? updatedQuantity, int? cardLeftInCollection, string response) = collectionService.UpdateQuantityFromDeck(_userId, id, deckName, qtChange);
+            (string cardId, int? updatedQuantity, int? cardLeftInCollection, string response) = _deckRepository.UpdateQuantityFromDeck(_userId, id, deckName, qtChange);
             if(updatedQuantity.HasValue)
             {
                 return Json (
@@ -125,12 +128,8 @@ namespace MyCardCollection.Controllers
         }
         public async Task<JsonResult> GetFirstDrawUrlsAsync(string? deckName)
         {
-            //if(deckName == null)
-            //{
-            //    deckName = HttpContext.Session.GetString("CurrentSelectedDeck") ?? null;
-            //}
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var allcardsfromdeck = await collectionService.GetAll_SearchCardsFromDeck(_userId, null, deckName: deckName);
+            var allcardsfromdeck = await _deckRepository.GetAll_SearchCardsFromDeck(_userId, null, deckName: deckName);
             var ungruppedListCardsFromDeck = new List<CardsCollection>();
             allcardsfromdeck.ForEach(x => ungruppedListCardsFromDeck.AddRange(Enumerable.Repeat(x, x.Quantity)));
             ungruppedListCardsFromDeck.Shuffle();
@@ -143,7 +142,6 @@ namespace MyCardCollection.Controllers
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             // Load available decks names
-
 
             //var cardsInCollection = await collectionService.GetAll_SearchCardsFromCollection(_userId);
 
@@ -160,17 +158,19 @@ namespace MyCardCollection.Controllers
 
 
             // selecting deck:
-            var userDecks = await _deckRepository.GetUserDecks(_userId);
+            var userDecks = await _deckRepository.GetDeckNames(_userId);
             List<SelectListItem> data = new();
             data.Add(new SelectListItem { Value = null, Text = "- not selected -" });
             for (int i = 0; i < userDecks.Length; i++)
             {
                 data.Add(new SelectListItem { Value = userDecks[i].ToString(), Text = userDecks[i].ToString() });
             }
-            ViewBag.MyDecks = data;
-
             string? currentDeck = HttpContext.Session.GetString("CurrentSelectedDeck") ?? "- not selected -";
-
+            if(! data.Any(x=>x.Text == currentDeck) && currentDeck != "- not selected -")
+            {
+                data.Add(new SelectListItem { Value = currentDeck.Trim(), Text = currentDeck.Trim() });
+            }
+            ViewBag.MyDecks = data;
             HttpContext.Session.SetString("CurrentSelectedDeck", currentDeck);
             ViewBag.CurrentDeckName = currentDeck;
 
@@ -178,10 +178,40 @@ namespace MyCardCollection.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadDeck(string? deckName)
+        public async Task<IActionResult> AddNewDeckName(string deckTitle)
         {
-            HttpContext.Session.SetString("CurrentSelectedDeck", deckName.Trim());
+            HttpContext.Session.SetString("CurrentSelectedDeck", deckTitle);
+            ViewBag.CurrentDeckName = deckTitle;
+
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadDeck(string? deckName)
+        {
+
+            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            HttpContext.Session.SetString("CurrentSelectedDeck", deckName.Trim());
+
+            return RedirectToAction("Index");
+        }
+     
+        public async Task<IActionResult> Clear()
+        {
+            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string? currentDeck = HttpContext.Session.GetString("CurrentSelectedDeck") ?? null;
+            
+
+            if(currentDeck != null && currentDeck != "- not selected -")
+            {
+                HttpContext.Session.Remove("CurrentSelectedDeck");
+                await _deckRepository.ClearDeck(currentDeck,_userId);
+                var deck_cacheKey = _userId + "Deck" + currentDeck.Trim();
+                _memoryCache.Remove(deck_cacheKey);
+            }
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

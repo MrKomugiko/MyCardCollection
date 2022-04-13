@@ -14,6 +14,13 @@ namespace MyCardCollection.Models
             this.Quantity = quantity;
             this.DeckName = deckName;
         }
+        public DecksCollection(string userId, string deckName)
+        {
+            this.UserId = userId;
+            this.CardId = "";
+            this.Quantity = 0;
+            this.DeckName = deckName;
+        }
 
         [Key] public int Id { get; set; }
         [Required] public string UserId { get; set; }

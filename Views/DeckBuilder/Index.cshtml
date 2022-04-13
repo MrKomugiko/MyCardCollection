@@ -30,8 +30,34 @@
     <div class="row">
         <div class="form-inline col-md-12 col-sm-12">
             <div class="row">
-                <button class="btn btn-primary col m-2" type="submit">New</button>
-                <button class="btn btn-primary col m-2" type="submit">Clear</button>
+                <!--Button to Trigger Modal-->
+                    <button id="btnShow" class="btn btn-primary col m-2">
+                        New
+                    </button>
+                <!-- Modal -->
+                <div class="modal fade" id="demoModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" style="align-content:center;" id="myModalLabel"> 
+                                    Add new Deck 
+                                </h4>
+                            </div>
+                            <form method="post" asp-controller="DeckBuilder" asp-action="AddNewDeckName" role="post">
+                                <div class="modal-body">
+                                    <div class="col">
+                                        <input type="text" class="form-control" name="deckTitle" placeholder="Title">
+                                    </div>  
+                                </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default close">Close</button>
+                                        <input type="submit" class="col-2 m-2 btn btn-primary" />
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <a class="btn btn-danger col m-2" asp-controller="DeckBuilder" asp-action="Clear" type="submit">Clear current deck.</a>
                 <button class="btn btn-primary col m-2 SaveDeck"  type="submit">Save</button>
             </div>
                @* <select asp-items="@ViewBag.MyDecks" class="form-control select col m-2"></select> *@
@@ -110,44 +136,16 @@
         * Mythics:  @ViewBag.Mythics <br />
     </div>*@
 
-@*<!--Button to Trigger Modal-->
-<div style="text-align:center; margin-top:10%">
-    <button id="btnShow" class="btn btn-primary btn-lg">
-        Show Modal Popup
-    </button>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="demoModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close">
-                    &times;
-                </button>
-                <h4 class="modal-title" id="myModalLabel">
-                    MODAL TITLE
-                </h4>
-            </div>
-            <div class="modal-body">
-                MODAL BODY
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default close">
-                    Close
-                </button>
-                <button type="button" class="btn btn-primary">
-                    Save changes
-                </button>
-            </div>
-        </div>
-    </div>
-</div>*@
+
 
  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 
         @section Scripts{
 
 <script>
+       
+     var UnsavedModifications = {};
+    console.log(UnsavedModifications);
 
     $(function () {
         $("#btnShow").click(function(){
@@ -409,33 +407,32 @@
         })
     };
 
-           $(document).ready(function () {
-                var _url = '@Url.Action("GetStatisticsComponent", "Collection")';
-                $.ajax({
-                    type: "GET",
-                    url: _url,
-                    success: function (result) {
-                        $("#chartSection").html(result);
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        var errorMsg = 'Ajax request failed: ' + xhr.responseText;
-                        $('#chartSection').html(errorMsg);
-                    }
-                });
+    $(document).ready(function () {
+            var _url = '@Url.Action("GetStatisticsComponent", "Collection")';
+            $.ajax({
+                type: "GET",
+                url: _url,
+                success: function (result) {
+                    $("#chartSection").html(result);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    var errorMsg = 'Ajax request failed: ' + xhr.responseText;
+                    $('#chartSection').html(errorMsg);
+                }
             });
+        });
 
-        function ShowToast(message)
-        {
-            let id = $(this).data("cardid");
-            var options={
-                animation: true,
-                autohide:true
-            };
-
-            var myAlert = document.getElementById("toastnotice"); // select id of toast
-            var bsAlert = new bootstrap.Toast(myAlert,options); // initializing
-            document.getElementById("cardName").innerHTML = message;
-            bsAlert.show();            
+    function ShowToast(message){
+        let id = $(this).data("cardid");
+        var options={
+            animation: true,
+            autohide:true
         };
+
+        var myAlert = document.getElementById("toastnotice"); // select id of toast
+        var bsAlert = new bootstrap.Toast(myAlert,options); // initializing
+        document.getElementById("cardName").innerHTML = message;
+        bsAlert.show();            
+    };
     </script>
     }
