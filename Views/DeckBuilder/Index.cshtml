@@ -138,7 +138,9 @@
 
 
 
+
  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+
 
         @section Scripts{
 
@@ -146,6 +148,35 @@
        
      var UnsavedModifications = {};
     console.log(UnsavedModifications);
+
+    window.onbeforeunload = function(e) {
+        console.log(Object.keys(UnsavedModifications).length+" unsaved items length");
+        if(Object.keys(UnsavedModifications).length>0)
+        {
+            return "Do you want to exit this page?";
+        }
+    };
+    window.onunload = function(e) {
+        console.log("leaving with no saving progress");
+        if(Object.keys(UnsavedModifications).length>0)
+        {
+            $.ajax({
+                url:'@Url.Action("RevertLocalChangesCardsQuantity","DeckBuilder")',
+                method: 'POST',
+                data:{
+                    lastModifiedDeck:"@ViewBag.CurrentDeckName",
+                },
+                success: function(items){
+                    console.log("ok");
+                    UnsavedModifications = {};
+                    },
+                error: function(err){
+                        console.log(err);
+                    }
+            })
+            return "reverting progress";
+        }
+    };
 
     $(function () {
         $("#btnShow").click(function(){
@@ -350,9 +381,7 @@
         }
     });
 
-
-
-    function savedeck()
+      function savedeck()
     {
         var array = [];
         var payload = {
@@ -393,6 +422,7 @@
                 saveButton.addClass("btn-success");
 
                 ShowToast('Succesfully saved deck.');
+                UnsavedModifications = {};
             },
             error: function(err){
                 console.log(err); 

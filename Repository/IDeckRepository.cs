@@ -13,5 +13,6 @@ namespace MyCardCollection.Repository
         Task<(List<CardsCollection> cardsOnPage, int totalMatches)> SearchCardsFromDeck(string collectionOwnerId, string? searchQuery, int page = 1, int itemsPerPage = 10, string? deckName = null);
         Task AddCardToDeckAsync(string collectionOwnerId, string cardId, string deckName);
         Task ClearDeck(string currentDeck, string userId);
+        Task<List<CardsCollection>> GetDeckDataFromDatabase(string collectionOwnerId, string? deckName);
     }
 }

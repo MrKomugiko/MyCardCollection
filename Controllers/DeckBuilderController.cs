@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using MyCardCollection.Data;
 using MyCardCollection.Models;
 using MyCardCollection.Repository;
 using MyCardCollection.Services;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Security.Claims;
 
@@ -14,14 +16,14 @@ namespace MyCardCollection.Controllers
     public partial class DeckBuilderController : Controller
     {
         private readonly ApplicationDbContext context;
-        private readonly ICollectionRepository collectionService;
+        private readonly ICollectionRepository _collectionService;
         private readonly IDeckRepository _deckRepository;
         private readonly IMemoryCache _memoryCache;
 
         public DeckBuilderController(ApplicationDbContext context, ICollectionRepository collectionService, IDeckRepository deckRepository, IMemoryCache memoryCache)
         {
             this.context = context;
-            this.collectionService = collectionService;
+            this._collectionService = collectionService;
             this._deckRepository = deckRepository;
             _memoryCache = memoryCache;
         }
@@ -29,7 +31,7 @@ namespace MyCardCollection.Controllers
         {
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int pageSize = 10;
-            var (cardsOnPage, totalMatches) = await collectionService.SearchCardsFromCollection(_userId, searchText, page, pageSize);
+            var (cardsOnPage, totalMatches) = await _collectionService.SearchCardsFromCollection(_userId, searchText, page, pageSize);
 
             ViewBag.PageNumber = page;
             ViewBag.PageRange = pageSize > 6 ? 6:pageSize;
@@ -111,7 +113,6 @@ namespace MyCardCollection.Controllers
                         cardLeftInCollection = cardLeftInCollection,
                         result = updatedQuantity,
                         info = response
-
                     }
                 );
             }
@@ -125,6 +126,17 @@ namespace MyCardCollection.Controllers
                     }
                 );
             }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> RevertLocalChangesCardsQuantity(string lastModifiedDeck)
+        {
+            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var deck_cacheKey = _userId + "Deck" + lastModifiedDeck;
+            _memoryCache.Remove(deck_cacheKey);
+
+            return Json("Succesfully reverted.");
+
         }
         public async Task<JsonResult> GetFirstDrawUrlsAsync(string? deckName)
         {
@@ -189,9 +201,42 @@ namespace MyCardCollection.Controllers
         [HttpPost]
         public async Task<IActionResult> LoadDeck(string? deckName)
         {
-
-            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var collectionOwnerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             HttpContext.Session.SetString("CurrentSelectedDeck", deckName.Trim());
+
+            List<CardsCollection> cardsInDeck = new();
+            var deck_cacheKey = collectionOwnerId + "Deck" + deckName;
+            var all_cacheKey = collectionOwnerId + "Collection";
+
+
+            if (!_memoryCache.TryGetValue(deck_cacheKey, out List<CardsCollection> cachedCurrentDeck))
+            {
+                cardsInDeck = await _deckRepository.GetDeckDataFromDatabase(collectionOwnerId, deckName);
+            }
+            else
+            {
+                // istnieje juz jakis aktualnie tworzony deck = AKTUALIZACJA 
+                cardsInDeck = _memoryCache.Get<List<CardsCollection>>(deck_cacheKey);
+            }
+            var allCards = await context.Collection
+                    .Where(x => x.UserId == collectionOwnerId)
+                    .Include(x => x.CardData)
+                    .ToListAsync();
+
+            foreach (var card in allCards.Where(x => cardsInDeck.Any(c => c.CardId == x.CardId)))
+            {
+                card.Quantity -= cardsInDeck.First(x=>x.CardId == card.CardId).Quantity;
+            }
+
+            var cacheExpiryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
+                Priority = CacheItemPriority.High,
+                SlidingExpiration = TimeSpan.FromSeconds(3600)
+            };
+
+            _memoryCache.Set(all_cacheKey, allCards, cacheExpiryOptions);
+            _memoryCache.Set(deck_cacheKey, cardsInDeck, cacheExpiryOptions);
 
             return RedirectToAction("Index");
         }

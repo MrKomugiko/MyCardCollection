@@ -53,6 +53,17 @@
         let _deckName = $(this).data("deckname");
         let _qtChange = $(this).data("qtchange");
 
+        if (_cardId in UnsavedModifications) {
+            UnsavedModifications[_cardId]+=_qtChange;
+            console.log("unsaved modify value +"+UnsavedModifications[_cardId]+": "+_cardId);
+        }
+        else
+        {
+            UnsavedModifications[_cardId]=_qtChange;
+        }
+
+        console.log(UnsavedModifications);
+
         $.ajax({
             url:'@Url.Action("ChangeQuantity","DeckBuilder")',
             method: 'POST',
@@ -78,6 +89,7 @@
             }
         })
     })
+
 
     
     function UpdateSaveButton()

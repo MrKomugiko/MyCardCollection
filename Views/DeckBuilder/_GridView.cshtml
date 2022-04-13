@@ -72,17 +72,13 @@
                 deckName: '@ViewBag.CurrentDeckName'
             },
             success: function(res){
-
                 if (_cardId in UnsavedModifications) {
                     UnsavedModifications[_cardId]+=1;
-                    console.log("Total added +"+UnsavedModifications[_cardId]+": "+_cardId);
-                }
-                else
-                {
-                    console.log("Add +1: "+_cardId);
+                 }
+                 else
+                 {
                     UnsavedModifications[_cardId] = 1;
-                }
-                console.log(UnsavedModifications);
+                 }
 
                 $('#cardsGrid_deck').html('').html(res); 
                 getCards('@ViewBag.PageNumber');

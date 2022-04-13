@@ -37,7 +37,7 @@ namespace MyCardCollection.Repository
                 cardsInDeck = _memoryCache.Get<List<CardsCollection>>(deck_cacheKey);
             }
 
-            if (TryAddCardToStack(cardsInDeck,cardToAdd) == false) 
+            if (TryAddCardToStack(cardsInDeck, cardToAdd) == false)
                 return;
 
             allCards.First(x => x.CardId == cardId).Quantity -= 1;
@@ -51,6 +51,7 @@ namespace MyCardCollection.Repository
             _memoryCache.Set(all_cacheKey, allCards, cacheExpiryOptions);
             _memoryCache.Set(deck_cacheKey, cardsInDeck, cacheExpiryOptions);
 
+      
         }
        
         public async Task<(List<CardsCollection> cardsOnPage, int totalMatches)> SearchCardsFromDeck(string collectionOwnerId, string? searchQuery, int page = 1, int itemsPerPage = 10, string? deckName = null)
@@ -134,7 +135,7 @@ namespace MyCardCollection.Repository
                     .ToList();
             }
         }
-        private async Task<List<CardsCollection>> GetDeckDataFromDatabase(string collectionOwnerId, string? deckName)
+        public async Task<List<CardsCollection>> GetDeckDataFromDatabase(string collectionOwnerId, string? deckName)
         {
             List<CardsCollection> cachedAllCardsFromDeck = new();
             await _context.DecksCollections
