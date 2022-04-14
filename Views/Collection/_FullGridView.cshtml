@@ -80,8 +80,7 @@
                             } 
                             else
                             {
-                                <td> @Html.DisplayFor(modelItem => item.CardData.SetCode)                           </td>
-                                <th> @Html.DisplayFor(modelItem => item.CardData.CollectionNumber)              </th>
+                                <td><a class="btn btn-secondary" asp-controller="Collection" asp-action="Details" asp-route-set="@item.CardData.SetCode" asp-route-number="@item.CardData.CollectionNumber">info</a></td>
                                 <td> @item.CardData.Name <br/> @item.CardData.Transform_Name                          </td>
                                 <td> @Html.DisplayFor(modelItem => item.CardData.Rarity)                        </td>
                                 <td> @Html.DisplayFor(modelItem => item.CardData.Type)<br />
