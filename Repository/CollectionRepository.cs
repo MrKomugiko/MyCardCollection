@@ -10,6 +10,13 @@ namespace MyCardCollection.Services
     {
         private readonly ApplicationDbContext context;
         private readonly IMemoryCache _memoryCache;
+        private MemoryCacheEntryOptions cacheExpiryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
+            Priority = CacheItemPriority.High,
+            SlidingExpiration = TimeSpan.FromSeconds(3600)
+        };
+
         public CollectionRepository(ApplicationDbContext context, IMemoryCache memoryCache)
         {
             this.context = context;
@@ -120,13 +127,6 @@ namespace MyCardCollection.Services
                     .Include(x => x.CardData)
                     .ToListAsync();
 
-                //setting up cache options
-                var cacheExpiryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
-                    Priority = CacheItemPriority.High,
-                    SlidingExpiration = TimeSpan.FromSeconds(3600)
-                };
                 //setting cache entries
                 _memoryCache.Set(cacheKey, allCardsInCollection, cacheExpiryOptions);
                 cachedAllCards = allCardsInCollection;

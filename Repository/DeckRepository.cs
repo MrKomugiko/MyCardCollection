@@ -10,6 +10,13 @@ namespace MyCardCollection.Repository
     {
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _memoryCache;
+        private MemoryCacheEntryOptions cacheExpiryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
+            Priority = CacheItemPriority.High,
+            SlidingExpiration = TimeSpan.FromSeconds(3600)
+        };
+
         public DeckRepository(ApplicationDbContext context, IMemoryCache memoryCache)
         {
             _context = context;
@@ -41,12 +48,6 @@ namespace MyCardCollection.Repository
                 return;
 
             allCards.First(x => x.CardId == cardId).Quantity -= 1;
-            var cacheExpiryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
-                Priority = CacheItemPriority.High,
-                SlidingExpiration = TimeSpan.FromSeconds(3600)
-            };
 
             _memoryCache.Set(all_cacheKey, allCards, cacheExpiryOptions);
             _memoryCache.Set(deck_cacheKey, cardsInDeck, cacheExpiryOptions);
@@ -106,13 +107,6 @@ namespace MyCardCollection.Repository
                 if (!_memoryCache.TryGetValue(deck_cacheKey, out List<CardsCollection> cachedAllCardsFromDeck))
                 {
                     cachedAllCardsFromDeck = await GetDeckDataFromDatabase(collectionOwnerId, deckName);
-
-                    var cacheExpiryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
-                        Priority = CacheItemPriority.High,
-                        SlidingExpiration = TimeSpan.FromSeconds(3600)
-                    };
 
                     _memoryCache.Set(deck_cacheKey, cachedAllCardsFromDeck, cacheExpiryOptions);
                 }
@@ -207,12 +201,6 @@ namespace MyCardCollection.Repository
                 cardFromCollection.Quantity -= qtChange;
             }
 
-            var cacheExpiryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
-                Priority = CacheItemPriority.High,
-                SlidingExpiration = TimeSpan.FromSeconds(3600)
-            };
             _memoryCache.Set(all_cacheKey, memoryCollection, cacheExpiryOptions);
             _memoryCache.Set(deck_cacheKey, memoryDeck, cacheExpiryOptions);
 

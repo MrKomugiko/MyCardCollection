@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using MyCardCollection.Data;
 using MyCardCollection.Models;
+using MyCardCollection.Repository;
 using MyCardCollection.Services;
 using MyCardCollection.Services.Scryfall.Card;
 using System.Security.Claims;
@@ -13,25 +14,24 @@ namespace MyCardCollection.Controllers
     public class CollectionController : Controller
     {
         private readonly IScryfallService _mtgApi;
-        private readonly ICollectionRepository collectionService;
-        private readonly IMemoryCache _memoryCache;
-        private readonly ApplicationDbContext context;
-        public CollectionController(ApplicationDbContext context, IScryfallService mtgApi, ICollectionRepository collectionService, IMemoryCache memoryCache)
+        private readonly ICollectionRepository _collectionService;
+        private readonly ICacheService _cacheService;
+        private readonly ApplicationDbContext _context;
+
+        string _userId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+        private string collection_cacheKey => _userId + "Collection";
+        public CollectionController(ApplicationDbContext context, IScryfallService mtgApi, ICollectionRepository collectionService, ICacheService cacheService)
         {
-            this.context = context;
+            _context = context;
             _mtgApi = mtgApi;
-            this.collectionService = collectionService;
-            _memoryCache = memoryCache;
+            _collectionService = collectionService;
+            _cacheService = cacheService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var result = await collectionService.GetAll_SearchCardsFromCollection(_userId);
-
+            var result = await _collectionService.GetAll_SearchCardsFromCollection(_userId);
             int? count = HttpContext.Session.GetInt32("count") ?? null;
-
             if (count == null)
             {
                 count = result.Sum(x => x.Quantity);
@@ -45,9 +45,8 @@ namespace MyCardCollection.Controllers
         }
         public async Task<PartialViewResult> SearchCards(string searchText, int page = 1, string eventName = "")
         {
-            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int pageSize = 15;
-            var result = await collectionService.SearchCardsFromCollection(_userId, searchText, page, pageSize);
+            var result = await _collectionService.SearchCardsFromCollection(_userId, searchText, page, pageSize);
 
             ViewBag.PageNumber = page;
             ViewBag.PageRange = pageSize > 6 ? 6 : pageSize;
@@ -56,48 +55,34 @@ namespace MyCardCollection.Controllers
 
             return PartialView("_FullGridView", result.cardsOnPage);
         }
-
         public async Task<IActionResult> Add(string set, int number)
-        {
-            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
-   
-            var cardData = context.CardsDatabase.Where(x => x.SetCode == set && x.CollectionNumber == number).FirstOrDefault();
+        { 
+            var cardData = _context.CardsDatabase.Where(x => x.SetCode == set && x.CollectionNumber == number).FirstOrDefault();
             if (cardData == null)
             {
                 Root _card = await _mtgApi.FindCard(set: set, number: number);
                 cardData = new CardData(_card);
-                context.CardsDatabase.Add(new CardData(_card));
+                _context.CardsDatabase.Add(new CardData(_card));
             }
 
-            var match = context.Collection.Where(x => x.UserId == _userId && x.CardId == cardData.CardId).FirstOrDefault();
+            var match = _context.Collection.Where(x => x.UserId == _userId && x.CardId == cardData.CardId).FirstOrDefault();
 
             if (match == null)
             {
-                context.Collection.Add(new CardsCollection(_userId, cardData.CardId, 1));
-
+                _context.Collection.Add(new CardsCollection(_userId, cardData.CardId, 1));
             }
             else
             {
-
                 match.Quantity += 1;
             }
 
-            context.SaveChanges();
+            _context.SaveChanges();
             //dodanie karty spowoduje zaktualizowanie kart w cache
-            var cacheKey = _userId + "Collection";
 
 
             //checks if cache entries exists
-            if (_memoryCache.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
+            if (_cacheService.TryGetValue(collection_cacheKey, out List<CardsCollection> cachedAllCards))
             {
-                //setting up cache options
-                var cacheExpiryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
-                    Priority = CacheItemPriority.High,
-                    SlidingExpiration = TimeSpan.FromSeconds(3600)
-                };
-               
                 //setting cache entries
                 if(cachedAllCards.Any(c=>c.CardId == cardData.CardId))
                 {
@@ -110,7 +95,7 @@ namespace MyCardCollection.Controllers
                     cachedAllCards.Add(collection);
 
                 }
-                _memoryCache.Set(cacheKey, cachedAllCards, cacheExpiryOptions);
+                _cacheService.Set(collection_cacheKey, cachedAllCards);
             }
 
             int count = HttpContext.Session.GetInt32("count") ?? 0;
@@ -124,11 +109,8 @@ namespace MyCardCollection.Controllers
         {
             if(file == null) return Redirect(Request.Headers["Referer"].ToString());
 
-            //List<Cards> cards = HttpContext.Session.GetJson<List<Cards>>("Cards") ?? new List<Cards>();
-            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
             Root _card = null;
             string data = "";
-            var cacheKey = _userId + "Collection";
 
             using (var memoryStream = new MemoryStream())
             {
@@ -165,46 +147,36 @@ namespace MyCardCollection.Controllers
                 if (counter == 24)
                 {
                     counter = 0;
-                    await context.Collection.AddRangeAsync(cardsListToImport);
-                    await context.CardsDatabase.AddRangeAsync(newCardsListToAdd);
-                    await context.SaveChangesAsync();
+                    await _context.Collection.AddRangeAsync(cardsListToImport);
+                    await _context.CardsDatabase.AddRangeAsync(newCardsListToAdd);
+                    await _context.SaveChangesAsync();
 
                     cardsListToImport.Clear();
                     newCardsListToAdd.Clear();
 
                     // po imporcie cache zostanie wyczyszczony, zeby po odswiezeniu miec aktualne dane
-                    _memoryCache.Remove(cacheKey);
+                    _cacheService.Remove(collection_cacheKey);
                     HttpContext.Session.SetInt32("count", (int)count + cardsListToImport.Sum(x=>x.Quantity));
-
                 }
-                // cleaning
-                //if (carddata.Contains("\r\n"))
-                //{
-                //    carddata.Replace("\r\n","");
-                //}
 
                 string[] card = carddata.Trim().Split(" ").Where(x => x != "").ToArray();
-
                 _card = await _mtgApi.FindCard(set: card[1].ToLower(), number: Int32.Parse(card[2]));
-
 
                 var _cardData = new CardData(_card);
 
-                if (context.Collection.Any(x => x.CardId == _cardData.CardId && x.UserId == _userId))
+                if (_context.Collection.Any(x => x.CardId == _cardData.CardId && x.UserId == _userId))
                 {
-                    context.Collection.Where(x => x.CardId == _cardData.CardId && x.UserId == _userId).First().Quantity += Int32.Parse(card[0]);
-                    Console.WriteLine(_cardData.Name + " + " + Int32.Parse(card[0]));
+                    _context.Collection.Where(x => x.CardId == _cardData.CardId && x.UserId == _userId).First().Quantity += Int32.Parse(card[0]);
                 }
                 else
                 {
                     if (cardsListToImport.Any(x => x.CardId == _cardData.CardId && x.UserId == _userId))
                     {
-                        cardsListToImport.Where(x => x.CardId == _cardData.CardId && x.UserId == _userId).First().Quantity += Int32.Parse(card[0]);
-                        Console.WriteLine(_cardData.Name + " + " + Int32.Parse(card[0]) + " => " + cardsListToImport.Where(x => x.CardId == _cardData.CardId && x.UserId == _userId).First().Quantity);
+                        cardsListToImport.Where(x => x.CardId == _cardData.CardId && x.UserId == _userId).First().Quantity += Int32.Parse(card[0]);             
                     }
                     else
                     {
-                        if (context.CardsDatabase.Any(x => x.CardId == _cardData.CardId) == false)
+                        if (_context.CardsDatabase.Any(x => x.CardId == _cardData.CardId) == false)
                         {
                             newCardsListToAdd.Add(_cardData);
                         }
@@ -213,48 +185,38 @@ namespace MyCardCollection.Controllers
                 }
             }
 
-            await context.Collection.AddRangeAsync(cardsListToImport);
-            await context.CardsDatabase.AddRangeAsync(newCardsListToAdd);
+            await _context.Collection.AddRangeAsync(cardsListToImport);
+            await _context.CardsDatabase.AddRangeAsync(newCardsListToAdd);
 
-            context.SaveChanges();
+            _context.SaveChanges();
             // po imporcie cache zostanie wyczyszczony, po przekierowaniu zostanie ponownie zapelniony danymi uzupelnionymi o wczesniej zaimportowane
-            _memoryCache.Remove(cacheKey);
+            _cacheService.Remove(collection_cacheKey);
 
             return Redirect(Request.Headers["Referer"].ToString());
         }
         [Authorize]
         public async Task<IActionResult> Clear()
         {
-            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await collectionService.ClearCollectionAsync(_userId);
+            await _collectionService.ClearCollectionAsync(_userId);
     
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
         public IActionResult Increase(string cardid)
         {
-            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
-            var _card = context.Collection.Where(x => x.CardId == cardid && x.UserId == _userId).First();
+            var _card = _context.Collection.Where(x => x.CardId == cardid && x.UserId == _userId).First();
             var updatedCardID = _card.CardId;
-            context.SaveChanges();
+            _context.SaveChanges();
 
             //update cache
-            var cacheKey = _userId + "Collection";
-            if (_memoryCache.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
+            if (_cacheService.TryGetValue(collection_cacheKey, out List<CardsCollection> cachedAllCards))
             {
                 //setting up cache options
-                var cacheExpiryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
-                    Priority = CacheItemPriority.High,
-                    SlidingExpiration = TimeSpan.FromSeconds(3600)
-                };
-
                 var cardToUpdate = cachedAllCards.FirstOrDefault(c => c.CardId == updatedCardID);
                 if (cardToUpdate != null)
                 {
                     cachedAllCards.First(c => c.CardId == cardToUpdate.CardId).Quantity += 1;
-                    _memoryCache.Set(cacheKey, cachedAllCards, cacheExpiryOptions);
+                    _cacheService.Set(collection_cacheKey, cachedAllCards);
                 }
             }
             return Redirect(Request.Headers["Referer"].ToString());
@@ -262,7 +224,7 @@ namespace MyCardCollection.Controllers
         public IActionResult Decrease(string cardid)
         {
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
-            var _card = context.Collection.Where(x => x.CardId == cardid && x.UserId == _userId).First();
+            var _card = _context.Collection.Where(x => x.CardId == cardid && x.UserId == _userId).First();
             var updatedCardID = _card.CardId;
             bool deleteflag = false;
 
@@ -270,24 +232,16 @@ namespace MyCardCollection.Controllers
                 _card.Quantity -= 1;
             else
             {
-                context.Collection.Remove(_card);
+                _context.Collection.Remove(_card);
                 deleteflag = true;
             }
 
-            context.SaveChanges();
+            _context.SaveChanges();
 
             //update cache
-            var cacheKey = _userId + "Collection";
-            if (_memoryCache.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
+            if (_cacheService.TryGetValue(collection_cacheKey, out List<CardsCollection> cachedAllCards))
             {
                 //setting up cache options
-                var cacheExpiryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
-                    Priority = CacheItemPriority.High,
-                    SlidingExpiration = TimeSpan.FromSeconds(3600)
-                };
-
                 var cardToUpdate = cachedAllCards.FirstOrDefault(c => c.CardId == updatedCardID);
                 if(cardToUpdate != null)
                 {
@@ -296,7 +250,7 @@ namespace MyCardCollection.Controllers
                     else
                         cachedAllCards.First(c => c.CardId == cardToUpdate.CardId).Quantity -= 1;
 
-                  _memoryCache.Set(cacheKey, cachedAllCards, cacheExpiryOptions);
+                  _cacheService.Set(collection_cacheKey, cachedAllCards);
                 }
             }
 
@@ -306,32 +260,24 @@ namespace MyCardCollection.Controllers
         {
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var _card = context.Collection.Where(x => x.CardId == cardid && x.UserId == _userId).First();
+            var _card = _context.Collection.Where(x => x.CardId == cardid && x.UserId == _userId).First();
             var removedCardID = _card.CardId;
 
             if (_card.Quantity >= 0)
             {
-                context.Collection.Remove(_card);
+                _context.Collection.Remove(_card);
             }
-            context.SaveChanges();
+            _context.SaveChanges();
 
             //update cache
-            var cacheKey = _userId + "Collection";
-            if (_memoryCache.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
+            if (_cacheService.TryGetValue(collection_cacheKey, out List<CardsCollection> cachedAllCards))
             {
                 //setting up cache options
-                var cacheExpiryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
-                    Priority = CacheItemPriority.High,
-                    SlidingExpiration = TimeSpan.FromSeconds(3600)
-                };
-
                 var cardToDelete = cachedAllCards.FirstOrDefault(c=>c.CardId==removedCardID);
                 if(cardToDelete!=null)
                 {
                     cachedAllCards.Remove(cardToDelete);
-                    _memoryCache.Set(cacheKey, cachedAllCards, cacheExpiryOptions);
+                    _cacheService.Set(collection_cacheKey, cachedAllCards);
                 }
             }
 
@@ -347,14 +293,10 @@ namespace MyCardCollection.Controllers
         }
         public IActionResult GetStatisticsComponent()
         {
-            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
             return ViewComponent("StatisticsCharts", new { _userId = _userId });
         }
-
         public IActionResult GetStatisticsComponent_v2()
         {
-            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
-
             return ViewComponent("StatisticsCharts", new { _userId = _userId });
         }
     }

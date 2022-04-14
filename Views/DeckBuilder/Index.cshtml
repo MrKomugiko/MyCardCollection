@@ -1,15 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject UserManager<IdentityUser> UserManager
 @model IEnumerable<MyCardCollection.Models.CardsCollection>
-@*@{
-    Layout = "~/Views/Shared/_NewLayout.cshtml";
-}*@
-
-
-
-  @*  <div id="chartSection">
-        Wykresy
-    </div>*@
 
             <div class="row"> 
                 <div class="col-3 mx-2">
@@ -42,7 +33,7 @@
                 <div class="col"></div>
                 <div class="col-2">
                     <!--Add - Trigger Modal-->
-                    <button id="btnShow " class="w-100 btn btn-success">
+                    <button id="btnShow" class="w-100 btn btn-success">
                         New
                     </button>
                 </div>
@@ -56,10 +47,6 @@
                     <!-- Remove -->
                     <a class="btn btn-danger w-100" asp-controller="DeckBuilder" asp-action="Clear" type="submit">Remove deck.</a>
                 </div>
-
-            </div>
-     
-
 
             <!-- Modal 'Add deck' -->
             <div class="modal fade" id="demoModal" tabindex="-1">
@@ -84,7 +71,12 @@
                     </div>
                 </div>
            </div>
+
+            </div>
+     
            <br />
+
+
 
     <div class="row">
         <div class="form-inline pull-left col-md-6 col-sm-12">
@@ -192,6 +184,7 @@
     $(function () {
         $("#btnShow").click(function(){
             $('#demoModal').modal('show');
+            console.log("show modal");
         });
         
         $("button.close").click(function(){
@@ -446,7 +439,7 @@
 
             }
         })
-    };
+    }; 
 
     $(document).ready(function () {
             var _url = '@Url.Action("GetStatisticsComponent", "Collection")';
