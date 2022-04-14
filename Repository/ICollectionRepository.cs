@@ -12,5 +12,6 @@ namespace MyCardCollection.Services
         Task<List<CardsCollection>> GetAll_SearchCardsFromCollection(string collectionOwnerId, string? searchQuery = null);
         Task<(List<CardsCollection> cardsOnPage, int totalMatches)> SearchCardsFromCollection(string collectionOwnerId, string? searchQuery=null, int page = 1, int itemsPerPage = 10);
         Task ClearCollectionAsync(string collectionOwnerId);
+        Task<CardData> Get(string set, int number);
     }
 }

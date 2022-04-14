@@ -7,30 +7,27 @@
         <div type="button" class="list-group-item text-center">
             Total value:<b> @ViewBag.sum$</b>
         </div>
+        <br/>
         <div type="button" class="list-group-item list-group-item-action active text-center">
             Top @ViewBag.Count cards:
         </div>
-        
         @{ var dataArr = Model.ToArray(); }
         @for(int i = 0; i<Math.Min(dataArr.Length,6); i++)
         {
             <div class="row">
-                <button type="button" class="col list-group-item list-group-item-action text-center"> 
+                <a type="button" class="col list-group-item list-group-item-action text-center" 
+                    asp-controller="Collection" asp-action="Details" asp-route-set="@dataArr[i].SetCode" asp-route-number="@dataArr[i].CollectionNumber"> 
                     <img class="img-fluid" src="@dataArr[i].ImageURL" alt="img"/>
                    <text class="fw-bold fs-6 ">@dataArr[i].Price_USD $ </text>
-                </button>
+                </a>
                 @{ i++; }
-                <button type="button" class="col list-group-item list-group-item-action text-center"> 
+                <a type="button" class="col list-group-item list-group-item-action text-center"
+                    asp-controller="Collection" asp-action="Details" asp-route-set="@dataArr[i].SetCode" asp-route-number="@dataArr[i].CollectionNumber">
                     <img class="img-fluid" src="@dataArr[i].ImageURL" alt="img"/>
                     <text class="fw-bold fs-6">@dataArr[i].Price_USD $ </text>
-                </button>
+                </a>
             </div>
         }
     </div>
 }   
-
-
-    <script>
-        console.log("card top up");
-    </script>
 

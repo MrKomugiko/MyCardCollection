@@ -1,4 +1,6 @@
-﻿namespace MyCardCollection.Services.Scryfall.Card
+﻿using MyCardCollection.Models;
+
+namespace MyCardCollection.Services.Scryfall.Card
 {
     public class Root
         {

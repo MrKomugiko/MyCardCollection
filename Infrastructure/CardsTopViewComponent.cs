@@ -22,8 +22,8 @@ namespace MyCardCollection.Infrastructure
                 .Where(x => x.UserId == _userId)
                 .Include(x => x.CardData)
                 .OrderByDescending(x => x.CardData.Price_USD)
-                .Select(x => x.CardData);
-
+                .Select(x => x.CardData)
+                .Where(x=>x.Price_USD > 0);
 
             ViewBag.Sum = (float)MyCards.Sum(x => x.Price_USD);
             ViewBag.Count = DisplayedCardsNumber;

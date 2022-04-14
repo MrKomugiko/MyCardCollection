@@ -11,10 +11,7 @@ namespace MyCardCollection.Models
         }
         public CardData(Root CardObject)
         {
-            try
-            {
-
-         
+   
             CardId = CardObject.Id;
                 
             CollectionNumber = int.TryParse(CardObject.collector_number, out int res)?res:-1;
@@ -84,16 +81,11 @@ namespace MyCardCollection.Models
                 Transform_Health = CardObject.card_faces[1].toughness != null ? int.Parse(CardObject.card_faces[1].toughness) : null;
                 Transform_Power = CardObject.card_faces[1].power != null ? int.Parse(CardObject.card_faces[1].power) : null;
                 Mana_Cost = CardObject.card_faces[1].mana_cost;
-                ImageURL = CardObject.card_faces[1].image_uris.normal;
-                Description = CardObject.card_faces[1].oracle_text;
-                FlavorDescription = CardObject.card_faces[1].flavor_text;
+                Transform_ImageURL = CardObject.card_faces[1].image_uris.normal;
+                Transform_Description = CardObject.card_faces[1].oracle_text;
+                Transform_FlavorDescription = CardObject.card_faces[1].flavor_text;
             }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("ex", ex);
-                throw;
-            }
+
             CardDataUpdated = DateTime.UtcNow;
         }
 

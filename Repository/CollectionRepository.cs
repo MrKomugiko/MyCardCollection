@@ -116,7 +116,6 @@ namespace MyCardCollection.Services
         }
         public async Task<List<CardsCollection>> GetAll_SearchCardsFromCollection(string collectionOwnerId, string? searchQuery)
         {
-           
             var cacheKey = collectionOwnerId+"Collection";
             //checks if cache entries exists
             if (!_memoryCache.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
@@ -148,8 +147,13 @@ namespace MyCardCollection.Services
             }
         }
 
-         //-------------------------------------------------------------------
-       
+        public async Task<CardData> Get(string set, int number)
+        {
+             return await context.CardsDatabase.FirstOrDefaultAsync(x=>x.SetCode == set && x.CollectionNumber == number);
+        }
+
+        //-------------------------------------------------------------------
+
 
 
         //[Keyless]

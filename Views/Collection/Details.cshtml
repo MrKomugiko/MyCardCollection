@@ -1,0 +1,320 @@
+﻿@model MyCardCollection.Models.CardData
+
+<div>
+      @{
+        var whiteIMG = "https://images.ctfassets.net/s5n2t79q9icq/7misDwf4mwnXghCh5vkGw6/0debf7ae3f13d0e706b5df8cbdbe2172/plain.svg";
+        var blackIMG= "https://images.ctfassets.net/s5n2t79q9icq/45958FxkGokQAacUNVQ1Bh/a611cf3f197e9a8352fd2fe591097704/swamp.svg";
+        var redIMG= "https://images.ctfassets.net/s5n2t79q9icq/192VSSLFeZSzAKZGOXrHCG/dec6be6eb6a80a40e156ecbf2cd385cf/mountain.svg";
+        var greenIMG= "https://images.ctfassets.net/s5n2t79q9icq/1wrQKxhCNchqYyDOMG9mm3/26e51f7d9e0bc20874b004cd4b93568c/forest.svg";
+        var blueIMG = "https://images.ctfassets.net/s5n2t79q9icq/4HiU35WSbQDiLxLGyGlipf/1c3f9bb830d2f6c4299c30b974d27fc3/water.svg";
+    }
+
+    @if (@Model.HasTransform == true){
+        <div class="row">
+            <div class="col-5">
+                <div class="text-end">
+                    <img src="@Model.ImageURL" class="col-8" />
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col" colspan="2">@Html.DisplayFor(model => model.Name)</th>
+                        </tr>
+                    </thead>
+                    <tbody>   
+                        <tr>
+                            <td>Type</td>
+                            <td>@Html.DisplayFor(model => model.Type)</td>
+                        </tr>
+                        @if (@Model.Health != null)
+                        {
+                            <tr>
+                                <td>Toughness</td>
+                                <td>@Html.DisplayFor(model => model.Health)</td>
+                            </tr>
+                        }
+                        @if (@Model.Power != null)
+                        {
+                            <tr>
+                                <td>Power</td>
+                                <td>@Html.DisplayFor(model => model.Power)</td>
+                            </tr>
+                        }
+                        @if (@Model.Description != null)
+                        {
+                            <tr>
+                                <td>Description</td>
+                                <td>@Html.DisplayFor(model => model.Description)</td>
+                            </tr>
+                        }
+                        @if (@Model.FlavorDescription != null)
+                        {
+                            <tr>
+                                <td>Flavour text</td>
+                                <td>@Html.DisplayFor(model => model.FlavorDescription)</td>
+                            </tr>
+                        }
+                        <tr>
+                            @if (@Model.CMC != null)
+                            {
+                                <tr>
+                                    <td>cmc</td> 
+                                    <td>@Html.DisplayFor(model => model.CMC)</td> 
+                                </tr>
+                            }
+                            @if (@Model.Mana_Cost != null)
+                            {
+                                <tr>
+                                    <td>Mana cost</td>
+                                    <td>   
+                                        @{
+                                            if (@Model.Mana_Cost != null)
+                                            {
+                                                string[] colorArray = @Model.Mana_Cost.Replace("}", "").Split("{");
+                                                foreach (var color in colorArray)
+                                                {
+                                                    switch (color)
+                                                    {
+                                                        case "W":
+                                                            <img src="@whiteIMG" style="height:20px" alt="[W]">
+
+                                                            break;
+                                                        case "R":
+                                                            <img src="@redIMG" style="height:20px" alt="[R]">
+
+                                                            break;
+                                                        case "B":
+                                                            <img src="@blackIMG" style="height:20px" alt="[B]">
+
+                                                            break;
+                                                        case "G":
+                                                            <img src="@greenIMG" style="height:20px" alt="[G]">
+
+                                                            break;
+                                                        case "U":
+                                                            <img src="@blueIMG" style="height:20px" alt="[U]">
+
+                                                            break;
+                                                        default: // numbers
+
+                                                            int result = -1;
+
+                                                            if (Int32.TryParse(color, out result))
+                                                            {
+                                                                <text>[@color] </text>
+                                                            }
+                                                            break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+
+                                <td>#Number</td>
+                                <td>@Html.DisplayFor(model => model.CollectionNumber)</td>
+                            </tr>
+                            <tr>
+                                <td>Set</td>
+                                <td>@Html.DisplayFor(model => model.SetCode)</td>
+                            </tr>
+                            <tr>
+                                <td>Rarity</td>
+                                <td>@Html.DisplayFor(model => model.Rarity)</td>
+                            </tr> 
+                            @if (@Model.Price_USD != null)
+                            {
+                                <tr>
+                                    <td>Price</td>
+                                    <td>@Html.DisplayFor(model => model.Price_USD)$</td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-5">
+                <div class="col">
+                    <div class="text-start">
+                        <img src="@Model.Transform_ImageURL" class="col-8" />
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col" colspan="2"><h3>@Html.DisplayFor(model => model.Transform_Name)</h3></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Type</td>
+                                <td>@Html.DisplayFor(model => model.Transform_Type)</td>
+                            </tr>
+                            @if (@Model.Transform_Health != null)
+                            {
+                                <tr> 
+                                    <td>Toughness</td>
+                                    <td>@Html.DisplayFor(model => model.Transform_Health)</td>
+                                </tr>
+                            }
+                            @if (@Model.Transform_Power != null)
+                            {
+                                <tr>
+                                    <td>Power</td>
+                                    <td>@Html.DisplayFor(model => model.Transform_Power)</td>
+                                </tr>
+                            }
+
+                            @if (@Model.Transform_Description != null)
+                            {
+                                <tr>
+                                    <td>Description</td>
+                                    <td>@Html.DisplayFor(model => model.Transform_Description)</td>
+                                </tr>
+                            }
+                            @if (@Model.Transform_FlavorDescription != null)
+                            {
+                                <tr>
+                                    <td>Flavour text</td>
+                                    <td>@Html.DisplayFor(model => model.Transform_FlavorDescription)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>  
+        </div>
+    }
+    else
+    {
+         <div class="row">
+            <div class="col-5">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col" colspan="2"><h3>@Html.DisplayFor(model => model.Name)</h3</th>
+                        </tr>
+                    </thead>
+                    <tbody>   
+                        <tr>
+                            <td>Type</td>
+                            <td>@Html.DisplayFor(model => model.Type)</td>
+                        </tr>
+                        @if (@Model.Health != null)
+                        {
+                            <tr>
+                                <td>Toughness</td>
+                                <td>@Html.DisplayFor(model => model.Health)</td>
+                            </tr>
+                        }
+                        @if (@Model.Power != null)
+                        {
+                            <tr>
+                                <td>Power</td>
+                                <td>@Html.DisplayFor(model => model.Power)</td>
+                            </tr>
+                        }
+                        @if (@Model.Description != null)
+                        {
+                            <tr>
+                                <td>Description</td>
+                                <td>@Html.DisplayFor(model => model.Description)</td>
+                            </tr>
+                        }
+                        @if (@Model.FlavorDescription != null)
+                        {
+                            <tr>
+                                <td>Flavour text</td>
+                                <td>@Html.DisplayFor(model => model.FlavorDescription)</td>
+                            </tr>
+                        }
+                        <tr>
+                            @if (@Model.CMC != null)
+                            {
+                                <tr>
+                                    <td>cmc</td> 
+                                    <td>@Html.DisplayFor(model => model.CMC)</td> 
+                                </tr>
+                            }
+                            @if (@Model.Mana_Cost != null)
+                            {
+                                <tr>
+                                    <td>Mana cost</td>
+                                    <td>   
+                                        @{
+                                            if (@Model.Mana_Cost != null)
+                                            {
+                                                string[] colorArray = @Model.Mana_Cost.Replace("}", "").Split("{");
+                                                foreach (var color in colorArray)
+                                                {
+                                                    switch (color)
+                                                    {
+                                                        case "W":
+                                                            <img src="@whiteIMG" style="height:20px" alt="[W]">
+
+                                                            break;
+                                                        case "R":
+                                                            <img src="@redIMG" style="height:20px" alt="[R]">
+
+                                                            break;
+                                                        case "B":
+                                                            <img src="@blackIMG" style="height:20px" alt="[B]">
+
+                                                            break;
+                                                        case "G":
+                                                            <img src="@greenIMG" style="height:20px" alt="[G]">
+
+                                                            break;
+                                                        case "U":
+                                                            <img src="@blueIMG" style="height:20px" alt="[U]">
+
+                                                            break;
+                                                        default: // numbers
+
+                                                            int result = -1;
+
+                                                            if (Int32.TryParse(color, out result))
+                                                            {
+                                                                <text>[@color] </text>
+                                                            }
+                                                            break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+
+                                <td>#Number</td>
+                                <td>@Html.DisplayFor(model => model.CollectionNumber)</td>
+                            </tr>
+                            <tr>
+                                <td>Set</td>
+                                <td>@Html.DisplayFor(model => model.SetCode)</td>
+                            </tr>
+                            <tr>
+                                <td>Rarity</td>
+                                <td>@Html.DisplayFor(model => model.Rarity)</td>
+                            </tr> 
+                            @if (@Model.Price_USD != null)
+                            {
+                                <tr>
+                                    <td>Price</td>
+                                    <td>@Html.DisplayFor(model => model.Price_USD)$</td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center col-7">
+                <img src="@Model.ImageURL" class="col-8" />
+            </div>
+        </div>
+    }
+    <a asp-action="Index">Back</a>
+</div>

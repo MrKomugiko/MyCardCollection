@@ -30,16 +30,16 @@ namespace MyCardCollection.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var result = await _collectionService.GetAll_SearchCardsFromCollection(_userId);
+            var cardsInCollection = await _collectionService.GetAll_SearchCardsFromCollection(_userId);
             int? count = HttpContext.Session.GetInt32("count") ?? null;
             if (count == null)
             {
-                count = result.Sum(x => x.Quantity);
+                count = cardsInCollection.Sum(x => x.Quantity);
                 HttpContext.Session.SetInt32("count", (int)count);
             }
 
             ViewBag.Count = count;
-            ViewBag.DistinctCount = result.Count();
+            ViewBag.DistinctCount = cardsInCollection.Count();
 
             return View();
         }
@@ -57,51 +57,59 @@ namespace MyCardCollection.Controllers
         }
         public async Task<IActionResult> Add(string set, int number)
         { 
-            var cardData = _context.CardsDatabase.Where(x => x.SetCode == set && x.CollectionNumber == number).FirstOrDefault();
-            if (cardData == null)
-            {
-                Root _card = await _mtgApi.FindCard(set: set, number: number);
-                cardData = new CardData(_card);
-                _context.CardsDatabase.Add(new CardData(_card));
-            }
-
-            var match = _context.Collection.Where(x => x.UserId == _userId && x.CardId == cardData.CardId).FirstOrDefault();
-
-            if (match == null)
-            {
-                _context.Collection.Add(new CardsCollection(_userId, cardData.CardId, 1));
-            }
-            else
-            {
-                match.Quantity += 1;
-            }
-
-            _context.SaveChanges();
-            //dodanie karty spowoduje zaktualizowanie kart w cache
-
-
-            //checks if cache entries exists
-            if (_cacheService.TryGetValue(collection_cacheKey, out List<CardsCollection> cachedAllCards))
-            {
-                //setting cache entries
-                if(cachedAllCards.Any(c=>c.CardId == cardData.CardId))
+                var cardData = _context.CardsDatabase.Where(x => x.SetCode == set && x.CollectionNumber == number).FirstOrDefault();
+                if (cardData == null)
                 {
-                    cachedAllCards.Where(c => c.CardId == cardData.CardId).First().Quantity += 1;
+                    Root _card = await _mtgApi.FindCard(set: set, number: number);
+
+                    if(_card.Id == null)
+                    {
+                        return Redirect(Request.Headers["Referer"].ToString());
+                    }
+
+                    cardData = new CardData(_card);
+                    _context.CardsDatabase.Add(new CardData(_card));
+                }
+
+                var match = _context.Collection.Where(x => x.UserId == _userId && x.CardId == cardData.CardId).FirstOrDefault();
+
+                if (match == null)
+                {
+                    _context.Collection.Add(new CardsCollection(_userId, cardData.CardId, 1));
                 }
                 else
                 {
-                    var collection = new CardsCollection(_userId, cardData.CardId, 1);
-                        collection.CardData = cardData;
-                    cachedAllCards.Add(collection);
-
+                    match.Quantity += 1;
                 }
-                _cacheService.Set(collection_cacheKey, cachedAllCards);
-            }
 
-            int count = HttpContext.Session.GetInt32("count") ?? 0;
-            HttpContext.Session.SetInt32("count", (int)count+1);
+                _context.SaveChanges();
+                //dodanie karty spowoduje zaktualizowanie kart w cache
+
+
+                //checks if cache entries exists
+                if (_cacheService.TryGetValue(collection_cacheKey, out List<CardsCollection> cachedAllCards))
+                {
+                    //setting cache entries
+                    if(cachedAllCards.Any(c=>c.CardId == cardData.CardId))
+                    {
+                        cachedAllCards.Where(c => c.CardId == cardData.CardId).First().Quantity += 1;
+                    }
+                    else
+                    {
+                        var collection = new CardsCollection(_userId, cardData.CardId, 1);
+                            collection.CardData = cardData;
+                        cachedAllCards.Add(collection);
+
+                    }
+                    _cacheService.Set(collection_cacheKey, cachedAllCards);
+                }
+
+                int count = HttpContext.Session.GetInt32("count") ?? 0;
+                HttpContext.Session.SetInt32("count", (int)count+1);
+
 
             return Redirect(Request.Headers["Referer"].ToString());
+
         }
 
         [HttpPost]
@@ -162,6 +170,12 @@ namespace MyCardCollection.Controllers
                 string[] card = carddata.Trim().Split(" ").Where(x => x != "").ToArray();
                 _card = await _mtgApi.FindCard(set: card[1].ToLower(), number: Int32.Parse(card[2]));
 
+                if (_card.Id == null)
+                {
+                    return Redirect(Request.Headers["Referer"].ToString());
+                    continue;
+
+                }
                 var _cardData = new CardData(_card);
 
                 if (_context.Collection.Any(x => x.CardId == _cardData.CardId && x.UserId == _userId))
@@ -291,10 +305,41 @@ namespace MyCardCollection.Controllers
 
             return ViewComponent("CardsTop", new { userId = id });
         }
+
+        [Route("Cards/{set}/{number}")]
+        public async Task<IActionResult> Details(string set, int number)
+        {
+            CardData _card = null;
+            // sprawdzenie czy karta jest w cache
+            if (_cacheService.TryGetValue(collection_cacheKey, out List<CardsCollection> cachedAllCards))
+            {
+                _card = cachedAllCards.FirstOrDefault(x=>x.CardData.SetCode == set && x.CardData.CollectionNumber == number).CardData;
+                if(_card != null) return View(_card);
+            }
+            else
+            {
+                // sprawdzenie w bazie
+                _card = await _collectionService.Get(set, number);
+                if (_card != null) return View(_card);
+            }
+
+            // pobranie z serwera scryfall
+            Root raw = await _mtgApi.FindCard(set, number);
+            if(raw.Id == null)
+            {
+                return NotFound();
+            }
+
+            _card = new CardData(raw);
+          
+            return View(_card);
+        }
+         
         public IActionResult GetStatisticsComponent()
         {
             return ViewComponent("StatisticsCharts", new { _userId = _userId });
         }
+        
         public IActionResult GetStatisticsComponent_v2()
         {
             return ViewComponent("StatisticsCharts", new { _userId = _userId });

@@ -71,8 +71,7 @@
                     </div>
                 </div>
            </div>
-
-            </div>
+        </div>
      
            <br />
 
@@ -145,329 +144,327 @@
  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 
 
-        @section Scripts{
+@section Scripts{
+    <script>    
+        var UnsavedModifications = {};
+        console.log(UnsavedModifications);
 
-<script>
-       
-     var UnsavedModifications = {};
-    console.log(UnsavedModifications);
-
-    window.onbeforeunload = function(e) {
-        console.log(Object.keys(UnsavedModifications).length+" unsaved items length");
-        if(Object.keys(UnsavedModifications).length>0)
-        {
-            return "Do you want to exit this page?";
-        }
-    };
-    window.onunload = function(e) {
-        console.log("leaving with no saving progress");
-        if(Object.keys(UnsavedModifications).length>0)
-        {
-            $.ajax({
-                url:'@Url.Action("RevertLocalChangesCardsQuantity","DeckBuilder")',
-                method: 'POST',
-                data:{
-                    deckname:'@ViewBag.CurrentDeckName'
-                },
-                success: function(){
-                    console.log("ok");
-                    UnsavedModifications = {};
+        window.onbeforeunload = function(e) {
+            console.log(Object.keys(UnsavedModifications).length+" unsaved items length");
+            if(Object.keys(UnsavedModifications).length>0)
+            {
+                return "Do you want to exit this page?";
+            }
+        };
+        window.onunload = function(e) {
+            console.log("leaving with no saving progress");
+            if(Object.keys(UnsavedModifications).length>0)
+            {
+                $.ajax({
+                    url:'@Url.Action("RevertLocalChangesCardsQuantity","DeckBuilder")',
+                    method: 'POST',
+                    data:{
+                        deckname:'@ViewBag.CurrentDeckName'
                     },
-                error: function(err){
-                        console.log(err);
-                    }
-            })
-            return "reverting progress";
-        }
-    };
+                    success: function(){
+                        console.log("ok");
+                        UnsavedModifications = {};
+                        },
+                    error: function(err){
+                            console.log(err);
+                        }
+                })
+                return "reverting progress";
+            }
+        };
 
-    $(function () {
-        $("#btnShow").click(function(){
-            $('#demoModal').modal('show');
-            console.log("show modal");
-        });
+        $(function () {
+            $("#btnShow").click(function(){
+                $('#demoModal').modal('show');
+                console.log("show modal");
+            });
         
-        $("button.close").click(function(){
-           $('#demoModal').modal('hide');
-        });
-    });
-
-    function listenForImageHover(){
-        $(()=>{
-        var xOff = -488/2;
-        var yOff = 700;
-
-        $(".text-hover-image").hover(function (e) {
-        var pathToImage = e.target.src;
-        $("body").append("<p id='image-when-hovering-text'><img style='z-index:1;' src='" + pathToImage + "' width='488' height='680'/></p>");
-        $("#image-when-hovering-text")
-            .css("position", "absolute")
-            .css("top", (e.pageY - yOff) + "px")
-            .css("left", (e.pageX + xOff) + "px");
-        },
-
-        function () {
-            $("#image-when-hovering-text").remove();
-            });
-
-            $(".text-hover-image").mousemove(function (e) {
-                $("#image-when-hovering-text")
-                    .css("top", (e.pageY - yOff) + "px")
-                    .css("left", (e.pageX + xOff) + "px");
+            $("button.close").click(function(){
+               $('#demoModal').modal('hide');
             });
         });
-    }
 
-        var multigainAttempts = 6;
-        var myCards = [];
-        function GetFirstDraw() {
+        function listenForImageHover(){
+            $(()=>{
+            var xOff = -488/2;
+            var yOff = 700;
 
-            var target = $('#cardsHolder')[0];
-             $.ajax({
-                url:'@Url.Action("GetFirstDrawUrls","DeckBuilder")',
-                datatype:'html',
-                method: 'GET',
-                data: {
-                        deckName:'@ViewBag.CurrentDeckName',
-                    },
-                success: function(items){
-                    target.innerHTML = "";
+            $(".text-hover-image").hover(function (e) {
+            var pathToImage = e.target.src;
+            $("body").append("<p id='image-when-hovering-text'><img style='z-index:1;' src='" + pathToImage + "' width='488' height='680'/></p>");
+            $("#image-when-hovering-text")
+                .css("position", "absolute")
+                .css("top", (e.pageY - yOff) + "px")
+                .css("left", (e.pageX + xOff) + "px");
+            },
 
-                        myCards = items;
-                         console.log("GetFirstDraw");    
-                        var cardsCount = myCards.length;
-                        if(cardsCount >= 7)
-                        {
-                            multigainAttempts = 7;
-                            startingCards = myCards.slice(0,7);
-                            $('#multigainButton').removeClass("disabled")
+            function () {
+                $("#image-when-hovering-text").remove();
+                });
+
+                $(".text-hover-image").mousemove(function (e) {
+                    $("#image-when-hovering-text")
+                        .css("top", (e.pageY - yOff) + "px")
+                        .css("left", (e.pageX + xOff) + "px");
+                });
+            });
+        }
+
+            var multigainAttempts = 6;
+            var myCards = [];
+            function GetFirstDraw() {
+
+                var target = $('#cardsHolder')[0];
+                 $.ajax({
+                    url:'@Url.Action("GetFirstDrawUrls","DeckBuilder")',
+                    datatype:'html',
+                    method: 'GET',
+                    data: {
+                            deckName:'@ViewBag.CurrentDeckName',
+                        },
+                    success: function(items){
+                        target.innerHTML = "";
+
+                            myCards = items;
+                             console.log("GetFirstDraw");    
+                            var cardsCount = myCards.length;
+                            if(cardsCount >= 7)
+                            {
+                                multigainAttempts = 7;
+                                startingCards = myCards.slice(0,7);
+                                $('#multigainButton').removeClass("disabled")
+                            }
+                            else
+                            {
+                                startingCards = myCards.slice(0,cardsCount);
+                                $('#multigainButton').addClass("disabled")
+                            }
+
+                            var template = '<img class=\"col text-hover-image\" style=\"max-width:14.2%\"  src=\"~URL~\" alt=\"img\"/>';
+                            startingCards.forEach(function(card) {
+                                target.insertAdjacentHTML("beforeend", template.replace(/~URL~/g, card.cardData.imageURL));
+                            });
+
+                            listenForImageHover();
+                        },
+                    error: function(err){
+                            console.log(err);
                         }
-                        else
-                        {
-                            startingCards = myCards.slice(0,cardsCount);
-                            $('#multigainButton').addClass("disabled")
-                        }
+                })
 
-                        var template = '<img class=\"col text-hover-image\" style=\"max-width:14.2%\"  src=\"~URL~\" alt=\"img\"/>';
+            }
+
+            function GetMultigain(attemptNumber)  {
+                console.log("GetMultigain");    
+                if(multigainAttempts < 1)
+                {
+                    console.log("nie ma juz prób, zablokuj przycisk");
+                    target.addClass("disabled");
+                    return;
+                }
+
+                var target = $('#multigainButton')[0];
+                multigainAttempts--;
+                target.innerHTML = 'Multigain ( '+(multigainAttempts)+'x ) & Shuffle ';
+
+                $.ajax({
+                    url:'@Url.Action("GetFirstDrawUrls","DeckBuilder")',
+                    datatype:'html',
+                    method: 'GET',
+                    data: {
+                            deckName:'@ViewBag.CurrentDeckName',
+                        },
+                    success: function(items){
+                        target = $("#cardsHolder")[0];
+                        target.innerHTML = ""; // clear
+
+                        myCards = items; // cards refreshed
+
+                        startingCards = myCards.slice(0,multigainAttempts+1);
+                        $('#multigainButton').removeClass("disabled")
+              
+                        var template = "<img class=\"col text-hover-image\" style=\"max-width:14.2%;\" src=\"~URL~\" alt=\"img\"/>";
                         startingCards.forEach(function(card) {
                             target.insertAdjacentHTML("beforeend", template.replace(/~URL~/g, card.cardData.imageURL));
                         });
-
+        
                         listenForImageHover();
                     },
-                error: function(err){
-                        console.log(err);
-                    }
-            })
-
-        }
-
-        function GetMultigain(attemptNumber)  {
-            console.log("GetMultigain");    
-            if(multigainAttempts < 1)
-            {
-                console.log("nie ma juz prób, zablokuj przycisk");
-                target.addClass("disabled");
-                return;
-            }
-
-            var target = $('#multigainButton')[0];
-            multigainAttempts--;
-            target.innerHTML = 'Multigain ( '+(multigainAttempts)+'x ) & Shuffle ';
-
-            $.ajax({
-                url:'@Url.Action("GetFirstDrawUrls","DeckBuilder")',
-                datatype:'html',
-                method: 'GET',
-                data: {
-                        deckName:'@ViewBag.CurrentDeckName',
-                    },
-                success: function(items){
-                    target = $("#cardsHolder")[0];
-                    target.innerHTML = ""; // clear
-
-                    myCards = items; // cards refreshed
-
-                    startingCards = myCards.slice(0,multigainAttempts+1);
-                    $('#multigainButton').removeClass("disabled")
-              
-                    var template = "<img class=\"col text-hover-image\" style=\"max-width:14.2%;\" src=\"~URL~\" alt=\"img\"/>";
-                    startingCards.forEach(function(card) {
-                        target.insertAdjacentHTML("beforeend", template.replace(/~URL~/g, card.cardData.imageURL));
-                    });
-        
-                    listenForImageHover();
-                },
-                error: function(err){
-                        console.log(err);
-                    }
-            })
+                    error: function(err){
+                            console.log(err);
+                        }
+                })
             
-        }
+            }
 
-        function GetDrawOneCardMore() {
-            console.log("GetDrawOneCardMore");    
-        }
+            function GetDrawOneCardMore() {
+                console.log("GetDrawOneCardMore");    
+            }
 
 
-        $(()=>{
-            getCards();
-            getCardsInDeck();
-     
-            $('#textSearch').on('keyup',()=>{
+            $(()=>{
                 getCards();
-            })
-        });
+                getCardsInDeck();
+     
+                $('#textSearch').on('keyup',()=>{
+                    getCards();
+                })
+            });
 
-        function getCards(page=1){
-            $.ajax({
-                url:'@Url.Action("SearchCards","DeckBuilder")',
-                datatype:'html',
-                method: 'GET',
-                data: {
-                    searchText:$('#textSearch').val(),
-                    page: page,
-                    },
-                success: function(res){
-                    $('#cardsGrid').html('').html(res);
-                    },
-                error: function(err){
-                        console.log(err);
-                    }
-            })
-        }
+            function getCards(page=1){
+                $.ajax({
+                    url:'@Url.Action("SearchCards","DeckBuilder")',
+                    datatype:'html',
+                    method: 'GET',
+                    data: {
+                        searchText:$('#textSearch').val(),
+                        page: page,
+                        },
+                    success: function(res){
+                        $('#cardsGrid').html('').html(res);
+                        },
+                    error: function(err){
+                            console.log(err);
+                        }
+                })
+            }
 
-        function getCardsInDeck(page=1){
-            $.ajax({
-                url:'@Url.Action("SearchCardsInDeck","DeckBuilder")',
-                datatype:'html',
-                method: 'GET',
-                data: {
-                    searchText:$('#textSearch').val(),
-                    page: page,
-                    deckName: '@ViewBag.CurrentDeckName'
-                    },
-                success: function(res){
-                    $('#cardsGrid_deck').html('').html(res);
-                    },
-                error: function(err){
-                        console.log(err);
-                    }
-            })
-        }
+            function getCardsInDeck(page=1){
+                $.ajax({
+                    url:'@Url.Action("SearchCardsInDeck","DeckBuilder")',
+                    datatype:'html',
+                    method: 'GET',
+                    data: {
+                        searchText:$('#textSearch').val(),
+                        page: page,
+                        deckName: '@ViewBag.CurrentDeckName'
+                        },
+                    success: function(res){
+                        $('#cardsGrid_deck').html('').html(res);
+                        },
+                    error: function(err){
+                            console.log(err);
+                        }
+                })
+            }
         
-    $("button.SaveDeck").click(function(e){
-        e.preventDefault();
-        console.log("save");
-        if(myCards.length === 0){
-            $.ajax({
-            url:'@Url.Action("GetFirstDrawUrls","DeckBuilder")',
-            datatype:'html',
-            method: 'GET',
-            data: {
-                    deckName:'@ViewBag.CurrentDeckName',
-                },
-                success: function(items){
-                    console.log("cards refreshed");
-                    myCards = items; 
+            $("button.SaveDeck").click(function(e){
+                e.preventDefault();
+                console.log("save");
+                if(myCards.length === 0){
+                    $.ajax({
+                    url:'@Url.Action("GetFirstDrawUrls","DeckBuilder")',
+                    datatype:'html',
+                    method: 'GET',
+                    data: {
+                            deckName:'@ViewBag.CurrentDeckName',
+                        },
+                        success: function(items){
+                            console.log("cards refreshed");
+                            myCards = items; 
 
-                    savedeck();
-                },
-            error: function(err){
-                    console.log(err);
+                            savedeck();
+                        },
+                    error: function(err){
+                            console.log(err);
                     
+                        }
+                    })
                 }
-            })
-        }
-        else
-        {
-            savedeck();
-        }
-    });
-
-      function savedeck()
-    {
-        var array = [];
-        var payload = {
-                deckName: '@ViewBag.CurrentDeckName',
-                cardInfos: []
-            }
-
-        myCards.forEach((x)=>{
-                var item = {
-                    cardId: x.cardId,
-                    quantity: x.quantity
-                }
-                array.push(item);
-            })
-
-        const key = 'cardId';
-        var arrayUniqueByKey = [...new Map(array.map(item =>
-            [item.cardId, item])).values()];
-
-        console.log(arrayUniqueByKey);
-
-        payload.cardInfos = arrayUniqueByKey;
-        payload = JSON.stringify(payload);
-
-        var saveButton = $("button.SaveDeck");
-
-        $.ajax({
-            url:'@Url.Action("SaveDeck","DeckBuilder")',
-            method: 'POST',
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data: payload,
-            success: function(result){
-                console.log("succesfully saved");
-
-                saveButton.removeClass("btn-warning");
-                saveButton.removeClass("btn-danger");
-                saveButton.addClass("btn-success");
-
-                ShowToast('Succesfully saved deck.');
-                UnsavedModifications = {};
-            },
-            error: function(err){
-                console.log(err); 
-
-                saveButton.removeClass("btn-primary");
-                saveButton.removeClass("btn-warning");
-                saveButton.addClass("btn-danger");
-
-                ShowToast(err.responseJSON.errorMessage);
-
-            }
-        })
-    }; 
-
-    $(document).ready(function () {
-            var _url = '@Url.Action("GetStatisticsComponent", "Collection")';
-            $.ajax({
-                type: "GET",
-                url: _url,
-                success: function (result) {
-                    $("#chartSection").html(result);
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    var errorMsg = 'Ajax request failed: ' + xhr.responseText;
-                    $('#chartSection').html(errorMsg);
+                else
+                {
+                    savedeck();
                 }
             });
-        });
 
-    function ShowToast(message){
-        let id = $(this).data("cardid");
-        var options={
-            animation: true,
-            autohide:true
+            function savedeck()
+            {
+                var array = [];
+                var payload = {
+                        deckName: '@ViewBag.CurrentDeckName',
+                        cardInfos: []
+                    }
+
+                myCards.forEach((x)=>{
+                        var item = {
+                            cardId: x.cardId,
+                            quantity: x.quantity
+                        }
+                        array.push(item);
+                    })
+
+                const key = 'cardId';
+                var arrayUniqueByKey = [...new Map(array.map(item =>
+                    [item.cardId, item])).values()];
+
+                console.log(arrayUniqueByKey);
+
+                payload.cardInfos = arrayUniqueByKey;
+                payload = JSON.stringify(payload);
+
+                var saveButton = $("button.SaveDeck");
+
+                $.ajax({
+                    url:'@Url.Action("SaveDeck","DeckBuilder")',
+                    method: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: payload,
+                    success: function(result){
+                        console.log("succesfully saved");
+
+                        saveButton.removeClass("btn-warning");
+                        saveButton.removeClass("btn-danger");
+                        saveButton.addClass("btn-success");
+
+                        ShowToast('Succesfully saved deck.');
+                        UnsavedModifications = {};
+                    },
+                    error: function(err){
+                        console.log(err); 
+
+                        saveButton.removeClass("btn-primary");
+                        saveButton.removeClass("btn-warning");
+                        saveButton.addClass("btn-danger");
+
+                        ShowToast(err.responseJSON.errorMessage);
+
+                    }
+                })
+            }; 
+
+        $(document).ready(function () {
+                var _url = '@Url.Action("GetStatisticsComponent", "Collection")';
+                $.ajax({
+                    type: "GET",
+                    url: _url,
+                    success: function (result) {
+                        $("#chartSection").html(result);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        var errorMsg = 'Ajax request failed: ' + xhr.responseText;
+                        $('#chartSection').html(errorMsg);
+                    }
+                });
+            });
+
+        function ShowToast(message){
+            let id = $(this).data("cardid");
+            var options={
+                animation: true,
+                autohide:true
+            };
+
+            var myAlert = document.getElementById("toastnotice"); // select id of toast
+            var bsAlert = new bootstrap.Toast(myAlert,options); // initializing
+            document.getElementById("cardName").innerHTML = message;
+            //bsAlert.show(); 
+            $(".toast").toast("show");
         };
-
-        var myAlert = document.getElementById("toastnotice"); // select id of toast
-        var bsAlert = new bootstrap.Toast(myAlert,options); // initializing
-        document.getElementById("cardName").innerHTML = message;
-        //bsAlert.show(); 
-        $(".toast").toast("show");
-    };
     </script>
-    }
+}

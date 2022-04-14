@@ -3,11 +3,10 @@
 @inject UserManager<IdentityUser> UserManager
 
         <div class="col-12">
-            <table class="table table-hover table-sm table-striped w-100" style="white-space:nowrap;">
+            <table class="table table-hover table-sm table-striped w-100" style="white-space:nowrap; vertical-align:middle;">
                 <thead>
                     <tr>
-                        <th> Set        </th>
-                        <th> #          </th>
+                        <th></th>
                         <th> Name       </th>
                         <th> Rarity     </th>
                         <th> Type       </th>
@@ -33,8 +32,7 @@
                         <tr>
                             @if (item.CardData.HasTransform == false)
                             {
-                                <td> @Html.DisplayFor(modelItem => item.CardData.SetCode)                           </td>
-                                <th> @Html.DisplayFor(modelItem => item.CardData.CollectionNumber)              </th>
+                                <td><a class="btn btn-secondary" asp-controller="Collection" asp-action="Details" asp-route-set="@item.CardData.SetCode" asp-route-number="@item.CardData.CollectionNumber">info</a></td>
                                 <td> @Html.DisplayFor(modelItem => item.CardData.Name)            </td>
                                 <td> @Html.DisplayFor(modelItem => item.CardData.Rarity)                        </td>
                                 <td> @Html.DisplayFor(modelItem => item.CardData.Type)                     </td>
