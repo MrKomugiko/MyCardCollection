@@ -267,7 +267,8 @@ namespace MyCardCollection.Repository
 
         public async Task ClearDeck(string currentDeck, string userId)
         {
-            _context.DecksCollections.RemoveRange(_context.DecksCollections.Where(x => x.UserId == userId && x.DeckName == currentDeck));
+            _context.DecksCollections.RemoveRange(_context.DecksCollections
+                .Where(x => x.UserId == userId && x.DeckName == currentDeck));
             await _context.SaveChangesAsync();
         }
     }

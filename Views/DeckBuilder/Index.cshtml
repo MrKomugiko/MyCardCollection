@@ -5,91 +5,86 @@
     Layout = "~/Views/Shared/_NewLayout.cshtml";
 }*@
 
-<div class="toast-container">
-    <div class="toast fade show">
-    <!-- Toast -->
 
-    <div id="toastnotice" class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 25px; right: 20px;">
-        <div class="toast-header">
-            <strong style="width:100%" id="toast-title"></strong>
-            <button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-            <div class="toast-body text-center" >
-                <h4 id="cardName">CARD_NAME</h4>
-            </div>
-        </div>
-    </div>
-</div>
 
   @*  <div id="chartSection">
         Wykresy
     </div>*@
 
-    <div class="row">
-        <div class="form-inline col-md-12 col-sm-12">
-            <div class="row">
-                <!--Button to Trigger Modal-->
-                    <button id="btnShow" class="btn btn-primary col m-2">
-                        New
-                    </button>
-                <!-- Modal -->
-                <div class="modal fade" id="demoModal" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" style="align-content:center;" id="myModalLabel"> 
-                                    Add new Deck 
-                                </h4>
-                            </div>
-                            <form method="post" asp-controller="DeckBuilder" asp-action="AddNewDeckName" role="post">
-                                <div class="modal-body">
-                                    <div class="col">
-                                        <input type="text" class="form-control" name="deckTitle" placeholder="Title">
-                                    </div>  
-                                </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default close">Close</button>
-                                        <input type="submit" class="col-2 m-2 btn btn-primary" />
-                                    </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <a class="btn btn-danger col m-2" asp-controller="DeckBuilder" asp-action="Clear" type="submit">Clear current deck.</a>
-                <button class="btn btn-primary col m-2 SaveDeck"  type="submit">Save</button>
-            </div>
-               @* <select asp-items="@ViewBag.MyDecks" class="form-control select col m-2"></select> *@
-               <form method="post" asp-controller="DeckBuilder" asp-action="LoadDeck" role="post">
-                    <div class="row">
-                        <div class="col"></div>
-
-                        <select name="deckName" class="form-control select col m-2" id="deckSelection">
-                        @{
-                        if(@ViewBag.MyDecks != null)
-                        {
-                            foreach(var item in @ViewBag.MyDecks)
-                                {
-                                    if(item.Value == ViewBag.CurrentDeckName)
+            <div class="row"> 
+                <div class="col-3 mx-2">
+                <!-- load -->
+                    <form method="post" asp-controller="DeckBuilder" asp-action="LoadDeck" role="post">
+                        <div class="row">
+                            <select name="deckName" class="form-control select col" id="deckSelection">
+                            @{
+                            if(@ViewBag.MyDecks != null)
+                            {
+                                foreach(var item in @ViewBag.MyDecks)
                                     {
-                                        <option selected val="@item.Value">@item.Text</option>
-                                    }
-                                    else
-                                    {
-                                        <option val="@item.Value">@item.Text</option>
+                                        if(item.Value == ViewBag.CurrentDeckName)
+                                        {
+                                            <option selected val="@item.Value">@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option val="@item.Value">@item.Text</option>
+                                        }
                                     }
                                 }
                             }
-                        }
-                        </select>
+                            </select>
                           
-                        <input type="submit" value="Load" class="col-2 m-2 btn btn-primary" />
-                        <div class="col"></div>
-                    </div>   
-                </form>
-        </div>
-    </div>
+                            <input type="submit" value="Load" class="col-4 btn btn-primary" />
+                        </div>   
+                    </form>
+                </div>
+                <div class="col"></div>
+                <div class="col-2">
+                    <!--Add - Trigger Modal-->
+                    <button id="btnShow " class="w-100 btn btn-success">
+                        New
+                    </button>
+                </div>
+                
+                <div class="col-2">
+                    <!-- Save -->
+                    <button class="btn btn-primary SaveDeck w-100"  type="submit">Save</button>
+                </div>
+                <div class="col"></div>
+                <div class="col-3">
+                    <!-- Remove -->
+                    <a class="btn btn-danger w-100" asp-controller="DeckBuilder" asp-action="Clear" type="submit">Remove deck.</a>
+                </div>
+
+            </div>
+     
+
+
+            <!-- Modal 'Add deck' -->
+            <div class="modal fade" id="demoModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" style="align-content:center;" id="myModalLabel"> 
+                                Add new Deck 
+                            </h4>
+                        </div>
+                        <form method="post" asp-controller="DeckBuilder" asp-action="AddNewDeckName" role="post">
+                            <div class="modal-body">
+                                <div class="col">
+                                    <input type="text" class="form-control" name="deckTitle" placeholder="Title">
+                                </div>  
+                            </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default close">Close</button>
+                                    <input type="submit" class="col-2 m-2 btn btn-primary" />
+                                </div>
+                        </form>
+                    </div>
+                </div>
+           </div>
+           <br />
 
     <div class="row">
         <div class="form-inline pull-left col-md-6 col-sm-12">
@@ -136,7 +131,23 @@
         * Mythics:  @ViewBag.Mythics <br />
     </div>*@
 
+<div class="toast-container">
+  
+    <!-- Toast -->
 
+    <div id="toastnotice" class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 25px; right: 20px;">
+        <div class="toast-header">
+            <strong style="width:100%" id="toast-title"></strong>
+            <button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+            <div class="toast-body text-center" >
+                <h4 id="cardName">CARD_NAME</h4>
+            </div>
+        </div>
+ 
+</div>
 
 
  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
@@ -462,7 +473,8 @@
         var myAlert = document.getElementById("toastnotice"); // select id of toast
         var bsAlert = new bootstrap.Toast(myAlert,options); // initializing
         document.getElementById("cardName").innerHTML = message;
-        bsAlert.show();            
+        //bsAlert.show(); 
+        $(".toast").toast("show");
     };
     </script>
     }

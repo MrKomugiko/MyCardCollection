@@ -10,6 +10,8 @@
                 <th class="col-3">Type</th>
                 <th class="col-2">Rarirty</th>
                 <th class="col-2">&nbsp;</th>
+                <th class="col-2">&nbsp;</th>
+
             </tr>
         </thead>
         <tbody>
@@ -25,8 +27,10 @@
                         <td class="col-4">@item.CardData.Name</td>
                         <td class="col-3" style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">@item.CardData.Type</td>
                         <td class="col-2 text-center">@item.CardData.Rarity</td>
-                        <td class="col-2 text-center"> 
+                        <td class="col-1 text-center"> 
                             <a class="btn btn-success ChangeQuantity" data-id="@item.CardId" data-qtchange="1" data-deckname="@ViewBag.CurrentDeckName">+</a>
+                        </td>
+                        <td class="col-1 text-center">
                             <a class="btn btn-danger ChangeQuantity" data-id="@item.CardId" data-qtchange="-1" data-deckname="@ViewBag.CurrentDeckName">-</a>
                         </td>
                     </tr>

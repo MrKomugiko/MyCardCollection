@@ -103,7 +103,9 @@ namespace MyCardCollection.Controllers
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             // Change current quantity from deck
-            (string cardId, int? updatedQuantity, int? cardLeftInCollection, string response) = _deckRepository.UpdateQuantityFromDeck(_userId, id, deckName, qtChange);
+            (string cardId, int? updatedQuantity, int? cardLeftInCollection, string response) = _deckRepository
+                .UpdateQuantityFromDeck(_userId, id, deckName, qtChange);
+
             if(updatedQuantity.HasValue)
             {
                 return Json (
@@ -133,7 +135,10 @@ namespace MyCardCollection.Controllers
         {
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var deck_cacheKey = _userId + "Deck" + deckname;
+            var all_cacheKey = _userId + "Collection";
+
             _memoryCache.Remove(deck_cacheKey);
+            _memoryCache.Remove(all_cacheKey);
 
             return Json("Succesfully reverted.");
 
@@ -260,15 +265,18 @@ namespace MyCardCollection.Controllers
         public async Task<IActionResult> Clear()
         {
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            string? currentDeck = HttpContext.Session.GetString("CurrentSelectedDeck") ?? null;
-            
+            string? currentDeck = HttpContext.Session.GetString("CurrentSelectedDeck") ?? null;    
 
             if(currentDeck != null && currentDeck != "- not selected -")
             {
                 HttpContext.Session.Remove("CurrentSelectedDeck");
                 await _deckRepository.ClearDeck(currentDeck,_userId);
                 var deck_cacheKey = _userId + "Deck" + currentDeck.Trim();
+                var all_cachekey = _userId + "Collection";
+
                 _memoryCache.Remove(deck_cacheKey);
+                _memoryCache.Remove(all_cachekey);
+
             }
 
             return RedirectToAction("Index");
