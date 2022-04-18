@@ -6,10 +6,10 @@
             <thead>
                 <tr class="d-flex">
                     <th class="col-1">qty.</th>
-                    <th class="col-4">Name</th>
-                    <th class="col-3">Type</th>
-                    <th class="col-2">Rarirty</th>
-                    <th class="col">&nbsp;</th>
+                    <th class="col-6">Name</th>
+                    <th class="col">Type</th>
+                   <!-- <th class="col-2">Rarirty</th>-->
+                    <th class="col-2">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,9 +27,9 @@
                     
                     <tr class="d-flex @status collection" id="@item.CardId">
                         <td class="col-1 text-center quantity">@item.Quantity</td>
-                        <td class="col-4">@item.CardData.Name</td>
-                        <td class="col-3" style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">@item.CardData.Type</td>
-                        <td class="col-2 text-center">@item.CardData.Rarity</td>
+                        <td class="col-6">@item.CardData.Name</td>
+                        <td class="col" style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">@item.CardData.Type</td>
+                       <!-- <td class="col-2 text-center">@item.CardData.Rarity</td> -->
                         <td class="col-2 text-center"> 
                             <a class="btn btn-primary AddToDeck" data-id="@item.CardId">-></a>
                         </td>

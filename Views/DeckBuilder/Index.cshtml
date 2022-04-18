@@ -2,12 +2,41 @@
 @inject UserManager<IdentityUser> UserManager
 @model IEnumerable<MyCardCollection.Models.CardsCollection>
 
-            <div class="row"> 
-                <div class="col-3 mx-2">
-                <!-- load -->
+        <div class="row">
+                  <!--Add - Trigger Modal-->
+                <div class="col-md-2 col-4 text-center">
+                    <button id="btnShow" class="btn btn-success w-100 m-1">
+                        New
+                    </button>
+                </div>         
+                <!-- Modal 'Add deck' -->
+                    <div class="modal fade" id="demoModal" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" style="align-content:center;" id="myModalLabel"> 
+                                        Add new Deck 
+                                    </h4>
+                                </div>
+                                <form method="post" asp-controller="DeckBuilder" asp-action="AddNewDeckName" role="post">
+                                    <div class="modal-body">
+                                        <div class="col">
+                                            <input type="text" class="form-control" name="deckTitle" placeholder="Title">
+                                        </div>  
+                                    </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default close">Close</button>
+                                            <input type="submit" class="col-2 m-2 btn btn-primary" />
+                                        </div>
+                                </form>
+                            </div>
+                        </div>
+                   </div>
+            <!-- load -->
+                <div class="col-md-4 col-8">
                     <form method="post" asp-controller="DeckBuilder" asp-action="LoadDeck" role="post">
-                        <div class="row">
-                            <select name="deckName" class="form-control select col" id="deckSelection">
+                        <div class="row m-1">
+                            <select name="deckName" class="form-control select col w-100" id="deckSelection">
                             @{
                             if(@ViewBag.MyDecks != null)
                             {
@@ -30,49 +59,16 @@
                         </div>   
                     </form>
                 </div>
-                <div class="col"></div>
-                <div class="col-2">
-                    <!--Add - Trigger Modal-->
-                    <button id="btnShow" class="w-100 btn btn-success">
-                        New
-                    </button>
+      
+            <!-- Save -->
+                <div class="col-md-2 col-6 text-center">
+                    <button class="btn btn-primary SaveDeck w-100 m-1"  type="submit">Save</button>
                 </div>
-                
-                <div class="col-2">
-                    <!-- Save -->
-                    <button class="btn btn-primary SaveDeck w-100"  type="submit">Save</button>
+            <!-- Remove -->
+                <div class="col-md-4 col-6" style="text-align:end;">
+                    <a class="btn btn-danger m-1" asp-controller="DeckBuilder" asp-action="Clear" type="submit">Remove deck.</a>
                 </div>
-                <div class="col"></div>
-                <div class="col-3">
-                    <!-- Remove -->
-                    <a class="btn btn-danger w-100" asp-controller="DeckBuilder" asp-action="Clear" type="submit">Remove deck.</a>
-                </div>
-
-            <!-- Modal 'Add deck' -->
-            <div class="modal fade" id="demoModal" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" style="align-content:center;" id="myModalLabel"> 
-                                Add new Deck 
-                            </h4>
-                        </div>
-                        <form method="post" asp-controller="DeckBuilder" asp-action="AddNewDeckName" role="post">
-                            <div class="modal-body">
-                                <div class="col">
-                                    <input type="text" class="form-control" name="deckTitle" placeholder="Title">
-                                </div>  
-                            </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default close">Close</button>
-                                    <input type="submit" class="col-2 m-2 btn btn-primary" />
-                                </div>
-                        </form>
-                    </div>
-                </div>
-           </div>
         </div>
-     
            <br />
 
 
