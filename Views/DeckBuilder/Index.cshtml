@@ -21,7 +21,7 @@
                                 <form method="post" asp-controller="DeckBuilder" asp-action="AddNewDeckName" role="post">
                                     <div class="modal-body">
                                         <div class="col">
-                                            <input type="text" class="form-control" name="deckTitle" placeholder="Title">
+                                            <input type="text" class="form-control" name="deckTitle" placeholder="Title" required pattern="\S(.*\S)?">
                                         </div>  
                                     </div>
                                         <div class="modal-footer">

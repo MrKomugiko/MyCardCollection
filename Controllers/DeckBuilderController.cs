@@ -206,6 +206,11 @@ namespace MyCardCollection.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewDeckName(string deckTitle)
         {
+            if (deckTitle == null)
+            {
+                //
+                return RedirectToAction("Index");
+            }
             ViewBag.CurrentDeckName = deckTitle;
             HttpContext.Session.SetString("CurrentSelectedDeck", deckTitle);
 
