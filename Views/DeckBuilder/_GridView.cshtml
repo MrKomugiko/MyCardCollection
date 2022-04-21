@@ -58,7 +58,7 @@
         e.preventDefault();
         let _cardId = $(this).data("id");
     
-        if("@ViewBag.CurrentDeckName" == '- not selected -')
+        if("@ViewBag.CurrentDeckID" < 0)
         {
             alert("No deck selected. Load or create new deck.");
             return;
