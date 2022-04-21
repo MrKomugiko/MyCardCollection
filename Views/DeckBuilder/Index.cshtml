@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject UserManager<IdentityUser> UserManager
+@inject UserManager<AppUser> UserManager
 @model IEnumerable<MyCardCollection.Models.CardsCollection>
 
         <div class="row">
@@ -21,6 +21,7 @@
                                 <form method="post" asp-controller="DeckBuilder" asp-action="AddNewDeckName" role="post">
                                     <div class="modal-body">
                                         <div class="col">
+                                            <input type="hidden" value="@UserManager.GetUserId(User)" name="owner">
                                             <input type="text" class="form-control" name="deckTitle" placeholder="Title" required pattern="\S(.*\S)?">
                                         </div>  
                                     </div>
@@ -36,19 +37,19 @@
                 <div class="col-md-4 col-8">
                     <form method="post" asp-controller="DeckBuilder" asp-action="LoadDeck" role="post">
                         <div class="row m-1">
-                            <select name="deckName" class="form-control select col w-100" id="deckSelection">
+                            <select name="deckid" class="form-control select col w-100" id="deckSelection">
                             @{
                             if(@ViewBag.MyDecks != null)
                             {
                                 foreach(var item in @ViewBag.MyDecks)
                                     {
-                                        if(item.Value == ViewBag.CurrentDeckName)
+                                        if(item.Text == ViewBag.CurrentDeckName)
                                         {
-                                            <option selected val="@item.Value">@item.Text</option>
+                                            <option selected value="@item.Value">@item.Text</option>
                                         }
                                         else
                                         {
-                                            <option val="@item.Value">@item.Text</option>
+                                            <option value="@item.Value">@item.Text</option>
                                         }
                                     }
                                 }
@@ -216,12 +217,13 @@
             function GetFirstDraw() {
 
                 var target = $('#cardsHolder')[0];
+                deckid = $("#deckSelection option:selected").val();
                  $.ajax({
                     url:'@Url.Action("GetFirstDrawUrls","DeckBuilder")',
                     datatype:'html',
                     method: 'GET',
                     data: {
-                            deckName:'@ViewBag.CurrentDeckName',
+                            deckid:deckid,
                         },
                     success: function(items){
                         target.innerHTML = "";
@@ -267,13 +269,13 @@
                 var target = $('#multigainButton')[0];
                 multigainAttempts--;
                 target.innerHTML = 'Multigain ( '+(multigainAttempts)+'x ) & Shuffle ';
-
+                deckid = $("#deckSelection option:selected").val();
                 $.ajax({
                     url:'@Url.Action("GetFirstDrawUrls","DeckBuilder")',
                     datatype:'html',
                     method: 'GET',
                     data: {
-                            deckName:'@ViewBag.CurrentDeckName',
+                            deckid:deckid,
                         },
                     success: function(items){
                         target = $("#cardsHolder")[0];
@@ -338,7 +340,7 @@
                     data: {
                         searchText:$('#textSearch').val(),
                         page: page,
-                        deckName: '@ViewBag.CurrentDeckName'
+                        deckid: $("#deckSelection option:selected").val(),
                         },
                     success: function(res){
                         $('#cardsGrid_deck').html('').html(res);
@@ -352,19 +354,21 @@
             $("button.SaveDeck").click(function(e){
                 e.preventDefault();
                 console.log("save");
+                deckid = $("#deckSelection option:selected").val();
+                console.log("deck ID = "+deckid);
                 if(myCards.length === 0){
                     $.ajax({
                     url:'@Url.Action("GetFirstDrawUrls","DeckBuilder")',
                     datatype:'html',
                     method: 'GET',
                     data: {
-                            deckName:'@ViewBag.CurrentDeckName',
+                            deckid:deckid,
                         },
                         success: function(items){
                             console.log("cards refreshed");
                             myCards = items; 
 
-                            savedeck();
+                            savedeck(deckid);
                         },
                     error: function(err){
                             console.log(err);
@@ -374,16 +378,17 @@
                 }
                 else
                 {
-                    savedeck();
+                    savedeck(deckid);
                 }
             });
 
-            function savedeck()
+            function savedeck(deckid)
             {
                 var array = [];
                 var payload = {
                         deckName: '@ViewBag.CurrentDeckName',
-                        cardInfos: []
+                        cardInfos: [],
+                        deckId: deckid
                     }
 
                 myCards.forEach((x)=>{

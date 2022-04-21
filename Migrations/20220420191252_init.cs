@@ -189,6 +189,30 @@ namespace MyCardCollection.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Decks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    CardsNumber = table.Column<int>(type: "integer", nullable: false),
+                    TotalValue = table.Column<int>(type: "integer", nullable: false),
+                    IsValid = table.Column<bool>(type: "boolean", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    AppUserId = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Decks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Decks_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Collection",
                 columns: table => new
                 {
@@ -203,6 +227,34 @@ namespace MyCardCollection.Migrations
                     table.PrimaryKey("PK_Collection", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Collection_CardsDatabase_CardId",
+                        column: x => x.CardId,
+                        principalTable: "CardsDatabase",
+                        principalColumn: "CardId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DecksCollections",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    DeckName = table.Column<string>(type: "text", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    CardId = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DecksCollections", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DecksCollections_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DecksCollections_CardsDatabase_CardId",
                         column: x => x.CardId,
                         principalTable: "CardsDatabase",
                         principalColumn: "CardId",
@@ -250,6 +302,21 @@ namespace MyCardCollection.Migrations
                 name: "IX_Collection_CardId",
                 table: "Collection",
                 column: "CardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Decks_AppUserId",
+                table: "Decks",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DecksCollections_CardId",
+                table: "DecksCollections",
+                column: "CardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DecksCollections_UserId",
+                table: "DecksCollections",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -271,6 +338,12 @@ namespace MyCardCollection.Migrations
 
             migrationBuilder.DropTable(
                 name: "Collection");
+
+            migrationBuilder.DropTable(
+                name: "Decks");
+
+            migrationBuilder.DropTable(
+                name: "DecksCollections");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -7,28 +7,38 @@ namespace MyCardCollection.Models
 {
     public class DecksCollection
     {
-        public DecksCollection(string userId, string cardId, int quantity, string deckName)
+
+        public DecksCollection(string userId, string cardId, int quantity, int deckID)
         {
             this.UserId = userId;
             this.CardId = cardId;
             this.Quantity = quantity;
-            this.DeckName = deckName;
+            this.DeckId = deckID;
         }
-        public DecksCollection(string userId, string deckName)
+        public DecksCollection(string userId, int deckID)
         {
             this.UserId = userId;
             this.CardId = "";
             this.Quantity = 0;
-            this.DeckName = deckName;
+            this.DeckId = deckID;
+        }
+
+        public DecksCollection()
+        {
         }
 
         [Key] public int Id { get; set; }
-        [Required] public string UserId { get; set; }
-        [Required] public string DeckName { get; set; }
-        [Required] public string CardId { get; set; }
+
+        [Required] public string? UserId { get; set; }
+        [ForeignKey("UserId")] public AppUser? AppUser { get; set; }
+
+        [Required] public int DeckId { get; set; }
+        [ForeignKey("DeckId")] public Deck? Deck { get; set; }
+
         [Required] public int Quantity { get; set; }
 
-        [ForeignKey("CardId")] public virtual CardData CardData { get; set; }
+        [Required] public string CardId { get; set; }
+        [ForeignKey("CardId")] public CardData? CardData { get; set; }
 
     }
 }
