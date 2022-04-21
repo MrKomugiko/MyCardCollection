@@ -24,10 +24,10 @@ namespace MyCardCollection.Repository
         }
 
         // Manipulate data in memory, dont change database ~ UI purpose
-        public async Task AddCardToDeckAsync(string collectionOwnerId, string cardId, string deckName)
+        public async Task AddCardToDeckAsync(string collectionOwnerId, string cardId, int deckId)
         {
             List<CardsCollection> cardsInDeck = new();
-            var deck_cacheKey = collectionOwnerId + "Deck" + deckName;
+            var deck_cacheKey = collectionOwnerId + "Deck" + deckId;
             var all_cacheKey = collectionOwnerId + "Collection";
 
             var allCards = _memoryCache.Get<List<CardsCollection>>(all_cacheKey);
@@ -36,7 +36,7 @@ namespace MyCardCollection.Repository
 
             if (!_memoryCache.TryGetValue(deck_cacheKey, out List<CardsCollection> cachedCurrentDeck))
             {
-                cardsInDeck = await GetDeckDataFromDatabase(collectionOwnerId, deckName);
+                cardsInDeck = await GetDeckDataFromDatabase(collectionOwnerId, deckId);
             }
             else
             {
@@ -55,7 +55,7 @@ namespace MyCardCollection.Repository
       
         }
        
-        public async Task<(List<CardsCollection> cardsOnPage, int totalMatches)> SearchCardsFromDeck(string collectionOwnerId, string? searchQuery, int page = 1, int itemsPerPage = 10, string? deckName = null)
+        public async Task<(List<CardsCollection> cardsOnPage, int totalMatches)> SearchCardsFromDeck(string collectionOwnerId, string? searchQuery, int page = 1, int itemsPerPage = 10, int? deckId = null)
         {
             List<CardsCollection> allCardsInDeck = new();
             List<CardsCollection> cardsInDeck = new();
@@ -63,10 +63,10 @@ namespace MyCardCollection.Repository
             int pageSize = itemsPerPage;
             searchQuery = searchQuery?.ToLower();
 
-            if (deckName == null)
-                allCardsInDeck = await GetAll_SearchCardsFromDeck(collectionOwnerId, searchQuery, deckName);
+            if (deckId == null)
+                allCardsInDeck = await GetAll_SearchCardsFromDeck(collectionOwnerId, searchQuery, deckId);
             else
-                allCardsInDeck = await GetAll_SearchCardsFromDeck(collectionOwnerId, searchQuery, deckName);
+                allCardsInDeck = await GetAll_SearchCardsFromDeck(collectionOwnerId, searchQuery, deckId);
 
             int totalMatches = allCardsInDeck.Count;
             cardsInDeck = allCardsInDeck
@@ -75,45 +75,21 @@ namespace MyCardCollection.Repository
             return (cardsInDeck, totalMatches);
         }
         // jezeli deck = null to znaczy ze pracuje sie na tymczasowym deckiem nie zapisalo sie go jeszcze 
-        public async Task<List<CardsCollection>> GetAll_SearchCardsFromDeck(string collectionOwnerId, string? searchQuery, string? deckName = null)
+        public async Task<List<CardsCollection>> GetAll_SearchCardsFromDeck(string collectionOwnerId, string? searchQuery, int? deckId)
         {
             List<CardsCollection> cardInDeck = new();
 
-
-            //if (deckName == null)
-            //{
-            //    var deck_cacheKey = collectionOwnerId + "Deck"+deckName;
-
-            //    if (!_memoryCache.TryGetValue(deck_cacheKey, out List<CardsCollection> cachedAllCardsFromDeck))
-            //    {
-            //        cachedAllCardsFromDeck = new List<CardsCollection>();
-
-            //        var cacheExpiryOptions = new MemoryCacheEntryOptions
-            //        {
-            //            AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
-            //            Priority = CacheItemPriority.High,
-            //            SlidingExpiration = TimeSpan.FromSeconds(3600)
-            //        };
-
-            //        _memoryCache.Set(deck_cacheKey, cachedAllCardsFromDeck, cacheExpiryOptions);
-            //    }
-
-            //    cardInDeck = cachedAllCardsFromDeck;
-            //}
-            //else
-            //{
-                var deck_cacheKey = collectionOwnerId + "Deck" + deckName.Trim();
+                var deck_cacheKey = collectionOwnerId + "Deck" + deckId;
 
                 if (!_memoryCache.TryGetValue(deck_cacheKey, out List<CardsCollection> cachedAllCardsFromDeck))
                 {
-                    cachedAllCardsFromDeck = await GetDeckDataFromDatabase(collectionOwnerId, deckName);
+                    cachedAllCardsFromDeck = await GetDeckDataFromDatabase(collectionOwnerId, deckId);
 
                     _memoryCache.Set(deck_cacheKey, cachedAllCardsFromDeck, cacheExpiryOptions);
                 }
 
                 cardInDeck = cachedAllCardsFromDeck;
-            //}
-
+          
             searchQuery = searchQuery == null ? null : searchQuery.ToLower();
 
             if (searchQuery == null)
@@ -129,11 +105,11 @@ namespace MyCardCollection.Repository
                     .ToList();
             }
         }
-        public async Task<List<CardsCollection>> GetDeckDataFromDatabase(string collectionOwnerId, string? deckName)
+        public async Task<List<CardsCollection>> GetDeckDataFromDatabase(string collectionOwnerId, int? deckId)
         {
             List<CardsCollection> cachedAllCardsFromDeck = new();
             await _context.DecksCollections
-                .Where(x => x.UserId == collectionOwnerId && x.DeckName == deckName)
+                .Where(x => x.UserId == collectionOwnerId && x.DeckId == deckId)
                 .Include(x => x.CardData)
                 .ForEachAsync(x =>
                 {
@@ -144,14 +120,13 @@ namespace MyCardCollection.Repository
 
             return cachedAllCardsFromDeck;
         }
-        
-        public (string cardId, int? updatedQuantity, int? cardLeftInCollection, string response) UpdateQuantityFromDeck(string userId, string id, string deckName, int qtChange)
+        public (string cardId, int? updatedQuantity, int? cardLeftInCollection, string response) UpdateQuantityFromDeck(string userId, string id, int deckId, int qtChange)
         {
             // get card by id from deck
 
             var all_cacheKey = userId + "Collection";
 
-            var deck_cacheKey = userId + "Deck" + deckName.Trim();
+            var deck_cacheKey = userId + "Deck" + deckId;
             
 
             List<CardsCollection> memoryCollection = null;
@@ -207,27 +182,40 @@ namespace MyCardCollection.Repository
             return (cardFromDeck.CardId, cardFromDeck.Quantity, cardFromCollection.Quantity, "Ok");
 
         }
-        public async Task Update(DeckModel deck, string _userId)
+        
+        public async Task<bool> CreateNewDeck(string decktitle, string _userId)
+        {
+            Deck deck = new Deck(name:decktitle, owner:_userId);
+
+            await _context.Decks.AddAsync(deck);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> Update(DeckModel deck, string _userId)
         {
             var currentDeckData = _context.DecksCollections
-                .Where(x => x.UserId == _userId && x.DeckName == deck.deckName);
+                .Where(x => x.UserId == _userId && x.DeckId == deck.deckId);
 
             List<DecksCollection> updatedDeckData = deck.cardInfos
-                .Select(card => new DecksCollection(_userId, card.cardId, card.quantity, deck.deckName))
+                .Select(card => new DecksCollection(_userId, card.cardId, card.quantity, deck.deckId))
                     .ToList();
 
             _context.RemoveRange(currentDeckData);
             await _context.AddRangeAsync(updatedDeckData);
             await _context.SaveChangesAsync();
+            return true;
         }
-        public async Task<string[]> GetDeckNames(string userId) =>
-           await _context.DecksCollections
-                .Where(x => x.UserId == userId)
-                .Select(x => x.DeckName)
-                .Distinct()
-                .ToArrayAsync();
-
-        // Trying to add card into collection, adding or changing quantity if possible
+        public async Task<Dictionary<int,string>> GetDeckNames(string userId)
+        {
+            var result = _context.Decks
+                .Where(x => x.AppUserId == userId)
+                .ToList();
+                
+            return result.Distinct()
+                .ToDictionary(x => x.Id, x => x.Name); ;
+        }
         private bool TryAddCardToStack(List<CardsCollection> _cardStack, CardsCollection _card)
         {
             var existingCopyInDeck = _cardStack.SingleOrDefault(x => x.CardId == _card.CardId);
@@ -252,11 +240,10 @@ namespace MyCardCollection.Repository
 
             return true;
         }
-
-        public async Task ClearDeck(string currentDeck, string userId)
+        public async Task ClearDeck(int deckId, string userId)
         {
             _context.DecksCollections.RemoveRange(_context.DecksCollections
-                .Where(x => x.UserId == userId && x.DeckName == currentDeck));
+                .Where(x => x.UserId == userId && x.DeckId == deckId));
             await _context.SaveChangesAsync();
         }
     }

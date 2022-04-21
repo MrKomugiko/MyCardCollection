@@ -76,8 +76,8 @@ namespace MyCardCollection.Services
             context.RemoveRange(userDecks.Where(x => deletedCards.Any(c => c.CardId == x.CardId)));           
 
             context.Collection.RemoveRange(deletedCards);
-            var cacheKeyDeck = collectionOwnerId + "Deck";
-            foreach(var deckName in userDecks.Select(x=>x.DeckName).Distinct())
+
+            foreach(var deckName in userDecks.Include(x=>x.Deck).Select(x=>x.Deck.Name).Distinct())
             {
                 var selected_deck_cacheKey = collectionOwnerId + "Deck" + deckName;
 

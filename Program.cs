@@ -1,13 +1,17 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyCardCollection.Data;
+using MyCardCollection.Models;
 using MyCardCollection.Repository;
 using MyCardCollection.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+//string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+string connectionString = "Server=ec2-34-242-8-97.eu-west-1.compute.amazonaws.com;Database=dasg5jolv2emtp;Port = 5432;User Id = corbvtcgpygbfd;Password = cbaffbb9d2feb5bc8edd943570c9cf200fc77e64f669dfa251cea7536c8db1cf;";
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -15,7 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddMemoryCache();

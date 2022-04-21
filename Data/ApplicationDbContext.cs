@@ -4,7 +4,7 @@ using MyCardCollection.Models;
 
 namespace MyCardCollection.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<AppUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -19,5 +19,7 @@ namespace MyCardCollection.Data
         public DbSet<CardData> CardsDatabase { get; set; }
         public DbSet<CardsCollection> Collection { get; set; }
         public DbSet<DecksCollection> DecksCollections { get; set; }
+        public DbSet<Deck> Decks { get; set; }
+
     }
 }

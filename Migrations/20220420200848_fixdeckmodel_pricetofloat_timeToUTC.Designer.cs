@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyCardCollection.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyCardCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220420200848_fixdeckmodel_pricetofloat_timeToUTC")]
+    partial class fixdeckmodel_pricetofloat_timeToUTC
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -376,8 +378,9 @@ namespace MyCardCollection.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("DeckId")
-                        .HasColumnType("integer");
+                    b.Property<string>("DeckName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
@@ -389,8 +392,6 @@ namespace MyCardCollection.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CardId");
-
-                    b.HasIndex("DeckId");
 
                     b.HasIndex("UserId");
 
@@ -476,12 +477,6 @@ namespace MyCardCollection.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyCardCollection.Models.Deck", "Deck")
-                        .WithMany()
-                        .HasForeignKey("DeckId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("MyCardCollection.Models.AppUser", "AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -491,8 +486,6 @@ namespace MyCardCollection.Migrations
                     b.Navigation("AppUser");
 
                     b.Navigation("CardData");
-
-                    b.Navigation("Deck");
                 });
 
             modelBuilder.Entity("MyCardCollection.Models.AppUser", b =>

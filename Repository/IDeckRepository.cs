@@ -6,13 +6,14 @@ namespace MyCardCollection.Repository
 {
     public interface IDeckRepository
     {
-        Task Update(DeckModel deck, string userId);
-        Task<string[]> GetDeckNames(string userId);
-        (string cardId, int? updatedQuantity, int? cardLeftInCollection, string response) UpdateQuantityFromDeck(string userId, string id, string? deckName, int qtChange);
-        Task<List<CardsCollection>> GetAll_SearchCardsFromDeck(string collectionOwnerId, string? searchQuery, string? deckName = null);
-        Task<(List<CardsCollection> cardsOnPage, int totalMatches)> SearchCardsFromDeck(string collectionOwnerId, string? searchQuery, int page = 1, int itemsPerPage = 10, string? deckName = null);
-        Task AddCardToDeckAsync(string collectionOwnerId, string cardId, string deckName);
-        Task ClearDeck(string currentDeck, string userId);
-        Task<List<CardsCollection>> GetDeckDataFromDatabase(string collectionOwnerId, string? deckName);
+        Task<Dictionary<int,string>> GetDeckNames(string userId);
+        (string cardId, int? updatedQuantity, int? cardLeftInCollection, string response) UpdateQuantityFromDeck(string userId, string id, int deckId, int qtChange);
+        Task<List<CardsCollection>> GetAll_SearchCardsFromDeck(string collectionOwnerId, string? searchQuery, int? deckId = null);
+        Task<(List<CardsCollection> cardsOnPage, int totalMatches)> SearchCardsFromDeck(string collectionOwnerId, string? searchQuery, int page = 1, int itemsPerPage = 10, int? deckId = null);
+        Task AddCardToDeckAsync(string collectionOwnerId, string cardId, int deckId);
+        Task ClearDeck(int deckId, string userId);
+        Task<List<CardsCollection>> GetDeckDataFromDatabase(string collectionOwnerId, int? deckId);
+        Task<bool> CreateNewDeck(string decktitle, string _userId);
+        Task<bool> Update(DeckModel deck, string userId);
     }
 }

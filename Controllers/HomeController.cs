@@ -9,12 +9,10 @@ namespace MyCardCollection.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IScryfallService _scryfall;
 
-        public HomeController(ILogger<HomeController> logger, IScryfallService scryfall = null)
+        public HomeController(IScryfallService scryfall)
         {
-            _logger = logger;
             _scryfall = scryfall;
         }
 

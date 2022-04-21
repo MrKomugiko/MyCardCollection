@@ -4,6 +4,7 @@
         {
             public string userId {get;set;}
             public string deckName {get;set;}
+            public int deckId {get;set;}
             public CardInfo[] cardInfos { get; set; }
 
             public class CardInfo

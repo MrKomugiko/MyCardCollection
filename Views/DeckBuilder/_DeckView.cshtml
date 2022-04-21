@@ -28,8 +28,8 @@
                         <td class="col-3" style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">@item.CardData.Type</td>
                        <!-- <td class="col-2 text-center">@item.CardData.Rarity</td> -->
                         <td class="col text-center"> 
-                            <a class="btn btn-success ChangeQuantity" data-id="@item.CardId" data-qtchange="1" data-deckname="@ViewBag.CurrentDeckName">+</a>
-                            <a class="btn btn-danger ChangeQuantity" data-id="@item.CardId" data-qtchange="-1" data-deckname="@ViewBag.CurrentDeckName">-</a>
+                            <a class="btn btn-success ChangeQuantity" data-id="@item.CardId" data-qtchange="1" data-deckid="@ViewBag.CurrentDeckID">+</a>
+                            <a class="btn btn-danger ChangeQuantity" data-id="@item.CardId" data-qtchange="-1" data-deckid="@ViewBag.CurrentDeckID">-</a>
                         </td>
                     </tr>
             }
@@ -50,9 +50,11 @@
 
     <script>
         $("a.ChangeQuantity").click(function(e){
+            console.log("click");
         e.preventDefault();
         let _cardId = $(this).data("id");
-        let _deckName = $(this).data("deckname");
+        let _deckId = $(this).data("deckid");
+        console.log(_deckId);
         let _qtChange = $(this).data("qtchange");
 
         if (_cardId in UnsavedModifications) {
@@ -64,15 +66,13 @@
             UnsavedModifications[_cardId]=_qtChange;
         }
 
-        console.log(UnsavedModifications);
-
         $.ajax({
             url:'@Url.Action("ChangeQuantity","DeckBuilder")',
             method: 'POST',
             data: {
                 id: _cardId,
                 qtChange: _qtChange,
-                deckName: _deckName,
+                deckId: _deckId
             },
             success: function(res) {               
                 if(res.result !== undefined) {
