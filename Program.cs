@@ -8,8 +8,7 @@ using MyCardCollection.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-string connectionString = "Server=ec2-34-242-8-97.eu-west-1.compute.amazonaws.com;Database=dasg5jolv2emtp;Port = 5432;User Id = corbvtcgpygbfd;Password = cbaffbb9d2feb5bc8edd943570c9cf200fc77e64f669dfa251cea7536c8db1cf;";
+string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
