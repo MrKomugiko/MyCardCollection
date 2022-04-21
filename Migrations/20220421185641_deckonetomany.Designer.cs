@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyCardCollection.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyCardCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220421185641_deckonetomany")]
+    partial class deckonetomany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,9 +253,6 @@ namespace MyCardCollection.Migrations
                     b.Property<string>("ImageURL")
                         .HasColumnType("text");
 
-                    b.Property<string>("ImageURLCropped")
-                        .HasColumnType("text");
-
                     b.Property<string>("Mana_Cost")
                         .HasColumnType("text");
 
@@ -287,9 +286,6 @@ namespace MyCardCollection.Migrations
                     b.Property<string>("Transform_ImageURL")
                         .HasColumnType("text");
 
-                    b.Property<string>("Transform_ImageURLCropped")
-                        .HasColumnType("text");
-
                     b.Property<string>("Transform_Name")
                         .HasColumnType("text");
 
@@ -319,6 +315,9 @@ namespace MyCardCollection.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("DeckId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
@@ -329,6 +328,8 @@ namespace MyCardCollection.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CardId");
+
+                    b.HasIndex("DeckId");
 
                     b.ToTable("Collection");
                 });
@@ -462,6 +463,10 @@ namespace MyCardCollection.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MyCardCollection.Models.Deck", null)
+                        .WithMany("CardsContent")
+                        .HasForeignKey("DeckId");
+
                     b.Navigation("CardData");
                 });
 
@@ -483,7 +488,7 @@ namespace MyCardCollection.Migrations
                         .IsRequired();
 
                     b.HasOne("MyCardCollection.Models.Deck", "Deck")
-                        .WithMany("Content")
+                        .WithMany()
                         .HasForeignKey("DeckId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -508,7 +513,7 @@ namespace MyCardCollection.Migrations
 
             modelBuilder.Entity("MyCardCollection.Models.Deck", b =>
                 {
-                    b.Navigation("Content");
+                    b.Navigation("CardsContent");
                 });
 #pragma warning restore 612, 618
         }

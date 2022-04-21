@@ -1,3 +1,37 @@
-﻿
-<h1> Your decks list</h1>
-<h3> - and statistics -</h3>
+﻿@model IEnumerable<MyCardCollection.Models.Deck>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
+@{
+    if(Model != null)
+    {
+        foreach(var deck in Model)
+        {
+        <div class="col mb-4">
+            <div class="card">
+                <div class="col mb-4">
+                    <div class="card">
+                        @if(deck.Content.Count > 0)
+                        {
+                            <img src="@deck.Content.First().CardData.ImageURLCropped" class="card-img-top" alt="...">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@deck.Name</h5>
+                                @deck.IsValid
+                                @deck.CardsNumber
+                                @deck.TotalValue
+                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        </div>
+                        <div class="card-footer text-end"> @deck.Updated </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+            }
+        }
+        else
+        {
+            <h1>You dont have decks in your colelction.</h1>
+            <a asp-controller="DeckBuilder" asp-action="Index">create your first deck here...</a>
+        }
+    }
+</div>

@@ -15,5 +15,8 @@ namespace MyCardCollection.Repository
         Task<List<CardsCollection>> GetDeckDataFromDatabase(string collectionOwnerId, int? deckId);
         Task<bool> CreateNewDeck(string decktitle, string _userId);
         Task<bool> Update(DeckModel deck, string userId);
+        Task<List<Deck>> GetUserDecksWithoutContent(string userId);
+        Task<List<Deck>> GetUserDecks(string userId);
+
     }
 }
