@@ -30,10 +30,7 @@
             <div class="col-md-2 col-12" >
                                 <!-- Top value cards section -->
                 <div class="TopCards">
-                    @if(ViewBag.Count > 6 )
-                    {
                         @await Component.InvokeAsync("CardsTop", new {_userId = UserManager.GetUserId(User)})
-                    }
                 </div>
       
                 <!-- Add section -->

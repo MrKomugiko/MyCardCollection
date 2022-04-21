@@ -219,6 +219,7 @@ namespace MyCardCollection.Controllers
         public IActionResult Increase(string cardid)
         {
             var _card = _context.Collection.Where(x => x.CardId == cardid && x.UserId == _userId).First();
+            _card.Quantity++;
             var updatedCardID = _card.CardId;
             _context.SaveChanges();
 
@@ -233,6 +234,8 @@ namespace MyCardCollection.Controllers
                     _cacheService.Set(collection_cacheKey, cachedAllCards);
                 }
             }
+            int count = HttpContext.Session.GetInt32("count") ?? 0;
+            HttpContext.Session.SetInt32("count",count+1);
             return Redirect(Request.Headers["Referer"].ToString());
         }
         public IActionResult Decrease(string cardid)
@@ -267,20 +270,23 @@ namespace MyCardCollection.Controllers
                   _cacheService.Set(collection_cacheKey, cachedAllCards);
                 }
             }
-
+            int count = HttpContext.Session.GetInt32("count") ?? 0;
+            HttpContext.Session.SetInt32("count", count-1);
             return Redirect(Request.Headers["Referer"].ToString());
         }
         public IActionResult Remove(string cardid)
         {
+            int count = HttpContext.Session.GetInt32("count") ?? 0;
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             var _card = _context.Collection.Where(x => x.CardId == cardid && x.UserId == _userId).First();
             var removedCardID = _card.CardId;
 
             if (_card.Quantity >= 0)
             {
+                count -= _card.Quantity;
                 _context.Collection.Remove(_card);
             }
+
             _context.SaveChanges();
 
             //update cache
@@ -295,6 +301,7 @@ namespace MyCardCollection.Controllers
                 }
             }
 
+            HttpContext.Session.SetInt32("count", count);
             return Redirect(Request.Headers["Referer"].ToString());
         }
         public IActionResult GetTopCards(string id)

@@ -8,7 +8,7 @@ namespace MyCardCollection.Services
 {
     public class CollectionRepository : ICollectionRepository
     {
-        private readonly ApplicationDbContext context;
+        private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _memoryCache;
         private MemoryCacheEntryOptions cacheExpiryOptions = new MemoryCacheEntryOptions
         {
@@ -19,7 +19,7 @@ namespace MyCardCollection.Services
 
         public CollectionRepository(ApplicationDbContext context, IMemoryCache memoryCache)
         {
-            this.context = context;
+            this._context = context;
             _memoryCache = memoryCache;
         }
 
@@ -70,12 +70,12 @@ namespace MyCardCollection.Services
 
         public async Task ClearCollectionAsync(string collectionOwnerId)
         {
-            var deletedCards = context.Collection.Where(x => x.UserId == collectionOwnerId);
-            var userDecks = context.DecksCollections.Where(x => x.UserId == collectionOwnerId);
+            var deletedCards = _context.Collection.Where(x => x.UserId == collectionOwnerId);
+            var userDecks = _context.DecksCollections.Where(x => x.UserId == collectionOwnerId);
 
-            context.RemoveRange(userDecks.Where(x => deletedCards.Any(c => c.CardId == x.CardId)));           
+            _context.RemoveRange(userDecks.Where(x => deletedCards.Any(c => c.CardId == x.CardId)));           
 
-            context.Collection.RemoveRange(deletedCards);
+            _context.Collection.RemoveRange(deletedCards);
 
             foreach(var deckName in userDecks.Include(x=>x.Deck).Select(x=>x.Deck.Name).Distinct())
             {
@@ -94,7 +94,7 @@ namespace MyCardCollection.Services
                 _memoryCache.Remove(cacheKey);
             }
 
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
         // -------------------------------------------------------------------
         public async Task<(List<CardsCollection> cardsOnPage, int totalMatches)> SearchCardsFromCollection(string collectionOwnerId, string? searchQuery, int page = 1, int itemsPerPage = 10)
@@ -121,7 +121,7 @@ namespace MyCardCollection.Services
             if (!_memoryCache.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
             {
                 //calling the server
-                List<CardsCollection> allCardsInCollection = await context.Collection
+                List<CardsCollection> allCardsInCollection = await _context.Collection
                     .Where(x=>x.UserId == collectionOwnerId)
                     .Include(x => x.CardData)
                     .ToListAsync();
@@ -149,8 +149,15 @@ namespace MyCardCollection.Services
 
         public async Task<CardData> Get(string set, int number)
         {
-             return await context.CardsDatabase.FirstOrDefaultAsync(x=>x.SetCode == set && x.CollectionNumber == number);
+             return await _context.CardsDatabase.FirstOrDefaultAsync(x=>x.SetCode == set && x.CollectionNumber == number);
         }
+
+        public async Task<List<CardsCollection>> GetCardsFromCollection(string _userId) =>
+            await _context.Collection
+                   .Where(x => x.UserId == _userId)
+                   .Include(x => x.CardData)
+                   .ToListAsync();
+
 
         //-------------------------------------------------------------------
 

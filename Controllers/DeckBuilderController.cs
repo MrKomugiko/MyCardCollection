@@ -15,8 +15,8 @@ namespace MyCardCollection.Controllers
 {
     public partial class DeckBuilderController : Controller
     {
-        private readonly ApplicationDbContext context;
-        private readonly ICollectionRepository _collectionService;
+        private readonly ApplicationDbContext _context;
+        private readonly ICollectionRepository _collectionRepository;
         private readonly IDeckRepository _deckRepository;
         private readonly ICacheService _cacheService;
 
@@ -32,22 +32,21 @@ namespace MyCardCollection.Controllers
         public DeckBuilderController(ApplicationDbContext context, ICollectionRepository collectionService, 
             IDeckRepository deckRepository, ICacheService cacheService)
         {
-            this.context = context;
-            this._collectionService = collectionService;
+            this._context = context;
+            this._collectionRepository = collectionService;
             this._deckRepository = deckRepository;
             _cacheService = cacheService;
         }
         public async Task<PartialViewResult> SearchCards(string searchText, int page = 1)
         {
             int pageSize = 10;
-            var (cardsOnPage, totalMatches) = await _collectionService.SearchCardsFromCollection(_userId, searchText, page, pageSize);
+            var (cardsOnPage, totalMatches) = await _collectionRepository.SearchCardsFromCollection(_userId, searchText, page, pageSize);
 
             ViewBag.PageNumber = page;
             ViewBag.PageRange = pageSize > 6 ? 6:pageSize;
             ViewBag.TotalPages = (int)Math.Ceiling(((decimal)((int)totalMatches)) / pageSize);
 
-            int? currentDeck = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? -1;
-            ViewBag.CurrentDeckID = currentDeck;
+            ViewBag.CurrentDeckID = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? -1;
 
             return PartialView("_GridView", cardsOnPage);
         }
@@ -64,8 +63,7 @@ namespace MyCardCollection.Controllers
             ViewBag.PageRange = pageSize > 6 ? 6 : pageSize;
             ViewBag.TotalPages = (int)Math.Ceiling(((decimal)((int)totalMatches)) / pageSize);
 
-            int? currentDeck = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? -1;
-            ViewBag.CurrentDeckID = currentDeck;
+            ViewBag.CurrentDeckID = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? -1;
 
             return PartialView("_DeckView", cardsOnPage);
         }
@@ -76,9 +74,9 @@ namespace MyCardCollection.Controllers
             int pageSize = itemsPerPage;
             int lastDeckPage = HttpContext.Session.GetInt32("lastDeckPage") ?? 1;
 
-            int? currentDeck = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? -1;
-            ViewBag.CurrentDeckID = currentDeck;
-            int deckId = currentDeck??-1;
+
+            int deckId = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? -1;
+            ViewBag.CurrentDeckID = deckId;
 
             await _deckRepository.AddCardToDeckAsync(_userId, id, deckId);
             
@@ -95,8 +93,7 @@ namespace MyCardCollection.Controllers
         [HttpPost]
         public async Task<JsonResult> SaveDeckAsync([FromBody] DeckModel deck)
         {
-            deck.userId = _userId;
-            if (String.IsNullOrEmpty(deck.deckName))
+            if (deck.deckId == -1)
             {
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return Json(new { IsCreated = false, ErrorMessage = "Deck name cannot be empty." });
@@ -139,9 +136,8 @@ namespace MyCardCollection.Controllers
         }
 
         [HttpPost]
-        public JsonResult RevertLocalChangesCardsQuantity(string deckname)
+        public JsonResult RevertLocalChangesCardsQuantity()
         {
-
             // var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int? currentDeckID = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? -1;
             var deck_cacheKey = _userId + "Deck" + currentDeckID;
@@ -201,7 +197,6 @@ namespace MyCardCollection.Controllers
 
             ViewBag.MyDecks = data;
             ViewBag.CurrentDeckID = currentDeckID;
-            //HttpContext.Session.SetInt32("CurrentSelectedDeck", currentDeckID??-1);
             ViewBag.CurrentDeckName = currentDeckID != -1?userDecks[(int)currentDeckID]: "- not selected -";
 
             return View();
@@ -212,10 +207,7 @@ namespace MyCardCollection.Controllers
         {
             ViewBag.CurrentDeckName = deckTitle;
 
-            var allCards = await context.Collection
-                   .Where(x => x.UserId == _userId)
-                   .Include(x => x.CardData)
-                   .ToListAsync();
+            var allCards = await _collectionRepository.GetCardsFromCollection(owner);
 
             _cacheService.Set(all_cacheKey, allCards);
 
@@ -246,7 +238,7 @@ namespace MyCardCollection.Controllers
                 cardsInDeck = _cacheService.Get<List<CardsCollection>>(deck_cacheKey);
 
             }
-            var allCards = await context.Collection
+            var allCards = await _context.Collection
                     .Where(x => x.UserId == _userId)
                     .Include(x => x.CardData)
                     .ToListAsync();

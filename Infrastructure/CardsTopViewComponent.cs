@@ -16,7 +16,7 @@ namespace MyCardCollection.Infrastructure
 
         public IViewComponentResult Invoke(string _userId)
         {
-            int DisplayedCardsNumber = 6;
+            int maxDisplayCards = 6;
 
             var MyCards = context.Collection
                 .Where(x => x.UserId == _userId)
@@ -25,8 +25,9 @@ namespace MyCardCollection.Infrastructure
                 .Select(x => x.CardData)
                 .Where(x=>x.Price_USD > 0);
 
+            int DisplayedCardsNumber = Math.Min(MyCards.Count(),6);
+
             ViewBag.Sum = (float)MyCards.Sum(x => x.Price_USD);
-            ViewBag.Count = DisplayedCardsNumber;
 
             if (MyCards.Count() == 0)
             {

@@ -15,17 +15,23 @@
         @for(int i = 0; i<Math.Min(dataArr.Length,6); i++)
         {
             <div class="row">
-                <a type="button" class="col list-group-item list-group-item-action text-center" 
-                    asp-controller="Collection" asp-action="Details" asp-route-set="@dataArr[i].SetCode" asp-route-number="@dataArr[i].CollectionNumber"> 
-                    <img class="img-fluid" src="@dataArr[i].ImageURL" alt="img"/>
-                   <text class="fw-bold fs-6 ">@dataArr[i].Price_USD $ </text>
-                </a>
-                @{ i++; }
-                <a type="button" class="col list-group-item list-group-item-action text-center"
-                    asp-controller="Collection" asp-action="Details" asp-route-set="@dataArr[i].SetCode" asp-route-number="@dataArr[i].CollectionNumber">
-                    <img class="img-fluid" src="@dataArr[i].ImageURL" alt="img"/>
-                    <text class="fw-bold fs-6">@dataArr[i].Price_USD $ </text>
-                </a>
+                @if(@dataArr.Length > i)
+                {
+                    <a type="button" class="col list-group-item list-group-item-action text-center" 
+                        asp-controller="Collection" asp-action="Details" asp-route-set="@dataArr[i].SetCode" asp-route-number="@dataArr[i].CollectionNumber"> 
+                        <img class="img-fluid" src="@dataArr[i].ImageURL" alt="img"/>
+                       <text class="fw-bold fs-6 ">@dataArr[i].Price_USD $ </text>
+                    </a>
+                }
+                @{i++;}
+                @if (@dataArr.Length > i)
+                {
+                    <a type="button" class="col list-group-item list-group-item-action text-center"
+                        asp-controller="Collection" asp-action="Details" asp-route-set="@dataArr[i].SetCode" asp-route-number="@dataArr[i].CollectionNumber">
+                        <img class="img-fluid" src="@dataArr[i].ImageURL" alt="img"/>
+                        <text class="fw-bold fs-6">@dataArr[i].Price_USD $ </text>
+                    </a>
+                }
             </div>
         }
     </div>

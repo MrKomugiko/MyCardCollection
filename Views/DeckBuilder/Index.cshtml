@@ -55,8 +55,7 @@
                                 }
                             }
                             </select>
-                          
-                            <input type="submit" value="Load" class="col-4 btn btn-primary" />
+                            <input id="loadDeckBtn" disabled="false" type="submit" value="Load" class="col-4 btn btn-primary" />
                         </div>   
                     </form>
                 </div>
@@ -142,7 +141,18 @@
 
 
 @section Scripts{
-    <script>    
+    <script>
+        $('#deckSelection').change(function(){
+            let deckid = $("#deckSelection option:selected").val();
+            if( deckid == @ViewBag.CurrentDeckID)
+           {
+                $("#loadDeckBtn").prop( "disabled", true );
+            }else
+            {
+                 $("#loadDeckBtn").removeAttr('disabled');
+            }
+        })
+
         var UnsavedModifications = {};
         console.log(UnsavedModifications);
 
@@ -154,15 +164,22 @@
             }
         };
         window.onunload = function(e) {
+            let deckid = $("#deckSelection option:selected").val();
+            if(deckid == @ViewBag.CurrentDeckID)
+            {
+                $("#loadDeckBtn").prop( "disabled", true );
+            }else
+            {
+                  $("#loadDeckBtn").removeAttr('disabled');
+            }
+             console.log("button on load disabled id deck is choosen");
+
             console.log("leaving with no saving progress");
             if(Object.keys(UnsavedModifications).length>0)
             {
                 $.ajax({
                     url:'@Url.Action("RevertLocalChangesCardsQuantity","DeckBuilder")',
                     method: 'POST',
-                    data:{
-                        deckname:'@ViewBag.CurrentDeckName'
-                    },
                     success: function(){
                         console.log("ok");
                         UnsavedModifications = {};
@@ -388,7 +405,8 @@
                 var payload = {
                         deckName: '@ViewBag.CurrentDeckName',
                         cardInfos: [],
-                        deckId: deckid
+                        deckId: deckid,
+                        userId: '@UserManager.GetUserId(User)'
                     }
 
                 myCards.forEach((x)=>{
