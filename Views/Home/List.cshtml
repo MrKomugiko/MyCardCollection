@@ -101,6 +101,7 @@ width!-- Toast -->
     <script>
          $(function(){
             $("a.tglGallery").click(function(e){
+                console.log("click");
                 e.preventDefault();
                 $(this).css("display","none");
                 $(".tglList").css("display","");
@@ -111,6 +112,8 @@ width!-- Toast -->
         });
         $(function(){
             $("a.tglList").click(function(e){
+                console.log("click");
+
                 e.preventDefault();
                 $(this).css("display","none");
                 $(".tglGallery").css("display","");
@@ -121,35 +124,3 @@ width!-- Toast -->
         });
     </script>
 }
-@*
-@section Scripts{
-     <script>
-        $(function(){
-            $("a.addToCollection").click(function(e){
-                e.preventDefault();
-
-                let id = $(this).data("cardid");
-                var options={
-                    animation: true,
-                    autohide:true
-                };
-
-                var name = $(e.target).data('cardname');
-                var myAlert = document.getElementById("toastnotice"); // select id of toast
-                var bsAlert = new bootstrap.Toast(myAlert,options); // initializing
-                document.getElementById("cardName").innerHTML = name;
-                bsAlert.show();
-                    $.get('/Home/AddToCollection?cardId='+id, {}, function(data){
-                });
-            });
-        });
-
-           // popovers initialization - on hover
-    $('[data-toggle="popover-hover"]').popover({
-      html: true,
-      trigger: 'hover',
-      placement: 'bottom',
-      content: function () { return '<img src="' + $(this).data('img') + '" />'; }
-    });
-    </script>
-}*@

@@ -4,41 +4,101 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MyCardCollection</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+   @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MyCardCollection.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MyCardCollection.styles.css" asp-append-version="true" />*@
+    <link rel="stylesheet" href="/assets/css/socicon.css"  type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/entypo.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/theme.css" type="text/css" media="all" />
+    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,400i,500" rel="stylesheet">
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MyCardCollection</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+         <div class="navbar-container">
+      <div class="bg-dark navbar-dark" data-sticky="top">
+        <div class="container">
+          <nav class="navbar navbar-expand-lg">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MCC</a>
+              <img alt="Wingman" src="/assets/img/logo-white.svg" />
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <i class="icon-menu h4"></i>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a href="index.html" class="nav-link">Overview</a>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown">Pages</a>
+                  <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+
+                    <a class="dropdown-item" href="pages-landing.html">
+                      <span class="h6 mb-0">Landing Pages</span>
+                      <p class="text-small text-muted">Showcase your product in style</p>
+                    </a>
+
+                    <div class="dropdown-divider"></div>
+
+                    <a class="dropdown-item" href="pages-app.html">
+                      <span class="h6 mb-0">App Pages</span>
+                      <p class="text-small text-muted">Build detailed, functional web apps</p>
+                    </a>
+
+                    <div class="dropdown-divider"></div>
+
+                    <a class="dropdown-item" href="pages-inner.html">
+                      <span class="h6 mb-0">Inner Pages</span>
+                      <p class="text-small text-muted">Complete your online presence</p>
+                    </a>
+                  </div>
+                </li>
+              </ul>
+                <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                     @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Collection" asp-action="Index">My Collection</a>
+                                <a class="nav-link" asp-area="" asp-controller="Collection" asp-action="Index">My Collection</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Decks" asp-action="Index">Decks</a>
+                                <a class="nav-link" asp-area="" asp-controller="Decks" asp-action="Index">Decks</a>
                             </li> 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="DeckBuilder" asp-action="Index">Deck Builder</a>
+                                <a class="nav-link" asp-area="" asp-controller="DeckBuilder" asp-action="Index">Deck Builder</a>
                             </li> 
                         }
+                       @* <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="componentsDropdown" role="button" data-toggle="dropdown">Components</a>
+                            <div class="dropdown-menu" aria-labelledby="componentsDropdown">
+                                <a class="dropdown-item" href="components-bootstrap.html">Bootstrap</a>
+                                <a class="dropdown-item" href="components-wingman.html">Wingman</a>
+                            </div>
+                        </li>*@
                     </ul>
+
+                   @* <ul class="navbar-nav">
+                        <li class="nav-item">
+                          <a href="documentation/index.html" class="nav-link">Docs</a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="documentation/changelog.html" class="nav-link">Changelog <span class="badge badge-secondary mr-2">v1.3.0</span></a>
+                        </li>
+                        <li class="nav-item d-flex align-items-center">
+                          <a href="https://themes.getbootstrap.com/product/wingman-landing-page-app-template" class="btn btn-success">Purchase Now</a>
+                        </li>
+                    </ul>*@
                     <partial name="_LoginPartial" />
-                </div>
+
             </div>
-        </nav>
+            <!--end nav collapse-->
+          </nav>
+        </div>
+        <!--end of container-->
+      </div>
+    </div>
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -51,9 +111,40 @@
             &copy; 2022 - MyCardCollection - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+        <!-- Required vendor scripts (Do not remove) -->
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/js/popper.min.js"></script>
+    <script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+
+    <!-- Optional Vendor Scripts (Remove the plugin script here and comment initializer script out of index.js if site does not use that feature) -->
+
+    <!-- AOS (Animate On Scroll - animates elements into view while scrolling down) -->
+    <script type="text/javascript" src="/assets/js/aos.js"></script>
+    <!-- Flatpickr (calendar/date/time picker UI) -->
+    <script type="text/javascript" src="/assets/js/flatpickr.min.js"></script>
+    <!-- Flickity (handles touch enabled carousels and sliders) -->
+    <script type="text/javascript" src="/assets/js/flickity.pkgd.min.js"></script>
+    <!-- jarallax (parallax effect and video backgrounds) -->
+    <script type="text/javascript" src="/assets/js/jarallax.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jarallax-video.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jarallax-element.min.js"></script>
+    <!-- ScrollMonitor (manages events for elements scrolling in and out of view) -->
+    <script type="text/javascript" src="/assets/js/scrollMonitor.js"></script>
+    <!-- jQuery smartWizard facilitates steppable wizard content -->
+    <script type="text/javascript" src="/assets/js/jquery.smartWizard.min.js"></script>
+    <!-- Smooth scroll (animation to links in-page)-->
+    <script type="text/javascript" src="/assets/js/smooth-scroll.polyfills.min.js"></script>
+    <!-- Prism (displays formatted code boxes) -->
+    <script type="text/javascript" src="/assets/js/prism.js"></script>
+    <script type="text/javascript" src="/assets/js/zoom.min.js"></script>
+
+    <!-- Required theme scripts (Do not remove) -->
+    <script type="text/javascript" src="/assets/js/theme.js"></script>
+
+   @* <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>*@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
