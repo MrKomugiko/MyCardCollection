@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyCardCollection.Models;
 using MyCardCollection.Repository;
+using System.Security.Claims;
 
 namespace MyCardCollection.Controllers
 {
@@ -10,10 +12,12 @@ namespace MyCardCollection.Controllers
         {
             _deckRepository = deckRepository;
         }
+        private string _userId => User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            List<Deck> userDecks = await _deckRepository.GetUserDecks(_userId);
+            return View(userDecks);
         }
     }
 }

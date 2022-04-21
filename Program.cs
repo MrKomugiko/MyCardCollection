@@ -9,8 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>

@@ -6,8 +6,8 @@ namespace MyCardCollection.Models
 {
     public class Deck
     {
-        public Deck(){}
-
+        public Deck(){
+        }
         public Deck(string name, string owner)
         {
             this.Name = name;
@@ -26,5 +26,7 @@ namespace MyCardCollection.Models
 
         public string? AppUserId { get; set; }
         [ForeignKey("AppUserId")] public AppUser? AppUser { get; set; }
+
+        public ICollection<DecksCollection> Content { get; set; }
     }
 }
