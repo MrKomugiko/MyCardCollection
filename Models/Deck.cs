@@ -7,7 +7,7 @@ namespace MyCardCollection.Models
     public class Deck
     {
         public Deck()
-        {
+        { }
           
         public Deck(string name, string owner)
         {
