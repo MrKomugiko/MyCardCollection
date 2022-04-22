@@ -93,7 +93,7 @@ width!-- Toast -->
 <div class="container" id="contentGallery" style="display:none;">
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
     @foreach (var item in Model) {
-        <div class="col">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
             <img src="@item.Card.ImageURL" style="border-radius:8px; width:100%; padding:5px;"/>
         </div>
     }
