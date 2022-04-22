@@ -41,6 +41,7 @@ namespace MyCardCollection.Models
                 Power = CardObject.power != null ? int.Parse(CardObject.power) : null;
                 Mana_Cost = CardObject.mana_cost;
                 ImageURL = CardObject.image_uris.normal;
+                ImageURLCropped = CardObject.image_uris.art_crop;
                 Description = CardObject.oracle_text;
                 FlavorDescription = CardObject.flavor_text;
             }
@@ -72,6 +73,7 @@ namespace MyCardCollection.Models
                 Power = CardObject.card_faces[0].power != null ? int.Parse(CardObject.card_faces[0].power) : null;
                 Mana_Cost = CardObject.card_faces[0].mana_cost;
                 ImageURL = CardObject.card_faces[0].image_uris.normal;
+                ImageURLCropped = CardObject.card_faces[0].image_uris.art_crop;
                 Description = CardObject.card_faces[0].oracle_text;
                 FlavorDescription = CardObject.card_faces[0].flavor_text;
 
@@ -82,6 +84,7 @@ namespace MyCardCollection.Models
                 Transform_Power = CardObject.card_faces[1].power != null ? int.Parse(CardObject.card_faces[1].power) : null;
                 Mana_Cost = CardObject.card_faces[1].mana_cost;
                 Transform_ImageURL = CardObject.card_faces[1].image_uris.normal;
+                Transform_ImageURLCropped = CardObject.card_faces[1].image_uris.art_crop;
                 Transform_Description = CardObject.card_faces[1].oracle_text;
                 Transform_FlavorDescription = CardObject.card_faces[1].flavor_text;
             }
@@ -103,6 +106,7 @@ namespace MyCardCollection.Models
         public int? Power { get; set; }
         public string? ImageURL { get; set; }
         public string? ImageURLCropped { get; set; }
+
         public string? Description { get; set; }
         public string? FlavorDescription { get; set; }
 
@@ -112,6 +116,7 @@ namespace MyCardCollection.Models
         public int? Transform_Health { get; set; }
         public int? Transform_Power { get; set; }
         public string? Transform_ImageURL { get; set; }
+        public string? Transform_ImageURLCropped { get; set; }
         public string? Transform_Description { get; set; }
         public string? Transform_FlavorDescription { get; set; }
 

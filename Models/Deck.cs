@@ -1,4 +1,4 @@
-﻿using Microsoft.Build.Framework;
+using Microsoft.Build.Framework;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,7 +8,7 @@ namespace MyCardCollection.Models
     {
         public Deck()
         {
-        }
+          
         public Deck(string name, string owner)
         {
             this.Name = name;
