@@ -34,7 +34,7 @@ namespace MyCardCollection.Controllers
                     }
                 );
             }
-            return View(listdata);
+            return View(listdata.Take(12));
         }
 
         public async Task<IActionResult> List(string set = "mid")

@@ -1,4 +1,10 @@
-﻿@model IEnumerable<MyCardCollection.Models.Deck>
+@model IEnumerable<MyCardCollection.Models.Deck>
+
+      <section class="space-lg bg-gradient overflow-hidden">
+        <div class="container">
+          <div class="row align-items-center">
+
+            <div class="col-12 col-md-6 mb-3 mt-3 position-relative">
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
 @{
@@ -31,7 +37,21 @@
         else
         {
             <h1>You dont have decks in your colelction.</h1>
-            <a asp-controller="DeckBuilder" asp-action="Index">create your first deck here...</a>
+
+            <a class="btn btn-primary" asp-controller="DeckBuilder" asp-action="Index">create your first deck here...</a>
         }
     }
 </div>
+
+
+            </div>
+            <!--end of col-->
+          </div>
+          <!--end of row-->
+        </div>
+        <!--end of container-->
+      </section>
+      <!--end of section-->
+
+ 
+
