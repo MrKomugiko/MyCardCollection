@@ -1,15 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject UserManager<AppUser> UserManager
 @model IEnumerable<MyCardCollection.Models.CardsCollection>
-
-        <div class="row">
-                  <!--Add - Trigger Modal-->
-                <div class="col-md-2 col-4 text-center">
-                    <button id="btnShow" class="btn btn-success w-100 m-1">
-                        New
-                    </button>
-                </div>         
-                <!-- Modal 'Add deck' -->
+   <!-- Modal 'Add deck' -->
                     <div class="modal fade" id="demoModal" tabindex="-1">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -33,6 +25,17 @@
                             </div>
                         </div>
                    </div>
+           <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12 mb-3 mt-3  position-relative">
+        <div class="row">
+                  <!--Add - Trigger Modal-->
+                <div class="col-md-2 col-4 text-center">
+                    <button id="btnShow" class="btn btn-success w-100 m-1">
+                        New
+                    </button>
+                </div>         
+             
             <!-- load -->
                 <div class="col-md-4 col-8">
                     <form method="post" asp-controller="DeckBuilder" asp-action="LoadDeck" role="post">
@@ -135,6 +138,12 @@
         </div>
  
 </div>
+</div>
+
+</div>
+
+</div>
+
 
 
  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>

@@ -102,6 +102,7 @@ namespace MyCardCollection.Models
         public int? Health { get; set; }
         public int? Power { get; set; }
         public string? ImageURL { get; set; }
+        public string? ImageURLCropped { get; set; }
         public string? Description { get; set; }
         public string? FlavorDescription { get; set; }
 

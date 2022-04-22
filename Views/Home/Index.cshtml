@@ -2,35 +2,157 @@
 
 @model IEnumerable<SetListViewModel>
 
-<h1>Home page</h1>
+  <section class="bg-gradient overflow-hidden">
+         <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12 position-relative">
+                        @{
+                            int standardCount = 0;
+                        }
 
-<div class="list-group col-12">
-    @{
-        int standardCount = 0;
-    }
-    @foreach(var set in Model)
-    {
-        if(standardCount < 6)
-        {
-            if (@set.released_at.Date <= DateTime.Now.Date)
-            {
-                <a asp-action="List" asp-route-set="@set.setcode" class="list-group-item list-group-item-action bg-success p-2 text-dark bg-opacity-25 text-truncate" class="fs-3">
-                    <img style="height:40px; width:40px" src="@set.icon_svg_uri" alt="img"> <text>| @set.setcode.ToUpper() | <b> @set.name</b>  <br class="mobile-break"> Cards:@set.card_count | Release date: @set.released_at.ToShortDateString() | STANDARD </text>
-                </a>
-                standardCount += 1;
-            }
-            else
-            {
-                <a asp-action="List" asp-route-set="@set.setcode" class="list-group-item list-group-item-action bg-primary p-2 text-dark bg-opacity-10 text-truncate" class="fs-3">
-                    <img style="height:40px; width:40px" src="@set.icon_svg_uri" alt="img"> | @set.setcode.ToUpper() | <b> @set.name</b>    <br class="mobile-break"> Cards:@set.card_count | Release date: @set.released_at.ToShortDateString();
-                </a>    
-            }
-        }
-        else
-        {
-            <a asp-action="List" asp-route-set="@set.setcode" class="list-group-item list-group-item-action bg-secondary p-2 text-dark bg-opacity-10 text-truncate" class="fs-3">
-                <img style="height:40px; width:40px" src="@set.icon_svg_uri" alt="img"> | @set.setcode.ToUpper() | <b> @set.name</b>    <br class="mobile-break"> Cards:@set.card_count | Release date: @set.released_at.ToShortDateString();
-            </a>
-        }
-    }
-</div>
+                 <div class="container">
+
+          <ul class="row mb-3 feature-list feature-list-sm">
+
+                   @foreach(var set in Model)
+                        {
+                                if (@set.released_at.Date <= DateTime.Now.Date)
+                                {
+                                    <li class="col-12 col-md-6 col-lg-4">
+                                        <div class="card card-sm shadow" style="background-color: rgba(255,255,255, .95);">
+                                            <div class="card-body">
+                                                <h4 class="card-title mb-1 text-truncate text-center w-100"><b>@set.name</b></h4>
+                                                @*<p class="card-text">What it’s really like trying to convert an idea into a business.</p>*@  
+                                                <div class="media blog-post-author">
+                                                    <img alt="Image" src="@set.icon_svg_uri" class="avatar avatar-square-sm" style="margin-top: auto; margin-bottom: auto;">
+                                                    <div class="media-body">
+                                                        <small>Cards: <b>@set.card_count</b></small>
+                                                        <small>Code: <b>@set.setcode.ToUpper()</b></small>
+                                                        <small>Release date: <b>@set.released_at.ToShortDateString()</b></small>
+                                                    </div>  
+                                                </div>
+                                            </div>
+                                            <div class="card-footer card-footer-borderless">
+                                                <div class="row">
+                                                    <a class="btn btn-primary col-4" asp-action="List" asp-route-set="@set.setcode">
+                                                    Explore
+                                                </a>
+                                                    <div class="col">
+                                                        <div class="text-center"> 
+                                                            Collected  @(set.card_count/2) / @set.card_count 
+                                                        </div>
+                                                        <div class="progress" style="margin-top:auto; margin-bottom:auto;">
+                                                            <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    standardCount++;
+                                }
+                                else
+                                {
+                                    <li class="col-12 col-md-6 col-lg-4">
+                                        <div class="card card-sm opacity-30 shadow" style="background-color: rgba(255,255,255, 1);">
+                                            <div class="card-body">
+                                                <h4 class="card-title mb-1 text-truncate text-center w-100"><b>@set.name</b></h4>
+                                                @*<p class="card-text">What it’s really like trying to convert an idea into a business.</p>*@  
+                                                <div class="media blog-post-author">
+                                                    <img alt="Image" src="@set.icon_svg_uri" class="avatar avatar-square-sm" style="margin-top: auto; margin-bottom: auto;">
+                                                    <div class="media-body">
+                                                        <small>Cards: <b>@set.card_count</b></small>
+                                                        <small>Code: <b>@set.setcode.ToUpper()</b></small>
+                                                        <small>Release date: <b>@set.released_at.ToShortDateString()</b></small>
+                                                        <small><b>COMING SOON!</b></small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer card-footer-borderless">
+                                                <div class="row">
+                                                    <a class="btn btn-primary col-4" asp-action="List" asp-route-set="@set.setcode">
+                                                    Explore
+                                                </a>
+                                                    <div class="col">
+                                                        <div class="text-center"> 
+                                                            Collected  @(set.card_count/2) / @set.card_count 
+                                                        </div>
+                                                        <div class="progress" style="margin-top:auto; margin-bottom:auto;">
+                                                            <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    }
+                                }
+          </ul>
+          <!--end of row-->
+          <div class="row justify-content-center">
+            <div class="col-auto">
+              <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true"><i class="icon-chevron-left"></i>
+                      </span>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                  <li class="page-item active"><a class="page-link" href="#">1</a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">2</a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">3</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true"><i class="icon-chevron-right"></i>
+                      </span>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <!--end of col-->
+          </div>
+          <!--end of row-->
+        </div>
+
+@*
+                        @foreach(var set in Model)
+                        {
+                            if(standardCount < 6)
+                            {
+                                if (@set.released_at.Date <= DateTime.Now.Date)
+                                {
+                                    <a asp-action="List" asp-route-set="@set.setcode" class="list-group-item list-group-item-action bg-success p-2 text-dark bg-opacity-25 text-truncate" class="fs-3">
+                                        <img style="height:40px; width:40px" src="@set.icon_svg_uri" alt="img"> <text>| @set.setcode.ToUpper() | <b> @set.name</b>  <br class="mobile-break"> Cards:@set.card_count | Release date: @set.released_at.ToShortDateString() | STANDARD </text>
+                                    </a>
+                                    standardCount += 1;
+                                }
+                                else
+                                {
+                                    <a asp-action="List" asp-route-set="@set.setcode" class="list-group-item list-group-item-action bg-primary p-2 text-dark bg-opacity-10 text-truncate" class="fs-3">
+                                        <img style="height:40px; width:40px" src="@set.icon_svg_uri" alt="img"> | @set.setcode.ToUpper() | <b> @set.name</b>    <br class="mobile-break"> Cards:@set.card_count | Release date: @set.released_at.ToShortDateString();
+                                    </a>    
+                                }
+                            }
+                            else
+                            {
+                                <a asp-action="List" asp-route-set="@set.setcode" class="list-group-item list-group-item-action bg-secondary p-2 text-dark bg-opacity-10 text-truncate" class="fs-3">
+                                    <img style="height:40px; width:40px" src="@set.icon_svg_uri" alt="img"> | @set.setcode.ToUpper() | <b> @set.name</b>    <br class="mobile-break"> Cards:@set.card_count | Release date: @set.released_at.ToShortDateString();
+                                </a>
+                            }
+                        }
+                    </div>
+*@
+
+
+
+                </div>
+            </div>
+        </div>
+   </section>
