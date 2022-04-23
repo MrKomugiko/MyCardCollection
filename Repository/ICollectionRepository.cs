@@ -14,5 +14,6 @@ namespace MyCardCollection.Services
         Task ClearCollectionAsync(string collectionOwnerId);
         Task<CardData> Get(string set, int number);
         Task<List<CardsCollection>> GetCardsFromCollection(string _userId);
+        Task<Dictionary<string, int>> GetSetCardCountGroupped(string _userId);
     }
 }

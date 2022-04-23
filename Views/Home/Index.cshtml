@@ -39,14 +39,29 @@
                                                 </a>
                                                 @if (User.Identity.IsAuthenticated)
                                                 {
-                                                    <div class="col">
-                                                        <div class="text-center"> 
-                                                            Collected  @(set.card_count/2) / @set.card_count 
+                                                    
+                                                    if(@ViewBag.CardsBySet.ContainsKey(set.setcode))
+                                                    {
+                                                        double value = Math.Round((@ViewBag.CardsBySet[set.setcode] / (double)@set.card_count) * 100,1);
+                                                        int valueInt = (Int32)value;
+
+                                                        <div class="col">
+                                                            <div class="text-center"> 
+                                                                Collected  @ViewBag.CardsBySet[set.setcode] (@value%)
+                                                            </div>
+                                                            <div class="progress" style="margin-top:auto; margin-bottom:auto;">
+                                                                <div class="progress-bar" role="progressbar" aria-valuenow="@valueInt" aria-valuemin="0" aria-valuemax="100" style="width: @valueInt%"> </div>
+                                                            </div>
                                                         </div>
-                                                        <div class="progress" style="margin-top:auto; margin-bottom:auto;">
-                                                            <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="col">
+                                                            <div class="text-center h-100 pt-1" style="margin-bottom:auto; margin-top:auto; color:lightgray;"> 
+                                                               Not Collected.
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    }
                                                 }
                                             </div>
                                             </div>
@@ -74,19 +89,8 @@
                                             <div class="card-footer card-footer-borderless">
                                                 <div class="row">
                                                     <a class="btn btn-primary col-4" asp-action="List" asp-route-set="@set.setcode">
-                                                    Explore
-                                                </a>
-                                                @if (User.Identity.IsAuthenticated)
-                                                {
-                                                    <div class="col">
-                                                        <div class="text-center"> 
-                                                            Collected  @(set.card_count/2) / @set.card_count 
-                                                        </div>
-                                                        <div class="progress" style="margin-top:auto; margin-bottom:auto;">
-                                                            <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
-                                                        </div>
-                                                    </div>
-                                                }
+                                                        Explore
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>

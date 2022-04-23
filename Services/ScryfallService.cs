@@ -81,7 +81,7 @@ namespace MyCardCollection.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var readTask = response.Content.ReadAsStringAsync().Result;
-                    return JsonConvert.DeserializeObject<SetsList>(readTask).data.Where(x => x.set_type == "expansion");
+                    return JsonConvert.DeserializeObject<SetsList>(readTask).data.Where(x => x.set_type == "expansion" || x.set_type == "core" );
                 }
             }
             return null;

@@ -6,6 +6,7 @@ using MyCardCollection.Services.Scryfall;
 using MyCardCollection.ViewModel;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace MyCardCollection.Controllers
 {
@@ -13,10 +14,13 @@ namespace MyCardCollection.Controllers
     {
         private readonly IScryfallService _scryfall;
         private readonly ICacheService _cacheService;
-        public HomeController(IScryfallService scryfall, ICacheService cacheService)
+        private readonly ICollectionRepository _collectionRepository;
+
+        public HomeController(IScryfallService scryfall, ICacheService cacheService, ICollectionRepository collectionRepository)
         {
             _scryfall = scryfall;
             _cacheService = cacheService;
+            _collectionRepository = collectionRepository;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -47,6 +51,12 @@ namespace MyCardCollection.Controllers
             ViewBag.TotalPages = (Int32)Math.Ceiling((double)listdata.Count() / PageSize);
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = PageSize;
+
+            ViewBag.CardsBySet = new Dictionary<string,int>();
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.CardsBySet = await _collectionRepository.GetSetCardCountGroupped(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            }
 
             var model = listdata.Skip((page - 1) * PageSize)
                 .Take(PageSize);

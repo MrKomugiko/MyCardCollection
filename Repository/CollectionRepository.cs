@@ -3,24 +3,19 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MyCardCollection.Data;
 using MyCardCollection.Models;
+using MyCardCollection.Repository;
 
 namespace MyCardCollection.Services
 {
     public class CollectionRepository : ICollectionRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IMemoryCache _memoryCache;
-        private MemoryCacheEntryOptions cacheExpiryOptions = new MemoryCacheEntryOptions
-        {
-            AbsoluteExpiration = DateTime.Now.AddSeconds(3600),
-            Priority = CacheItemPriority.High,
-            SlidingExpiration = TimeSpan.FromSeconds(3600)
-        };
+        private readonly ICacheService _cacheService;
 
-        public CollectionRepository(ApplicationDbContext context, IMemoryCache memoryCache)
+        public CollectionRepository(ApplicationDbContext context, ICacheService cacheService)
         {
             this._context = context;
-            _memoryCache = memoryCache;
+            _cacheService = cacheService;
         }
 
         //public async Task<CollectionStatistic> GetFullStatistics_v2(string _userId)
@@ -73,25 +68,25 @@ namespace MyCardCollection.Services
             var deletedCards = _context.Collection.Where(x => x.UserId == collectionOwnerId);
             var userDecks = _context.DecksCollections.Where(x => x.UserId == collectionOwnerId);
 
-            _context.RemoveRange(userDecks.Where(x => deletedCards.Any(c => c.CardId == x.CardId)));           
+            _context.RemoveRange(userDecks.Where(x => deletedCards.Any(c => c.CardId == x.CardId)));
 
             _context.Collection.RemoveRange(deletedCards);
 
-            foreach(var deckName in userDecks.Include(x=>x.Deck).Select(x=>x.Deck.Name).Distinct())
+            foreach (var deckName in userDecks.Include(x => x.Deck).Select(x => x.Deck.Name).Distinct())
             {
                 var selected_deck_cacheKey = collectionOwnerId + "Deck" + deckName;
 
-                if (_memoryCache.TryGetValue(selected_deck_cacheKey, out List<CardsCollection> deckcards))
+                if (_cacheService.TryGetValue(selected_deck_cacheKey, out List<CardsCollection> deckcards))
                 {
-                    _memoryCache.Remove(selected_deck_cacheKey);
+                    _cacheService.Remove(selected_deck_cacheKey);
                 }
             }
 
             var cacheKey = collectionOwnerId + "Collection";
 
-            if (_memoryCache.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
+            if (_cacheService.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
             {
-                _memoryCache.Remove(cacheKey);
+                _cacheService.Remove(cacheKey);
             }
 
             await _context.SaveChangesAsync();
@@ -105,29 +100,29 @@ namespace MyCardCollection.Services
             searchQuery = searchQuery?.ToLower();
 
             var allCardsInCollection = await GetAll_SearchCardsFromCollection(collectionOwnerId, searchQuery);
-            
+
             cardsInCollection = allCardsInCollection
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize).ToList(); ;
 
             int totalMatches = allCardsInCollection.Count;
-        
+
             return (cardsInCollection, totalMatches);
         }
         public async Task<List<CardsCollection>> GetAll_SearchCardsFromCollection(string collectionOwnerId, string? searchQuery)
         {
-            var cacheKey = collectionOwnerId+"Collection";
+            var cacheKey = collectionOwnerId + "Collection";
             //checks if cache entries exists
-            if (!_memoryCache.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
+            if (!_cacheService.TryGetValue(cacheKey, out List<CardsCollection> cachedAllCards))
             {
                 //calling the server
                 List<CardsCollection> allCardsInCollection = await _context.Collection
-                    .Where(x=>x.UserId == collectionOwnerId)
+                    .Where(x => x.UserId == collectionOwnerId)
                     .Include(x => x.CardData)
                     .ToListAsync();
 
                 //setting cache entries
-                _memoryCache.Set(cacheKey, allCardsInCollection, cacheExpiryOptions);
+                _cacheService.Set(cacheKey, allCardsInCollection);
                 cachedAllCards = allCardsInCollection;
             }
 
@@ -149,7 +144,7 @@ namespace MyCardCollection.Services
 
         public async Task<CardData> Get(string set, int number)
         {
-             return await _context.CardsDatabase.FirstOrDefaultAsync(x=>x.SetCode == set && x.CollectionNumber == number);
+            return await _context.CardsDatabase.FirstOrDefaultAsync(x => x.SetCode == set && x.CollectionNumber == number);
         }
 
         public async Task<List<CardsCollection>> GetCardsFromCollection(string _userId) =>
@@ -158,6 +153,22 @@ namespace MyCardCollection.Services
                    .Include(x => x.CardData)
                    .ToListAsync();
 
+        public async Task<Dictionary<string,int>> GetSetCardCountGroupped(string _userId)
+        {
+            string cacheKey = _userId + "Collection";
+            if (! _cacheService.TryGetValue<List<CardsCollection>> (cacheKey, out var data))
+            {
+                data = await GetCardsFromCollection(_userId);
+                _cacheService.Set(cacheKey, data);
+            }
+
+            return data.GroupBy(x => x.CardData.SetCode)
+                .Select(group => new {
+                    Key = group.Key,
+                    Value = group.Count()
+                })
+                .ToDictionary(x=>x.Key, x=>x.Value);
+        }
 
         //-------------------------------------------------------------------
 
