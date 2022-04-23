@@ -24,7 +24,7 @@ namespace MyCardCollection.Controllers
         }
 
         public async Task<IActionResult> Index(int page = 1)
-        {
+        { 
             var PageSize = 12;
             if (! _cacheService.TryGetValue<List<SetListViewModel>>("Sets", out var listdata))
             {
@@ -53,13 +53,13 @@ namespace MyCardCollection.Controllers
             ViewBag.PageSize = PageSize;
 
             ViewBag.CardsBySet = new Dictionary<string,int>();
-            if (User.Identity.IsAuthenticated)
+            if (User != null && User.Identity.IsAuthenticated)
             {
                 ViewBag.CardsBySet = await _collectionRepository.GetSetCardCountGroupped(User.FindFirstValue(ClaimTypes.NameIdentifier));
             }
 
             var model = listdata.Skip((page - 1) * PageSize)
-                .Take(PageSize);
+                .Take(PageSize).AsEnumerable();
 
             return View(model);
         }
