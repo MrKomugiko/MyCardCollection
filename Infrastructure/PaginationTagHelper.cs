@@ -63,7 +63,7 @@ namespace MyCardCollection.Infrastructure
                     continue;
                 }
                 var active = currentPage == PageNumber ? "active" : "";
-                content.Append($"<li class='page-item {active}' style='z-index:0; style='z-index:0;'><a class='page-link'href='{PageTarget}?page={currentPage}'>{currentPage}</a></li>");
+                content.Append($"<li class='page-item {active}'><a class='page-link'href='{PageTarget}?page={currentPage}'>{currentPage}</a></li>");
             }
         }
 
@@ -76,7 +76,7 @@ namespace MyCardCollection.Infrastructure
                     continue;
                 }
                 var active = currentPage == PageNumber ? "active" : "";
-                content.Append($"<li class='page-item {active}' style='z-index:0;'><a class='page-link'href='{PageTarget}?page={currentPage}'>{currentPage}</a></li>");
+                content.Append($"<li class='page-item {active}' ><a class='page-link'href='{PageTarget}?page={currentPage}'>{currentPage}</a></li>");
             }
         }
 
@@ -89,13 +89,13 @@ namespace MyCardCollection.Infrastructure
                     continue;
                 }
                 var active = currentPage == PageNumber ? "active" : "";
-                content.Append($"<li class='page-item {active}' style='z-index:0;'><a class='page-link'href='{PageTarget}?page={currentPage}'>{currentPage}</a></li>");
+                content.Append($"<li class='page-item {active}' ><a class='page-link'href='{PageTarget}?page={currentPage}'>{currentPage}</a></li>");
             }
         }
 
         private void InitPaginationHtml(StringBuilder content)
         {
-            content.Append(" <ul class='pagination'>");
+            content.Append(" <ul class='pagination' style='background-color:white;'>");
             if (PageNumber != 1)
             {
                 content.Append($"<li class='page-item'><a class='page-link' href='{PageTarget}?page=1'>{PageFirst}</a></li>");

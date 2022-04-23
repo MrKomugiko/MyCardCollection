@@ -18,7 +18,12 @@ namespace MyCardCollection.Repository
         }
         public bool TryGetValue<TItem>(string key, out TItem value)
         {
-            return _memoryCache.TryGetValue(key, out value);
+            if(_memoryCache.TryGetValue(key, out value))
+            {
+                return true;
+            }
+            return false;
+
         }
 
         public void Set(string key, object value)
