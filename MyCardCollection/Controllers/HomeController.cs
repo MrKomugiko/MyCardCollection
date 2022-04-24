@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyCardCollection.Models;
 using MyCardCollection.Repository;
 using MyCardCollection.Services;
@@ -51,6 +52,7 @@ namespace MyCardCollection.Controllers
             ViewBag.TotalPages = (Int32)Math.Ceiling((double)listdata.Count() / PageSize);
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = PageSize;
+            ViewBag.DisplayAll = true;
 
             ViewBag.CardsBySet = new Dictionary<string,int>();
             if (User != null && User.Identity.IsAuthenticated)
@@ -61,6 +63,55 @@ namespace MyCardCollection.Controllers
             var model = listdata.Skip((page - 1) * PageSize)
                 .Take(PageSize).AsEnumerable();
 
+            return View(model);
+        }
+
+        [Authorize]
+        [Route("OwnedSets")]
+        public async Task<IActionResult> Index(int page = 1, bool owned = true)
+        {
+            var PageSize = 12;
+            if (!_cacheService.TryGetValue<List<SetListViewModel>>("Sets", out var listdata))
+            {
+                var respond = await _scryfall.GetSetsList();
+
+                listdata = new List<SetListViewModel>();
+
+                foreach (var set in respond)
+                {
+                    listdata.Add(
+                        new SetListViewModel()
+                        {
+                            card_count = set.card_count,
+                            icon_svg_uri = set.icon_svg_uri,
+                            name = set.name,
+                            released_at = DateTime.Parse(set.released_at),
+                            setcode = set.code
+                        }
+                    );
+                }
+                _cacheService.Set("Sets", listdata);
+            }
+
+            var userSets = await _collectionRepository.GetSetCardCountGroupped(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
+            ViewBag.TotalPages = (Int32)Math.Ceiling((double)userSets.Count() / PageSize);
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = PageSize;
+            ViewBag.DisplayAll = false;
+
+            ViewBag.CardsBySet = userSets;
+
+            IEnumerable<SetListViewModel> model;
+            if(userSets.Count>PageSize)
+            {
+                model = listdata.Where(x=>userSets.ContainsKey(x.setcode)).Skip((page - 1) * PageSize)
+                    .Take(PageSize).AsEnumerable();
+            }
+            else
+            {
+                model = listdata.Where(x => userSets.ContainsKey(x.setcode));
+            }
             return View(model);
         }
 

@@ -87,7 +87,7 @@ namespace MyCardCollection.HomeControllerTests.Tests
         public async Task HomeController_Index_ReturnView()
         {
 
-            var result = await _homeController.Index();
+            var result = await _homeController.Index(0);
 
             Assert.IsType<ViewResult>(result);
         }

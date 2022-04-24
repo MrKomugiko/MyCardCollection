@@ -20,7 +20,7 @@ namespace MyCardCollection.Infrastructure
         public string PageFirst { get; set; }
         public string PageLast { get; set; }
         public string PageTarget { get; set; }
-
+        public string ExtraParam { get; set; } = "";
         private string AddPageContent()
         {
             InitDefaults();
@@ -49,7 +49,7 @@ namespace MyCardCollection.Infrastructure
         {
             if (PageNumber != PageCount)
             {
-                content.Append($"<li class='page-item'><a class='page-link' href='{PageTarget}?page={PageCount}'>{PageLast}</a></li>");
+                content.Append($"<li class='page-item'><a class='page-link' href='{PageTarget}?page={PageCount}{ExtraParam}'>{PageLast}</a></li>");
             }
             content.Append(" </ul");
         }
@@ -63,7 +63,7 @@ namespace MyCardCollection.Infrastructure
                     continue;
                 }
                 var active = currentPage == PageNumber ? "active" : "";
-                content.Append($"<li class='page-item {active}'><a class='page-link'href='{PageTarget}?page={currentPage}'>{currentPage}</a></li>");
+                content.Append($"<li class='page-item {active}'><a class='page-link'href='{PageTarget}?page={currentPage}{ExtraParam}'>{currentPage}</a></li>");
             }
         }
 
@@ -76,7 +76,7 @@ namespace MyCardCollection.Infrastructure
                     continue;
                 }
                 var active = currentPage == PageNumber ? "active" : "";
-                content.Append($"<li class='page-item {active}' ><a class='page-link'href='{PageTarget}?page={currentPage}'>{currentPage}</a></li>");
+                content.Append($"<li class='page-item {active}' ><a class='page-link'href='{PageTarget}?page={currentPage}{ExtraParam}'>{currentPage}</a></li>");
             }
         }
 
@@ -89,7 +89,7 @@ namespace MyCardCollection.Infrastructure
                     continue;
                 }
                 var active = currentPage == PageNumber ? "active" : "";
-                content.Append($"<li class='page-item {active}' ><a class='page-link'href='{PageTarget}?page={currentPage}'>{currentPage}</a></li>");
+                content.Append($"<li class='page-item {active}' ><a class='page-link'href='{PageTarget}?page={currentPage}{ExtraParam}'>{currentPage}</a></li>");
             }
         }
 
@@ -98,7 +98,7 @@ namespace MyCardCollection.Infrastructure
             content.Append(" <ul class='pagination' style='background-color:white;'>");
             if (PageNumber != 1)
             {
-                content.Append($"<li class='page-item'><a class='page-link' href='{PageTarget}?page=1'>{PageFirst}</a></li>");
+                content.Append($"<li class='page-item'><a class='page-link' href='{PageTarget}?page=1{ExtraParam}'>{PageFirst}</a></li>");
             }
         }
 

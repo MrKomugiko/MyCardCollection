@@ -2,8 +2,19 @@
 
 @model IEnumerable<SetListViewModel>
 
-  <section class="bg-gradient overflow-hidden" style="min-height:calc(100vh - 30vh)">
-         <div class="container">
+    @{
+    bool isAuthenticated = User.Identity.IsAuthenticated;
+}
+<section class="bg-gradient overflow-hidden" style="min-height:calc(100vh - 30vh)">
+
+             <div class="container">
+
+        <div class="custom-control custom-switch mx-2" style="display:@if (isAuthenticated == false) {<text>none</text>} else {<text>block</text>}; 
+            margin-left:auto; margin-right:auto; text-align:right;">
+
+          <input onchange="switchToColelctedOnly(this)" type="checkbox" class="custom-control-input" id="customSwitch1" @if(!ViewBag.DisplayAll){<text>checked</text>}>
+          <label class="custom-control-label" for="customSwitch1">Only collected.</label>
+        </div>
             <div class="row align-items-center">
                 <div class="col-12 position-relative">
                         @{
@@ -11,10 +22,6 @@
                         }
 
                  <div class="container">
-<div class="custom-control custom-switch">
-  <input type="checkbox" class="custom-control-input" id="customSwitch1" checked>
-  <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
-</div>
 
                 <ul class="row mb-3 feature-list feature-list-sm">
 
@@ -41,7 +48,7 @@
                                                     <a class="btn btn-primary col-4" asp-action="List" asp-route-set="@set.setcode">
                                                     Explore
                                                 </a>
-                                                @if (User.Identity.IsAuthenticated)
+                                                @if (isAuthenticated)
                                                 {
                                                     
                                                     if(@ViewBag.CardsBySet.ContainsKey(set.setcode))
@@ -109,7 +116,8 @@
                           <div class="row justify-content-center">
                             <div class="col-auto">
                                 <pagination page-count="@ViewBag.TotalPages"
-                                page-target="Home" page-number="@ViewBag.CurrentPage" 
+                                page-target="@if(ViewBag.DisplayAll == false) {<text>Home</text>} else {<text>OwnedSets</text>}" page-number="@ViewBag.CurrentPage" 
+                                extra-param="&"
                                 page-range="@ViewBag.PageSize"></pagination>
                             </div>
                         </div>
@@ -121,3 +129,24 @@
         </div>
    </section>
 
+   @section Scripts{
+       <script>
+           function switchToColelctedOnly(object){
+            
+               if(object.checked)
+               {
+                   console.log("turn ON, show only collected sets");
+                   var x= location.href+"OwnedSets";
+                   window.location.href = x;
+               }
+               else
+               {
+                   console.log("turn OFF show all sets");
+                   var y = (location.href).replace("OwnedSets","");
+                    console.log(y);
+                   window.location.href = y;
+               }
+            
+           }
+       </script>
+   }
