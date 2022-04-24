@@ -27,6 +27,7 @@ namespace MyCardCollection.Controllers
         public async Task<IActionResult> Index(int page = 1)
         { 
             var PageSize = 12;
+            var PageRange = 6;
             if (! _cacheService.TryGetValue<List<SetListViewModel>>("Sets", out var listdata))
             {
                 var respond = await _scryfall.GetSetsList();
@@ -51,7 +52,7 @@ namespace MyCardCollection.Controllers
 
             ViewBag.TotalPages = (Int32)Math.Ceiling((double)listdata.Count() / PageSize);
             ViewBag.CurrentPage = page;
-            ViewBag.PageSize = PageSize;
+            ViewBag.PageRange = PageRange;
             ViewBag.DisplayAll = true;
 
             ViewBag.CardsBySet = new Dictionary<string,int>();
@@ -71,6 +72,7 @@ namespace MyCardCollection.Controllers
         public async Task<IActionResult> Index(int page = 1, bool owned = true)
         {
             var PageSize = 12;
+            var PageRange = 6;
             if (!_cacheService.TryGetValue<List<SetListViewModel>>("Sets", out var listdata))
             {
                 var respond = await _scryfall.GetSetsList();
@@ -97,7 +99,7 @@ namespace MyCardCollection.Controllers
             
             ViewBag.TotalPages = (Int32)Math.Ceiling((double)userSets.Count() / PageSize);
             ViewBag.CurrentPage = page;
-            ViewBag.PageSize = PageSize;
+            ViewBag.PageRange = PageRange;
             ViewBag.DisplayAll = false;
 
             ViewBag.CardsBySet = userSets;

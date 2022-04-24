@@ -3,37 +3,38 @@
   
 @if(Model != null)
 {
-    <div class="list-group" style="padding-top:20px; padding-bottom:20px;">
-        <div type="button" class="list-group-item text-center">
-            Total value:<b> @ViewBag.sum$</b>
-        </div>
+    <div style="padding-top:20px; padding-bottom:20px;">
+        <div type="button" class="shadow list-group-item text-center">
+            Total value:<b> @Math.Round(ViewBag.sum,2)$</b></div>
         <br/>
-        <div type="button" class="list-group-item list-group-item-action active text-center">
-            Top @ViewBag.Count cards:
-        </div>
-        @{ var dataArr = Model.ToArray(); }
-        @for(int i = 0; i<Math.Min(dataArr.Length,6); i++)
-        {
-            <div class="row">
-                @if(@dataArr.Length > i)
-                {
-                    <a type="button" class="col list-group-item list-group-item-action text-center" 
-                        asp-controller="Collection" asp-action="Details" asp-route-set="@dataArr[i].SetCode" asp-route-number="@dataArr[i].CollectionNumber"> 
-                        <img class="img-fluid" src="@dataArr[i].ImageURL" alt="img"/>
-                       <text class="fw-bold fs-6 ">@dataArr[i].Price_USD $ </text>
-                    </a>
-                }
-                @{i++;}
-                @if (@dataArr.Length > i)
-                {
-                    <a type="button" class="col list-group-item list-group-item-action text-center"
-                        asp-controller="Collection" asp-action="Details" asp-route-set="@dataArr[i].SetCode" asp-route-number="@dataArr[i].CollectionNumber">
-                        <img class="img-fluid" src="@dataArr[i].ImageURL" alt="img"/>
-                        <text class="fw-bold fs-6">@dataArr[i].Price_USD $ </text>
-                    </a>
-                }
+        
+            <div type="button" class="shadow list-group-item text-center" stytle="padding: 5px 5px;">
+                <b>Top cards:</b>
+       
+            @{ var dataArr = Model.ToArray(); }
+            @for(int i = 0; i<Math.Min(dataArr.Length,6); i++)
+            {
+                <div class="row" style="color:black;">
+                    @if(@dataArr.Length > i)
+                    {
+                        <a type="button" class="col text-center" style="padding: 5px 5px;" 
+                            asp-controller="Collection" asp-action="Details" asp-route-set="@dataArr[i].SetCode" asp-route-number="@dataArr[i].CollectionNumber"> 
+                            <img class="img-fluid" src="@dataArr[i].ImageURL" alt="img"/>
+                           <text class="fw-bold fs-6" style="color:black:">@dataArr[i].Price_USD $ </text>
+                        </a>
+                    }
+                    @{i++;}
+                    @if (@dataArr.Length > i)
+                    {
+                         <a type="button" class="col text-center" style="padding: 5px 5px;" 
+                            asp-controller="Collection" asp-action="Details" asp-route-set="@dataArr[i].SetCode" asp-route-number="@dataArr[i].CollectionNumber">
+                            <img class="img-fluid" src="@dataArr[i].ImageURL" alt="img"/>
+                            <text class="fw-bold fs-6"  style="color:black:"> @dataArr[i].Price_USD $ </text>
+                        </a>
+                    }
+                </div>
+            }
             </div>
-        }
-    </div>
+        </div>
 }   
 

@@ -2,7 +2,7 @@
 
 <row class="justify-content-center"> 
     <div class="col">
-        <table class="table table-hover">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr class="d-flex">
                     <th class="col-1">qty.</th>
@@ -31,7 +31,7 @@
                         <td class="col" style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">@item.CardData.Type</td>
                        <!-- <td class="col-2 text-center">@item.CardData.Rarity</td> -->
                         <td class="col-2 text-center"> 
-                            <a class="btn btn-primary AddToDeck" data-id="@item.CardId">-></a>
+                            <a class="btn btn-primary AddToDeck" data-id="@item.CardId">></a>
                         </td>
                     </tr>
                 }
@@ -42,7 +42,7 @@
 
     @if (ViewBag.TotalPages > 1)
     {
-        <div class="d-flex justify-content-center">
+           <div class="row justify-content-center pb-4">
             <partial-pagination page-count="@ViewBag.TotalPages" 
             page-onclick-event="getCards" 
             page-number="@ViewBag.PageNumber" page-range="@ViewBag.PageRange/2"></partial-pagination>

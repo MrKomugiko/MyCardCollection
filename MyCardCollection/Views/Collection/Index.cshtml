@@ -8,11 +8,11 @@
 
 
 
-       <div class="container" style="min-height:calc(100vh - 30vh)">
+       <div class="container" style="min-height:calc(100vh - 20vh)">
             <div class="row align-items-center">
                 <div class="col-12 mb-3 mt-3 position-relative">
-                   <div class="row">
-                        <div class="col-md-2 col-sm-12" style="text-align:start;">
+                   <div class="text-center w-100">
+                        @*<div class="col-md-2 col-sm-12" style="text-align:start;">
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     Manage/Setting
@@ -23,10 +23,10 @@
                                     <li><a class="dropdown-item"  style="color:red;" asp-controller="Collection" asp-action="Clear"><b>Clear [*]</b></a></li>
                                 </ul>
                             </div>
-                        </div>
-                        <div class="col-md-6 col-sm-12 text-center">
-                            <h1> Cards: @ViewBag.Count | Unique: @ViewBag.DistinctCount</h1>
-                        </div>
+                        </div>*@
+                    
+                            <h1> Cards: <b>@ViewBag.Count</b> | Unique: <b>@ViewBag.DistinctCount</b></h1>
+         
                     </div>
 
                     <div class="row">
@@ -46,23 +46,21 @@
                                     </div>
                                 </form>
                             </div>
-                            <br />
+                           @* <br />
                             <!-- Import section -->
-                            <div class="p-2 p-md-0">
+                            <div clas="row">
                                 <form method="post" asp-controller="Collection" asp-action="Import" class="col" enctype="multipart/form-data">
-                                    <div class="row">
-                                        <input name="file" type="file" class="form-control col"/>
-                                        <input class="btn btn-primary" type="submit" value="Import" />
-                                    </div>
+                                        <input name="file" type="file" class="form-control row" value="&#10"/>
+                                        <input class="btn btn-primary row" type="submit" value="Import" />     
                                 </form>
-                            </div>
+                            </div>*@
 
 
                         </div>
                         <div class="col-12 col-md-10">
                             <br />
                                  <div class="row align-content-end px-2">
-                                    <input type="text" placeholder="SEARCH..." class="form-control" id="textSearch" />
+                                    <input type="text" style="vertical-align: middle;" placeholder="SEARCH..." class="form-control mb-3 shadow" id="textSearch" />
                                 </div>
                 
                             <div class="row" id="cardsFullGrid">

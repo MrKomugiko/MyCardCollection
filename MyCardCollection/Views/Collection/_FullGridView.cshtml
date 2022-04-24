@@ -3,7 +3,7 @@
 @inject UserManager<AppUser> UserManager
 
         <div class="col-12" style="overflow-x:auto;">
-            <table class="table table-hover table-sm table-striped w-100" style="white-space:nowrap; vertical-align:middle;">
+            <table class="table-hover table-sm table-striped" style="white-space:nowrap; vertical-align:middle;">
                 <thead>
                     <tr>
                         <th></th>
@@ -15,7 +15,7 @@
                         <th> Power      </th>
                         <th> Health     </th>
                         <th> Price      </th>
-                        <th> Quantity   </th>
+                        <th> Qt.   </th>
                         <th class="text-center"> Actions</th>
                     </tr>
                 </thead>
@@ -32,7 +32,12 @@
                         <tr>
                             @if (item.CardData.HasTransform == false)
                             {
-                                <td><a class="btn btn-secondary" asp-controller="Collection" asp-action="Details" asp-route-set="@item.CardData.SetCode" asp-route-number="@item.CardData.CollectionNumber">info</a></td>
+                                <td>
+                                    <a asp-controller="Collection" asp-action="Details" asp-route-set="@item.CardData.SetCode" asp-route-number="@item.CardData.CollectionNumber">
+                                        <i class="icon-help-with-circle" ></i>
+                                    </a>
+                                </td>
+                                
                                 <td> @Html.DisplayFor(modelItem => item.CardData.Name)            </td>
                                 <td> @Html.DisplayFor(modelItem => item.CardData.Rarity)                        </td>
                                 <td> @Html.DisplayFor(modelItem => item.CardData.Type)                     </td>
@@ -80,7 +85,11 @@
                             } 
                             else
                             {
-                                <td><a class="btn btn-secondary" asp-controller="Collection" asp-action="Details" asp-route-set="@item.CardData.SetCode" asp-route-number="@item.CardData.CollectionNumber">info</a></td>
+                                <td>
+                                    <a asp-controller="Collection" asp-action="Details" asp-route-set="@item.CardData.SetCode" asp-route-number="@item.CardData.CollectionNumber">
+                                        <i class="icon-help-with-circle" ></i>
+                                    </a>                                
+                                </td>
                                 <td> @item.CardData.Name <br/> @item.CardData.Transform_Name                          </td>
                                 <td> @Html.DisplayFor(modelItem => item.CardData.Rarity)                        </td>
                                 <td> @Html.DisplayFor(modelItem => item.CardData.Type)<br />
@@ -119,9 +128,9 @@
                                 <td> @Html.DisplayFor(modelItem => item.Quantity)                           </td>
                                 <td class="text-center">
 
-                                    <a class="btn btn-success" asp-controller="Collection" asp-action="Increase" asp-route-cardid="@item.CardData.CardId">+</a>
-                                    <a class="btn btn-primary" asp-controller="Collection" asp-action="Decrease" asp-route-cardid="@item.CardData.CardId">-</a>
-                                    <a class="btn btn-danger"  asp-controller="Collection" asp-action="Remove"   asp-route-cardid="@item.CardData.CardId">x</a>
+                                    <a class="btn btn-sm btn-success h-100" asp-controller="Collection" asp-action="Increase" asp-route-cardid="@item.CardData.CardId">+</a>
+                                    <a class="btn btn-sm btn-primary" asp-controller="Collection" asp-action="Decrease" asp-route-cardid="@item.CardData.CardId">-</a>
+                                    <a class="btn btn-sm btn-danger"  asp-controller="Collection" asp-action="Remove"   asp-route-cardid="@item.CardData.CardId">x</a>
                 
                                 </td>
                             </tr>
@@ -130,9 +139,10 @@
             </table>
         </div>
           
+
     @if (ViewBag.TotalPages > 1)
     {
-        <div class="d-flex justify-content-center">
+        <div class="row justify-content-center w-100 pt-3">
             <partial-pagination page-count="@ViewBag.TotalPages" 
             page-onclick-event="getCards" 
             page-number="@ViewBag.PageNumber" page-range="@ViewBag.PageRange/2"></partial-pagination>

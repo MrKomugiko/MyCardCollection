@@ -25,7 +25,7 @@
                             </div>
                         </div>
                    </div>
-           <div class="container" style="min-height:calc(100vh - 30vh)">
+           <div class="container" style="min-height:calc(100vh - 20vh)">
             <div class="row align-items-center">
                 <div class="col-12 mb-3 mt-3  position-relative">
         <div class="row">
@@ -77,17 +77,17 @@
 
 
     <div class="row">
-        <div class="form-inline pull-left col-md-6 col-sm-12">
+        <div class="pull-left col-md-6 col-sm-12">
             <input type="text" class="form-control" id="textSearch" placeholder="Search card from collection..." />
         </div>
         <div class=col-sm-12>
             <div class="row">
                <div class="col-md-6 col-sm-12" id="cardsGrid">
-                   TEST
+                   Loading... Collection
                </div>
 
                <div class="col-md-6 col-sm-12" id="cardsGrid_deck">
-                   TEST 2
+                   Loading... Deck
                </div>
             </div>
         </div>
@@ -121,7 +121,7 @@
         * Mythics:  @ViewBag.Mythics <br />
     </div>*@
 
-<div class="toast-container">
+<div class="toast-container" style="pointer-events: none;">
   
     <!-- Toast -->
 
@@ -223,7 +223,9 @@
             $("#image-when-hovering-text")
                 .css("position", "absolute")
                 .css("top", (e.pageY - yOff) + "px")
-                .css("left", (e.pageX + xOff) + "px");
+                .css("left", (e.pageX + xOff) + "px")
+                .css("z-index",3)
+                .css("border-radius","10px");
             },
 
             function () {
@@ -233,7 +235,9 @@
                 $(".text-hover-image").mousemove(function (e) {
                     $("#image-when-hovering-text")
                         .css("top", (e.pageY - yOff) + "px")
-                        .css("left", (e.pageX + xOff) + "px");
+                        .css("left", (e.pageX + xOff) + "px")
+                        .css("z-index",3)
+                        .css("border-radius","10px");
                 });
             });
         }
