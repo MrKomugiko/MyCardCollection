@@ -66,7 +66,7 @@ namespace MyCardCollection.Controllers
             return View(model);
         }
 
-        [Authorize]
+        // [Authorize]
         [Route("OwnedSets")]
         public async Task<IActionResult> Index(int page = 1, bool owned = true)
         {
@@ -129,6 +129,16 @@ namespace MyCardCollection.Controllers
                             Card = new CardData(card_raw)
                         });
   
+            }
+
+            ViewBag.OwnedCards = new HashSet<string>();
+
+            if(User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var cardsInSet = new HashSet<string>(await _collectionRepository.GetCollectedCardIdFromSet(userId, set));
+
+                ViewBag.OwnedCards = cardsInSet;
             }
             return View(listCards);
         }

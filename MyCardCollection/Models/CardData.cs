@@ -37,10 +37,20 @@ namespace MyCardCollection.Models
             {
                 Name = CardObject.Name;
                 Type = CardObject.type_line;
-                Health = CardObject.toughness != null ? int.Parse(CardObject.toughness) : null;
+                try
+                {
+                    Health = CardObject.toughness != null ? int.Parse(CardObject.toughness) : null;
+                    
+                }
+                catch (Exception)
+                {
+                    // ex. MID 177
+                    // card atk, hp depends on effect */*+1
+               
+                }
                 Power = CardObject.power != null ? int.Parse(CardObject.power) : null;
                 Mana_Cost = CardObject.mana_cost;
-                ImageURL = CardObject.image_uris.normal;
+                ImageURL = CardObject.image_uris != null?CardObject.image_uris.normal: "image not found";
                 ImageURLCropped = CardObject.image_uris.art_crop;
                 Description = CardObject.oracle_text;
                 FlavorDescription = CardObject.flavor_text;
@@ -72,8 +82,8 @@ namespace MyCardCollection.Models
                 Health = CardObject.card_faces[0].toughness != null ? int.Parse(CardObject.card_faces[0].toughness) : null;
                 Power = CardObject.card_faces[0].power != null ? int.Parse(CardObject.card_faces[0].power) : null;
                 Mana_Cost = CardObject.card_faces[0].mana_cost;
-                ImageURL = CardObject.card_faces[0].image_uris.normal;
-                ImageURLCropped = CardObject.card_faces[0].image_uris.art_crop;
+                ImageURL = CardObject.card_faces[0].image_uris != null ? CardObject.card_faces[0].image_uris.normal : null;
+                ImageURLCropped = CardObject.card_faces[0].image_uris != null ? CardObject.card_faces[0].image_uris.art_crop : null;
                 Description = CardObject.card_faces[0].oracle_text;
                 FlavorDescription = CardObject.card_faces[0].flavor_text;
 
@@ -83,8 +93,8 @@ namespace MyCardCollection.Models
                 Transform_Health = CardObject.card_faces[1].toughness != null ? int.Parse(CardObject.card_faces[1].toughness) : null;
                 Transform_Power = CardObject.card_faces[1].power != null ? int.Parse(CardObject.card_faces[1].power) : null;
                 Mana_Cost = CardObject.card_faces[1].mana_cost;
-                Transform_ImageURL = CardObject.card_faces[1].image_uris.normal;
-                Transform_ImageURLCropped = CardObject.card_faces[1].image_uris.art_crop;
+                Transform_ImageURL = CardObject.card_faces[1].image_uris != null ?  CardObject.card_faces[1].image_uris.normal : null;
+                Transform_ImageURLCropped = CardObject.card_faces[1].image_uris != null ?  CardObject.card_faces[1].image_uris.art_crop : null;
                 Transform_Description = CardObject.card_faces[1].oracle_text;
                 Transform_FlavorDescription = CardObject.card_faces[1].flavor_text;
             }

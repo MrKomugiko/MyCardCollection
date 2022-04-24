@@ -11,7 +11,6 @@
 
         <div class="custom-control custom-switch mx-2" style="display:@if (isAuthenticated == false) {<text>none</text>} else {<text>block</text>}; 
             margin-left:auto; margin-right:auto; text-align:right;">
-
           <input onchange="switchToColelctedOnly(this)" type="checkbox" class="custom-control-input" id="customSwitch1" @if(!ViewBag.DisplayAll){<text>checked</text>}>
           <label class="custom-control-label" for="customSwitch1">Only collected.</label>
         </div>
@@ -116,7 +115,7 @@
                           <div class="row justify-content-center">
                             <div class="col-auto">
                                 <pagination page-count="@ViewBag.TotalPages"
-                                page-target="@if(ViewBag.DisplayAll == false) {<text>Home</text>} else {<text>OwnedSets</text>}" page-number="@ViewBag.CurrentPage" 
+                                page-target="@if(ViewBag.DisplayAll == true) {<text>Home</text>} else {<text>OwnedSets</text>}" page-number="@ViewBag.CurrentPage" 
                                 extra-param="&"
                                 page-range="@ViewBag.PageSize"></pagination>
                             </div>
@@ -136,8 +135,7 @@
                if(object.checked)
                {
                    console.log("turn ON, show only collected sets");
-                   var x= location.href+"OwnedSets";
-                   window.location.href = x;
+                   window.location.href = "OwnedSets";
                }
                else
                {

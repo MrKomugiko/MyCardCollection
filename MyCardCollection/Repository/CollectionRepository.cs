@@ -170,6 +170,18 @@ namespace MyCardCollection.Services
                 .ToDictionary(x=>x.Key, x=>x.Value);
         }
 
+        public async Task<IEnumerable<string>> GetCollectedCardIdFromSet(string _userId, string set)
+        {
+            string cacheKey = _userId + "Collection";
+            if (!_cacheService.TryGetValue<List<CardsCollection>>(cacheKey, out var data))
+            {
+                data = await GetCardsFromCollection(_userId);
+                _cacheService.Set(cacheKey, data);
+            }
+            return data.Where(x=>x.CardData.SetCode == set)
+                .Select(x => x.CardId);
+        }
+
         //-------------------------------------------------------------------
 
 
