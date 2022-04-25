@@ -1,91 +1,520 @@
-﻿@model int
+﻿@using MyCardCollection.ViewModel
+@using Newtonsoft.Json
+@model DeckStatisticsViewModel
 
+<style>
+    p, h1, h2, h3, h4, h5 {
+        color: black !important;
+    } 
+    .mtg-mana-white {
+    width: 15px;
+    height: 15px;
+    margin-top: 4px;
+    background-color: goldenrod; /* defines the background color of the image */
+    mask: url(https://images.ctfassets.net/s5n2t79q9icq/7misDwf4mwnXghCh5vkGw6/0debf7ae3f13d0e706b5df8cbdbe2172/plain.svg) no-repeat center / contain;
+    -webkit-mask: url(https://images.ctfassets.net/s5n2t79q9icq/7misDwf4mwnXghCh5vkGw6/0debf7ae3f13d0e706b5df8cbdbe2172/plain.svg) no-repeat center / contain;
+}
+.mtg-mana-black {
+    width: 15px;
+    height: 15px;
+    margin-top: 4px;
+    background-color: rebeccapurple; /* defines the background color of the image */
+    mask: url(https://images.ctfassets.net/s5n2t79q9icq/45958FxkGokQAacUNVQ1Bh/a611cf3f197e9a8352fd2fe591097704/swamp.svg) no-repeat center / contain;
+    -webkit-mask: url(https://images.ctfassets.net/s5n2t79q9icq/45958FxkGokQAacUNVQ1Bh/a611cf3f197e9a8352fd2fe591097704/swamp.svg) no-repeat center / contain;
+}
+.mtg-mana-red {
+    width: 15px;
+    height: 15px;
+    margin-top: 4px;
+    background-color: darkred; /* defines the background color of the image */
+    mask: url(https://images.ctfassets.net/s5n2t79q9icq/192VSSLFeZSzAKZGOXrHCG/dec6be6eb6a80a40e156ecbf2cd385cf/mountain.svg) no-repeat center / contain;
+    -webkit-mask: url(https://images.ctfassets.net/s5n2t79q9icq/192VSSLFeZSzAKZGOXrHCG/dec6be6eb6a80a40e156ecbf2cd385cf/mountain.svg) no-repeat center / contain;
+}
+.mtg-mana-green {
+    width: 15px;
+    height: 15px;
+    margin-top: 4px;
+    background-color: forestgreen; /* defines the background color of the image */
+    mask: url(https://images.ctfassets.net/s5n2t79q9icq/1wrQKxhCNchqYyDOMG9mm3/26e51f7d9e0bc20874b004cd4b93568c/forest.svg) no-repeat center / contain;
+    -webkit-mask: url(https://images.ctfassets.net/s5n2t79q9icq/1wrQKxhCNchqYyDOMG9mm3/26e51f7d9e0bc20874b004cd4b93568c/forest.svg) no-repeat center / contain;
+}
+.mtg-mana-blue {
+    width: 15px;
+    height: 15px;
+    margin-top: 4px;
+    background-color: royalblue; /* defines the background color of the image */
+    mask: url(https://images.ctfassets.net/s5n2t79q9icq/4HiU35WSbQDiLxLGyGlipf/1c3f9bb830d2f6c4299c30b974d27fc3/water.svg) no-repeat center / contain;
+    -webkit-mask: url(https://images.ctfassets.net/s5n2t79q9icq/4HiU35WSbQDiLxLGyGlipf/1c3f9bb830d2f6c4299c30b974d27fc3/water.svg) no-repeat center / contain;
+}
+</style>
 <div>
-    <h1 style="color:black;"> Deck statistics and simple overview land HERE</h1>
-    <h3 style="color:black;"> Inspecting deck id: @Model</h3>
+    <h1 > <b> @Model.DeckName</b></h1>
+    <p > ID: @Model.DeckId</p>
+    <p > Cards: @Model.Size</p>
+    <p > Owner: @Model.OwnerId</p>
 
+    @{
+        IEnumerable<(int Quantity, CardData data)> DATA = Model.Cards;
+        var PLANESWALKERS = DATA.Where(x=>x.data.Type.Contains("Planeswalker")).ToList();
+        var CREATURES = DATA.Where(x=>x.data.Type.Contains("Creature")).ToList();
+        var INSTANTS = DATA.Where(x=>x.data.Type.Contains("Instant")).ToList();
+        var ENCHANTMENTS = DATA.Where(x=>x.data.Type.Contains("Enchantment")).ToList();
+        var SORCERIES = DATA.Where(x=>x.data.Type.Contains("Sorcery")).ToList();
+        var ARTIFACTS = DATA.Where(x=>x.data.Type.Contains("Artifact")).ToList();
+        var LANDS = DATA.Where(x=>x.data.Type.Contains("Land")).ToList();
+      
+    }
+    <div class="accordion w-75" style="display:block; margin-left:auto; margin-right:auto; max-height:fit-content;" id="accordion-1" data-children=".accordion-item">
+       
+        <!-- PLANESWALKER -->
+        <div class="accordion-item" style="color: black;">
+            <a  style="color:black;" data-toggle="collapse" data-parent="#accordion-1" href="#accordion-panel-planeswalker" aria-expanded="true" aria-controls="accordion-1">
+                <i><img src="https://mtgmeta.io/assets/media/manasvg/planeswalker.svg" alt="planeswalker" title="planeswalker"> </i> 
+                <div>Planeswalkers [<b>@PLANESWALKERS.Count()x</b>]</div>
+                <i class="h5 icon-chevron-small-right"></i>
+            </a>
+             <div id="accordion-panel-planeswalker" class="collapse" role="tabpanel">
+                 <ul class="list-unstyled">
+                     @foreach(var card in PLANESWALKERS)
+                     {
+                        <li class="text-small row">
+                            <div class="col-2"> @card.Quantity </div>
+                            <div> @card.data.Name </div>
+                        </li>
+                     }
+                </ul>
+             </div>
+        </div>
+        <!-- CREATURES -->
+        <div class="accordion-item" style="color: black;">
+            <a  style="color:black;" data-toggle="collapse" data-parent="#accordion-1" href="#accordion-panel-creature" aria-expanded="true" aria-controls="accordion-1">
+                <i><img src="https://mtgmeta.io/assets/media/manasvg/creature.svg" alt="creature" title="creature"> </i> 
+                <div>Creatures [<b>@CREATURES.Count()x</b>]</div>
+                <i class="h5 icon-chevron-small-right"></i>
+            </a>
+             <div id="accordion-panel-creature" class="collapse" role="tabpanel">
+                 <ul class="list-unstyled">
+                     @foreach(var card in CREATURES)
+                     {
+                        <li class="text-small row">
+                            <div class="col-2"> @card.Quantity </div>
+                            <div class="col-5"> @card.data.Name </div>
+                            <div class="col-2"> @card.data.Power / @card.data.Health </div>
+                            <div class="col-3"> 
+                                <div class="row">
+                                @{
+                                    string[] colorArray = card.data.Mana_Cost.Replace("}", "").Split("{");
+                                    foreach(var color in colorArray)
+                                    {
+                                        switch(color)
+                                        {
+                                            case "W": <div class="mtg-mana-white"></div> break;
+                                            case "R": <div class="mtg-mana-red"></div> break;
+                                            case "B": <div class="mtg-mana-blue"></div> break;
+                                            case "G": <div class="mtg-mana-green"></div> break;
+                                            case "U": <div class="mtg-mana-blue"></div> break;
+                                            default: // numbers
+
+                                                        int result= -1;
+
+                                                        if(Int32.TryParse(color,out result))
+                                                        {
+                                                            <text>[@color] </text>
+                                                        }
+                                                break;
+                                            }
+                                        }
+                                }
+                                </div>
+                            </div>
+                        </li>
+                     }
+                </ul>
+             </div>
+        </div>
+        <!-- INSTANTS -->
+        <div class="accordion-item" style="color: black;">
+            <a  style="color:black;" data-toggle="collapse" data-parent="#accordion-1" href="#accordion-panel-instant" aria-expanded="true" aria-controls="accordion-1">
+                <i><img src="https://mtgmeta.io/assets/media/manasvg/instant.svg" alt="instant" title="instant"> </i> 
+                <div>Instants [<b>@INSTANTS.Count()x</b>]</div>
+                <i class="h5 icon-chevron-small-right"></i>
+            </a>
+             <div id="accordion-panel-instant" class="collapse" role="tabpanel">
+                 <ul class="list-unstyled">
+                     @foreach(var card in INSTANTS)
+                     {
+                        <li class="text-small row">
+                            <div class="col-2"> @card.Quantity </div>
+                            <div> @card.data.Name </div>
+                        </li>
+                     }
+                </ul>
+             </div>
+        </div>
+        <!-- ENCHANTMENTS -->
+        <div class="accordion-item" style="color: black;">
+            <a  style="color:black;" data-toggle="collapse" data-parent="#accordion-1" href="#accordion-panel-enchantment" aria-expanded="true" aria-controls="accordion-1">
+                <i><img src="https://mtgmeta.io/assets/media/manasvg/enchantment.svg" alt="enchantment" title="enchantment"> </i> 
+                <div>Enchantments [<b>@ENCHANTMENTS.Count()x</b>]</div>
+                <i class="h5 icon-chevron-small-right"></i>
+            </a>
+             <div id="accordion-panel-enchantment" class="collapse" role="tabpanel">
+                 <ul class="list-unstyled">
+                     @foreach(var card in ENCHANTMENTS)
+                     {
+                        <li class="text-small row">
+                            <div class="col-2"> @card.Quantity </div>
+                            <div> @card.data.Name </div>
+                        </li>
+                     }
+                </ul>
+             </div>
+        </div>
+        <!-- SORCERIES -->
+        <div class="accordion-item" style="color: black;">
+            <a style="color:black;"  data-toggle="collapse" data-parent="#accordion-1" href="#accordion-panel-land" aria-expanded="true" aria-controls="accordion-1">
+                <i><img src="https://mtgmeta.io/assets/media/manasvg/sorcery.svg" alt="sorcery" title="sorcery"> </i> 
+                <div>Sorceries [<b>@SORCERIES.Count()x</b>]</div>
+                <i class="h5 icon-chevron-small-right"></i>
+            </a>
+             <div id="accordion-panel-sorcery" class="collapse" role="tabpanel">
+                 <ul class="list-unstyled">
+                     @foreach(var card in SORCERIES)
+                     {
+                        <li class="text-small row">
+                            <div class="col-2"> @card.Quantity </div>
+                            <div> @card.data.Name </div>
+                        </li>
+                     }
+                </ul>
+             </div>
+        </div>
+        <!-- ARTIFACTS -->
+        <div class="accordion-item" style="color: black;">
+            <a  style="color:black;" data-toggle="collapse" data-parent="#accordion-1" href="#accordion-panel-artifact" aria-expanded="true" aria-controls="accordion-1">
+                <i><img src="https://mtgmeta.io/assets/media/manasvg/artifact.svg" alt="artifact" title="artifact"> </i> 
+                <div>Artifacts [<b>@ARTIFACTS.Count()x</b>]</div>
+                <i class="h5 icon-chevron-small-right"></i>
+            </a>
+             <div id="accordion-panel-artifact" class="collapse" role="tabpanel">
+                 <ul class="list-unstyled">
+                     @foreach(var card in ARTIFACTS)
+                     {
+                        <li class="text-small row">
+                            <div class="col-2"> @card.Quantity </div>
+                            <div> @card.data.Name </div>
+                        </li>
+                     }
+                </ul>
+             </div>
+        </div>
+        <!-- LANDS -->
+        <div class="accordion-item" style="color: black;">
+            <a style="color:black;"  data-toggle="collapse" data-parent="#accordion-1" href="#accordion-panel-land" aria-expanded="true" aria-controls="accordion-1">
+                <i><img src="https://mtgmeta.io/assets/media/manasvg/land.svg" alt="lands" title="lands"> </i> 
+                <div>Lands [<b>@LANDS.Count()x</b>]</div>
+                <i class="h5 icon-chevron-small-right"></i>
+            </a>
+             <div id="accordion-panel-land" class="collapse" role="tabpanel">
+                 <ul class="list-unstyled">
+                     @foreach(var card in LANDS)
+                     {
+                        <li class="text-small row">
+                            <div class="col-2"> @card.Quantity </div>
+                            <div> @card.data.Name </div>
+                        </li>
+                     }
+                </ul>
+             </div>
+        </div>
+    </div>
+
+@*
+
+    <ul class="sampledecklist tlistactive deckzone singledeck " aria-label="sample decklist" data-deckname="orzhov midrange">
+<li class="pname">Sample decklist</li><p class="card__separator"><img src="https://mtgmeta.io/assets/media/manasvg/land.svg" alt="lands" title="lands">Lands (24)</p><li data-qt="1" data-main="1" data-name="Plains" data-cmc="0" data-split="0"><div class="value">1</div><a href="https://mtgmeta.io/cards/plains" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/1/d/1d7dba1c-a702-43c0-8fca-e47bbad4a00f.jpg?1565989378" data-tooltip="ctip_0_1650920183201">
+Plains
+</a><div class="manacost"></div><div class="price">0.01$</div>
+</li><li data-qt="4" data-main="1" data-name="Brightclimb Pathway" data-cmc="0" data-split="3"><div class="value">4</div><a href="https://mtgmeta.io/cards/brightclimb-pathway" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/d/2/d24c3d51-795d-4c01-a34a-3280fccd2d78.jpg?1636057731" data-doublecimg="https://c1.scryfall.com/file/scryfall-cards/normal/back/d/2/d24c3d51-795d-4c01-a34a-3280fccd2d78.jpg?1636057731" data-tooltip="ctip_1_1650920183201">
+Brightclimb Pathway
+</a><div cla!importants="manacost"></div><div class="price">21.96$</div>
+</li><li data-qt="4" data-main="1" data-name="Needleverge Pathway" data-cmc="0" data-split="3"><div class="value">4</div><a href="https://mtgmeta.io/cards/needleverge-pathway" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/6/5/6559047e-6ede-4815-a3a0-389062094f9d.jpg?1636057746" data-doublecimg="https://c1.scryfall.com/file/scryfall-cards/normal/back/6/5/6559047e-6ede-4815-a3a0-389062094f9d.jpg?1636057746" data-tooltip="ctip_2_1650920183201">
+Needleverge Pathway
+</a><div class="manacost"></div><div class="price">29.96$</div>
+</li><li data-qt="4" data-main="1" data-name="Blightstep Pathway" data-cmc="0" data-split="3"><div class="value">4</div><a href="https://mtgmeta.io/cards/blightstep-pathway" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/0/c/0ce39a19-f51d-4a35-ae80-5b82eb15fcff.jpg?1636057723" data-doublecimg="https://c1.scryfall.com/file/scryfall-cards/normal/back/0/c/0ce39a19-f51d-4a35-ae80-5b82eb15fcff.jpg?1636057723" data-tooltip="ctip_3_1650920183201">
+Blightstep Pathway
+</a><div class="manacost"></div><div class="price">29.96$</div>
+</li><li data-qt="2" data-main="1" data-name="Hive of the Eye Tyrant" data-cmc="0" data-split="0"><div class="value">2</div><a href="https://mtgmeta.io/cards/hive-of-the-eye-tyrant" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/9/e/9eb391dc-0378-4793-a5de-899b09792a4b.jpg?1627710306" data-tooltip="ctip_4_1650920183201">
+Hive of the Eye Tyrant
+</a><div class="manacost"></div><div class="price">8.98$</div>
+</li><li data-qt="2" data-main="1" data-name="Haunted Ridge" data-cmc="0" data-split="0"><div class="value">2</div><a href="https://mtgmeta.io/cards/haunted-ridge" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/b/2/b200e822-be36-4e59-bd0e-9d0188a68df8.jpg?1630695839" data-tooltip="ctip_5_1650920183201">
+Haunted Ridge
+</a><div class="manacost"></div><div class="price">19.98$</div>
+</li><li data-qt="2" data-main="1" data-name="Sundown Pass" data-cmc="0" data-split="0"><div class="value">2</div><a href="https://mtgmeta.io/cards/sundown-pass" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/8/f/8f3fddd7-ede4-41c7-a645-a6af298a3d35.jpg?1635449927" data-tooltip="ctip_6_1650920183201">
+Sundown Pass
+</a><div class="manacost"></div><div class="price">17.98$</div>
+</li><li data-qt="2" data-main="1" data-name="Shattered Sanctum" data-cmc="0" data-split="0"><div class="value">2</div><a href="https://mtgmeta.io/cards/shattered-sanctum" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/a/d/ad44c9aa-eb8f-4200-8dfe-2af728d80083.jpg?1635449783" data-tooltip="ctip_7_1650920183201">
+Shattered Sanctum
+</a><div class="manacost"></div><div class="price">18.98$</div>
+</li><li data-qt="1" data-main="1" data-name="Takenuma, Abandoned Mire" data-cmc="0" data-split="0"><div class="value">1</div><a href="https://mtgmeta.io/cards/takenuma-abandoned-mire" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/4/9/499037cc-a577-41cb-8ca2-5e117945634f.jpg?1643947062" data-tooltip="ctip_8_1650920183201">
+Takenuma, Abandoned Mire
+</a><div class="manacost"></div><div class="price">5.99$</div>
+</li><li data-qt="1" data-main="1" data-name="Sokenzan, Crucible of Defiance" data-cmc="0" data-split="0"><div class="value">1</div><a href="https://mtgmeta.io/cards/sokenzan-crucible-of-defiance" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/a/a/aa548dcd-c1dd-492d-a69f-c65dfeef0633.jpg?1643634261" data-tooltip="ctip_9_1650920183202">
+Sokenzan, Crucible of Defiance
+</a><div class="manacost"></div><div class="price">2.49$</div>
+</li><li data-qt="1" data-main="1" data-name="Eiganjo, Seat of the Empire" data-cmc="0" data-split="0"><div class="value">1</div><a href="https://mtgmeta.io/cards/eiganjo-seat-of-the-empire" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/c/3/c375a022-5b57-496d-a802-e4ea8376e9e4.jpg?1643947076" data-tooltip="ctip_10_1650920183202">
+Eiganjo, Seat of the Empire
+</a><div class="manacost"></div><div class="price">5.99$</div>
+</li><p class="card__separator"><img src="https://mtgmeta.io/assets/media/manasvg/planeswalker.svg" alt="planeswalker" title="planeswalker">Planeswalkers (6)</p><li data-qt="4" data-main="1" data-name="The Wandering Emperor" data-cmc="4" data-split="0"><div class="value">4</div><a href="https://mtgmeta.io/cards/the-wandering-emperor" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/f/a/fab2d8a9-ab4c-4225-a570-22636293c17d.jpg?1644931244" data-tooltip="ctip_11_1650920183202">
+The Wandering Emperor
+</a><div class="manacost"><i class="mana mana-2"></i><i class="mana mana-w"></i><i class="mana mana-w"></i></div><div class="price">171.96$</div>
+</li><li data-qt="2" data-main="1" data-name="Lolth, Spider Queen" data-cmc="5" data-split="0"><div class="value">2</div><a href="https://mtgmeta.io/cards/lolth-spider-queen" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/4/2/420a5689-d73e-4dda-82fd-8b8897ff5b55.jpg?1628185302" data-tooltip="ctip_12_1650920183202">
+Lolth, Spider Queen
+</a><div class="manacost"><i class="mana mana-3"></i><i class="mana mana-b"></i><i class="mana mana-b"></i></div><div class="price">37.98$</div>
+</li><p class="card__separator"><img src="https://mtgmeta.io/assets/media/manasvg/creature.svg" alt="creatures" title="creatures">Creatures (9)</p><li data-qt="4" data-main="1" data-name="Luminarch Aspirant" data-cmc="2" data-split="0"><div class="value">4</div><a href="https://mtgmeta.io/cards/luminarch-aspirant" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/f/e/fe964e7e-e2c5-4263-889d-0a531eb51442.jpg?1604192525" data-tooltip="ctip_13_1650920183202">
+Luminarch Aspirant
+</a><div class="manacost"><i class="mana mana-1"></i><i class="mana mana-w"></i></div><div class="price">2.36$</div>
+</li><li data-qt="2" data-main="1" data-name="Valki, God of Lies" data-cmc="2" data-split="3"><div class="value">2</div><a href="https://mtgmeta.io/cards/valki-god-of-lies" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/e/a/ea7e4c65-b4c4-4795-9475-3cba71c50ea5.jpg?1636100811" data-doublecimg="https://c1.scryfall.com/file/scryfall-cards/normal/back/e/a/ea7e4c65-b4c4-4795-9475-3cba71c50ea5.jpg?1636100811" data-tooltip="ctip_14_1650920183202">
+Valki, God of Lies
+</a><div class="manacost"><i class="mana mana-1"></i><i class="mana mana-b"></i></div><div class="price">31.98$</div>
+</li><li data-qt="3" data-main="1" data-name="Graveyard Trespasser" data-cmc="3" data-split="2"><div class="value">3</div><a href="https://mtgmeta.io/cards/graveyard-trespasser" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/d/a/daa2a273-488f-4285-a069-ad159ad2d393.jpg?1634347903" data-doublecimg="https://c1.scryfall.com/file/scryfall-cards/normal/back/d/a/daa2a273-488f-4285-a069-ad159ad2d393.jpg?1634347903" data-tooltip="ctip_15_1650920183202">
+Graveyard Trespasser
+</a><div class="manacost"><i class="mana mana-2"></i><i class="mana mana-b"></i></div><div class="price">4.47$</div>
+</li><p class="card__separator"><img src="https://mtgmeta.io/assets/media/manasvg/instant.svg" alt="instants" title="instants">Instants (4)</p><li data-qt="4" data-main="1" data-name="Vanishing Verse" data-cmc="2" data-split="0"><div class="value">4</div><a href="https://mtgmeta.io/cards/vanishing-verse" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/e/1/e12573fe-aee3-49db-93e2-d00972cbb3b1.jpg?1624740338" data-tooltip="ctip_16_1650920183202">
+Vanishing Verse
+</a><div class="manacost"><i class="mana mana-w"></i><i class="mana mana-b"></i></div><div class="price">13.96$</div>
+</li><p class="card__separator"><img src="https://mtgmeta.io/assets/media/manasvg/sorcery.svg" alt="sorceries" title="sorceries">Sorceries (2)</p><li data-qt="2" data-main="1" data-name="Emeria's Call" data-cmc="7" data-split="3"><div class="value">2</div><a href="https://mtgmeta.io/cards/emerias-call" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/c/4/c470539a-9cc7-4175-8f7c-c982b6072b6d.jpg?1604195709" data-doublecimg="https://c1.scryfall.com/file/scryfall-cards/normal/back/c/4/c470539a-9cc7-4175-8f7c-c982b6072b6d.jpg?1604195709" data-tooltip="ctip_17_1650920183202">
+Emeria's Call
+</a><div class="manacost"><i class="mana mana-4"></i><i class="mana mana-w"></i><i class="mana mana-w"></i><i class="mana mana-w"></i></div><div class="price">11.98$</div>
+</li><p class="card__separator"><img src="https://mtgmeta.io/assets/media/manasvg/artifact.svg" alt="artifacts" title="artifacts">Artifacts (2)</p><li data-qt="2" data-main="1" data-name="Reckoner Bankbuster" data-cmc="2" data-split="0"><div class="value">2</div><a href="https://mtgmeta.io/cards/reckoner-bankbuster" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/2/7/279acd17-6c17-427b-a69d-fc02442ff4a3.jpg?1643759771" data-tooltip="ctip_18_1650920183202">
+Reckoner Bankbuster
+</a><div class="manacost"><i class="mana mana-2"></i></div><div class="price">2.98$</div>
+</li><p class="card__separator"><img src="https://mtgmeta.io/assets/media/manasvg/enchantment.svg" alt="enchantment" title="enchantment">Enchantments (13)</p><li data-qt="3" data-main="1" data-name="The Meathook Massacre" data-cmc="2" data-split="0"><div class="value">3</div><a href="https://mtgmeta.io/cards/the-meathook-massacre" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/0/8/08950015-eee5-4327-888c-82dfd13bb9ad.jpg?1634350016" data-tooltip="ctip_19_1650920183202">
+The Meathook Massacre
+</a><div class="manacost"><i class="mana mana-x"></i><i class="mana mana-b"></i><i class="mana mana-b"></i></div><div class="price">224.97$</div>
+</li><li data-qt="4" data-main="1" data-name="Wedding Announcement" data-cmc="3" data-split="2"><div class="value">4</div><a href="https://mtgmeta.io/cards/wedding-announcement" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/2/c/2c3ddb1f-a1de-4fea-9042-5e9caa16ceb2.jpg?1636127086" data-doublecimg="https://c1.scryfall.com/file/scryfall-cards/normal/back/2/c/2c3ddb1f-a1de-4fea-9042-5e9caa16ceb2.jpg?1636127086" data-tooltip="ctip_20_1650920183202">
+Wedding Announcement
+</a><div class="manacost"><i class="mana mana-2"></i><i class="mana mana-w"></i></div><div class="price">11.96$</div>
+</li><li data-qt="4" data-main="1" data-name="Fable of the Mirror-Breaker" data-cmc="3" data-split="2"><div class="value">4</div><a href="https://mtgmeta.io/cards/fable-of-the-mirror-breaker" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/2/4/24c0d87b-0049-4beb-b9cb-6f813b7aa7dc.jpg?1644088621" data-doublecimg="https://c1.scryfall.com/file/scryfall-cards/normal/back/2/4/24c0d87b-0049-4beb-b9cb-6f813b7aa7dc.jpg?1644088621" data-tooltip="ctip_21_1650920183202">
+Fable of the Mirror-Breaker
+</a><div class="manacost"><i class="mana mana-2"></i><i class="mana mana-r"></i></div><div class="price">29.96$</div>
+</li><li data-qt="2" data-main="1" data-name="Showdown of the Skalds" data-cmc="4" data-split="0"><div class="value">2</div><a href="https://mtgmeta.io/cards/showdown-of-the-skalds" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/3/d/3d9d840e-1f13-44e3-a4de-903cfa58a346.jpg?1631051876" data-tooltip="ctip_22_1650920183202">
+Showdown of the Skalds
+</a><div class="manacost"><i class="mana mana-2"></i><i class="mana mana-r"></i><i class="mana mana-w"></i></div><div class="price">3.98$</div>
+</li><p>60 cards</p><li class="sideboard">Sideboard</li><li data-qt="2" data-main="0" data-name="Ray of Enfeeblement" data-cmc="1" data-split="0"><div class="value">2</div><a href="https://mtgmeta.io/cards/ray-of-enfeeblement" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/f/f/ff5d948b-fd89-4b90-9b63-ad7da13b5f0e.jpg?1627705288" data-tooltip="ctip_23_1650920183202">
+Ray of Enfeeblement
+</a><div class="manacost"><i class="mana mana-b"></i></div><div class="price">0.5$</div>
+</li><li data-qt="3" data-main="0" data-name="Duress" data-cmc="1" data-split="0"><div class="value">3</div><a href="https://mtgmeta.io/cards/duress" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/7/e/7e1445d6-ae16-492c-a378-d3aa5746c610.jpg?1562465420" data-tooltip="ctip_24_1650920183202">
+Duress
+</a><div class="manacost"><i class="mana mana-b"></i></div><div class="price">0.75$</div>
+</li><li data-qt="1" data-main="0" data-name="Reckoner Bankbuster" data-cmc="2" data-split="0"><div class="value">1</div><a href="https://mtgmeta.io/cards/reckoner-bankbuster" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/2/7/279acd17-6c17-427b-a69d-fc02442ff4a3.jpg?1643759771" data-tooltip="ctip_25_1650920183202">
+Reckoner Bankbuster
+</a><div class="manacost"><i class="mana mana-2"></i></div><div class="price">1.49$</div>
+</li><li data-qt="2" data-main="0" data-name="Curse of Shaken Faith" data-cmc="2" data-split="0"><div class="value">2</div><a href="https://mtgmeta.io/cards/curse-of-shaken-faith" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/3/7/371b7795-5cfc-4e2b-b26c-2def52c61dbf.jpg?1634350529" data-tooltip="ctip_26_1650920183202">
+Curse of Shaken Faith
+</a><div class="manacost"><i class="mana mana-1"></i><i class="mana mana-r"></i></div><div class="price">0.98$</div>
+</li><li data-qt="1" data-main="0" data-name="The Meathook Massacre" data-cmc="2" data-split="0"><div class="value">1</div><a href="https://mtgmeta.io/cards/the-meathook-massacre" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/0/8/08950015-eee5-4327-888c-82dfd13bb9ad.jpg?1634350016" data-tooltip="ctip_27_1650920183202">
+The Meathook Massacre
+</a><div class="manacost"><i class="mana mana-x"></i><i class="mana mana-b"></i><i class="mana mana-b"></i></div><div class="price">74.99$</div>
+</li><li data-qt="2" data-main="0" data-name="Rip Apart" data-cmc="2" data-split="0"><div class="value">2</div><a href="https://mtgmeta.io/cards/rip-apart" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/b/3/b3b5b510-fd5c-415d-98b0-386e7508f7af.jpg?1624739750" data-tooltip="ctip_28_1650920183202">
+Rip Apart
+</a><div class="manacost"><i class="mana mana-r"></i><i class="mana mana-w"></i></div><div class="price">0.7$</div>
+</li><li data-qt="2" data-main="0" data-name="Check for Traps" data-cmc="2" data-split="0"><div class="value">2</div><a href="https://mtgmeta.io/cards/check-for-traps" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/6/f/6f58ea8a-30ac-45b0-a701-8b8d8262cfcf.jpg?1627704461" data-tooltip="ctip_29_1650920183202">
+Check for Traps
+</a><div class="manacost"><i class="mana mana-1"></i><i class="mana mana-b"></i></div><div class="price">0.5$</div>
+</li><li data-qt="2" data-main="0" data-name="Soul Shatter" data-cmc="3" data-split="0"><div class="value">2</div><a href="https://mtgmeta.io/cards/soul-shatter" target="_blank" class="card cardtooltip tooltiploaded" data-cimg="https://c1.scryfall.com/file/scryfall-cards/normal/front/2/c/2c2fb07b-0f70-403b-be8b-b5217f12e671.jpg?1604196615" data-tooltip="ctip_30_1650920183202">
+Soul Shatter
+</a><div class="manacost"><i class="mana mana-2"></i><i class="mana mana-b"></i></div><div class="price">1.58$</div>
+</li>
+
+<form class="ck-form" action="https://www.cardkingdom.com/builder?utm_source=mtgmeta&amp;utm_medium=deck&amp;utm_campaign=mtgmeta&amp;partner=mtgmeta" target="_blank" method="post">
+<input type="hidden" name="c" value="1 Plains||4 Brightclimb Pathway||4 Needleverge Pathway||4 Blightstep Pathway||2 Hive of the Eye Tyrant||2 Haunted Ridge||2 Sundown Pass||2 Shattered Sanctum||1 Takenuma, Abandoned Mire||1 Sokenzan, Crucible of Defiance||1 Eiganjo, Seat of the Empire||4 The Wandering Emperor||2 Lolth, Spider Queen||4 Luminarch Aspirant||2 Valki, God of Lies||3 Graveyard Trespasser||4 Vanishing Verse||2 Emeria's Call||2 Reckoner Bankbuster||3 The Meathook Massacre||4 Wedding Announcement||4 Fable of the Mirror-Breaker||2 Showdown of the Skalds||2 Ray of Enfeeblement||3 Duress||1 Reckoner Bankbuster||2 Curse of Shaken Faith||1 The Meathook Massacre||2 Rip Apart||2 Check for Traps||2 Soul Shatter||">
+<input type="hidden" name="partner" value="mtgmeta">
+<button type="submit" class="btn buyck">
+<svg focusable="false" class="" style="vertical-align: -2px;" color="currentColor" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)"><path d="M2.14694 0.876648L1.38693 5.19138L3.32405 5.53259L2.0024 13.0359L11.9158 14.7821L13.2375 7.27876L15.1746 7.61997L15.9346 3.30524L13.7892 2.92736L13.0741 6.98752L11.2429 6.66497L11.9536 2.63014L9.91236 2.27059L9.20166 6.30542L7.44946 5.99679L8.16016 1.96195L6.11893 1.6024L5.40823 5.63724L3.57704 5.31469L4.29221 1.25452L2.14694 0.876648Z" fill="currentColor"></path></g><defs><clipPath><rect></rect></clipPath></defs></svg>
+<span class="text">Buy from Card Kingdom</span>
+<span class="price">$792.31</span>
+</button>
+</form>
+<p>
+<a href="#" class="link" data-export="arena" data-mode="cp">arena (copy)</a> <span>|</span>
+<a href="#" class="link" data-export="arena" data-mode="dl">arena</a> <span>|</span>
+<a href="#" data-export="mtgo" class="link">mtgo</a>
+</p>
+</ul>*@
+
+    <div class="row">
+        <div class="col-6">
+            <canvas class="card shadow" id="costDistribution"></canvas>
+        </div>
+        <div class="col-6">
+            <canvas class="card shadow" id="typeDistribution"></canvas>
+        </div>
+    </div>
 </div>
 
-@section Scripts{
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
-<script type="text/javascript">
-    var ctx = document.getElementById("myChart");
-    var myChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: @Html.Raw(@ViewBag.RarityNamesArray),
-        datasets: [
-          { label: 'Cards by Rarity',
-            data: @Html.Raw(@ViewBag.RarityCountArray),
-    backgroundColor :[
-    "rgba(250, 100, 53, 0.3)",
-                "rgba(115, 228, 101, 0.3)",
-                "rgba(149, 244, 8, 0.3)",
-                "rgba(124, 107, 139, 0.3)",
-                "rgba(144, 68, 248, 0.3)",
-                "rgba(254, 141, 59, 0.3)",
-                "rgba(160, 58, 1, 0.3)",
-                "rgba(166, 153, 235, 0.3)",
-                "rgba(27, 213, 218, 0.3)",
-                "rgba(239, 143, 68, 0.3)",
-                "rgba(181, 243, 54, 0.3)",
-                "rgba(250, 240, 12, 0.3)",
-                "rgba(53, 146, 131, 0.3)",
-                "rgba(159, 32, 246, 0.3)",
-                "rgba(42, 138, 53, 0.3)",
-                "rgba(248, 180, 10, 0.3)",
-                "rgba(168, 70, 126, 0.3)",
-                "rgba(202, 84, 230, 0.3)",
-                "rgba(128, 118, 89, 0.3)",
-                "rgba(55, 157, 43, 0.3)"
-    ],
-  
+    <!-- typeDistribution chart -->
+    <script>
+        var typeDictionary =  @Html.Raw(Json.Serialize(Model.TypeDistribution));
+        console.log(typeDictionary);
+            
+        var ctx = document.getElementById("typeDistribution");
 
-    borderColor: [
-                "rgba(250, 100, 53, 1)",
-                "rgba(115, 228, 101, 1)",
-                "rgba(149, 244, 8, 1)",
-                "rgba(124, 107, 139, 1)",
-                "rgba(144, 68, 248, 1)",
-                "rgba(254, 141, 59, 1)",
-                "rgba(160, 58, 1, 1)",
-                "rgba(166, 153, 235, 1)",
-                "rgba(27, 213, 218, 1)",
-                "rgba(239, 143, 68, 1)",
-                "rgba(181, 243, 54, 1)",
-                "rgba(250, 240, 12, 1)",
-                "rgba(53, 146, 131, 1)",
-                "rgba(159, 32, 246, 1)",
-                "rgba(42, 138, 53, 1)",
-                "rgba(248, 180, 10, 1)",
-                "rgba(168, 70, 126, 1)",
-                "rgba(202, 84, 230, 1)",
-                "rgba(128, 118, 89, 1)",
-                "rgba(55, 157, 43, 1)"
-
-                
-                ],
-    borderWidth : 2
-          }
-        ]
-      },
-      options: {
-            maintainAspectRatio: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: 
+            {
+                labels: Object.keys(typeDictionary) ,
+                datasets: [ { 
+                    label: 'Type distribution',
+                    data: Object.values(typeDictionary),
+                    backgroundColor :
+                    [ 
+                        "rgba(250, 100, 53, 0.3)",
+                        "rgba(115, 228, 101, 0.3)",
+                        "rgba(149, 244, 8, 0.3)",
+                        "rgba(124, 107, 139, 0.3)",
+                        "rgba(144, 68, 248, 0.3)",
+                        "rgba(254, 141, 59, 0.3)",
+                        "rgba(160, 58, 1, 0.3)",
+                        "rgba(166, 153, 235, 0.3)",
+                        "rgba(27, 213, 218, 0.3)",
+                        "rgba(239, 143, 68, 0.3)",
+                        "rgba(181, 243, 54, 0.3)",
+                        "rgba(250, 240, 12, 0.3)",
+                        "rgba(53, 146, 131, 0.3)",
+                        "rgba(159, 32, 246, 0.3)",
+                        "rgba(42, 138, 53, 0.3)",
+                        "rgba(248, 180, 10, 0.3)",
+                        "rgba(168, 70, 126, 0.3)",
+                        "rgba(202, 84, 230, 0.3)",
+                        "rgba(128, 118, 89, 0.3)",
+                        "rgba(55, 157, 43, 0.3)"
+                    ],
+                    borderColor: 
+                    [
+                        
+                        "rgba(250, 100, 53, 1)",
+                        "rgba(115, 228, 101, 1)",
+                        "rgba(149, 244, 8, 1)",
+                        "rgba(124, 107, 139, 1)",
+                        "rgba(144, 68, 248, 1)",
+                        "rgba(254, 141, 59, 1)",
+                        "rgba(160, 58, 1, 1)",
+                        "rgba(166, 153, 235, 1)",
+                        "rgba(27, 213, 218, 1)",
+                        "rgba(239, 143, 68, 1)",
+                        "rgba(181, 243, 54, 1)",
+                        "rgba(250, 240, 12, 1)",
+                        "rgba(53, 146, 131, 1)",
+                        "rgba(159, 32, 246, 1)",
+                        "rgba(42, 138, 53, 1)",
+                        "rgba(248, 180, 10, 1)",
+                        "rgba(168, 70, 126, 1)",
+                        "rgba(202, 84, 230, 1)",
+                        "rgba(128, 118, 89, 1)",
+                        "rgba(55, 157, 43, 1)"
+                    ],
+                    borderWidth : 2
+                    } ]
+            },
+             options: {
+                scales: {
+                    x: {
+                        display: false
                     }
-                }],
-                xAxes: [{
-                    ticks: {
-                        display:false
-                    }
-                }]
+                }
             }
-        }
-    });
-  
+        });
     </script>
 
-}
+    <!-- costDistribution chart -->
+    <script>
+        var arraydata =  @Html.Raw(Json.Serialize(Model.ManaCurve));
+        var trimmeDataArray = TrimZerosFromArray(arraydata);
+        console.log(arraydata);
+        console.log(trimmeDataArray);
+            
+        var ctx = document.getElementById("costDistribution");
+
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: 
+            {
+                labels: [...Array(trimmeDataArray.length).keys()] ,
+                datasets: [ { 
+                    label: 'Cost distribution',
+                    data: trimmeDataArray,
+                    backgroundColor :
+                    [ 
+                        "rgba(250, 100, 53, 0.3)",
+                        "rgba(115, 228, 101, 0.3)",
+                        "rgba(149, 244, 8, 0.3)",
+                        "rgba(124, 107, 139, 0.3)",
+                        "rgba(144, 68, 248, 0.3)",
+                        "rgba(254, 141, 59, 0.3)",
+                        "rgba(160, 58, 1, 0.3)",
+                        "rgba(166, 153, 235, 0.3)",
+                        "rgba(27, 213, 218, 0.3)",
+                        "rgba(239, 143, 68, 0.3)",
+                        "rgba(181, 243, 54, 0.3)",
+                        "rgba(250, 240, 12, 0.3)",
+                        "rgba(53, 146, 131, 0.3)",
+                        "rgba(159, 32, 246, 0.3)",
+                        "rgba(42, 138, 53, 0.3)",
+                        "rgba(248, 180, 10, 0.3)",
+                        "rgba(168, 70, 126, 0.3)",
+                        "rgba(202, 84, 230, 0.3)",
+                        "rgba(128, 118, 89, 0.3)",
+                        "rgba(55, 157, 43, 0.3)"
+                    ],
+                    borderColor: 
+                    [
+                        
+                        "rgba(250, 100, 53, 1)",
+                        "rgba(115, 228, 101, 1)",
+                        "rgba(149, 244, 8, 1)",
+                        "rgba(124, 107, 139, 1)",
+                        "rgba(144, 68, 248, 1)",
+                        "rgba(254, 141, 59, 1)",
+                        "rgba(160, 58, 1, 1)",
+                        "rgba(166, 153, 235, 1)",
+                        "rgba(27, 213, 218, 1)",
+                        "rgba(239, 143, 68, 1)",
+                        "rgba(181, 243, 54, 1)",
+                        "rgba(250, 240, 12, 1)",
+                        "rgba(53, 146, 131, 1)",
+                        "rgba(159, 32, 246, 1)",
+                        "rgba(42, 138, 53, 1)",
+                        "rgba(248, 180, 10, 1)",
+                        "rgba(168, 70, 126, 1)",
+                        "rgba(202, 84, 230, 1)",
+                        "rgba(128, 118, 89, 1)",
+                        "rgba(55, 157, 43, 1)"
+                    ],
+                    borderWidth : 2
+                    } ]
+            },
+             options: {
+                scales: {
+                    x: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        function TrimZerosFromArray(array) {
+            var count = array.length;
+            var lastIndex = 0;
+            for(i = count-1; i>=0;i--)
+            {
+                if(array[i] == 0)
+                {
+                    lastIndex = i;
+                }   
+                else break;
+            }
+            return array.slice(0,lastIndex);
+        }
+    </script>

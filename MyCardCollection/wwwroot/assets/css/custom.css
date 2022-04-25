@@ -72,3 +72,44 @@ input:checked + .slider:before {
 .td {
     vertical-align: middle;
 }
+
+.mtg-mana-white {
+    width: 24px;
+    height: 24px;
+    margin-top: 4px;
+    background-color: goldenrod; /* defines the background color of the image */
+    mask: url(https://images.ctfassets.net/s5n2t79q9icq/7misDwf4mwnXghCh5vkGw6/0debf7ae3f13d0e706b5df8cbdbe2172/plain.svg) no-repeat center / contain;
+    -webkit-mask: url(https://images.ctfassets.net/s5n2t79q9icq/7misDwf4mwnXghCh5vkGw6/0debf7ae3f13d0e706b5df8cbdbe2172/plain.svg) no-repeat center / contain;
+}
+.mtg-mana-black {
+    width: 24px;
+    height: 24px;
+    margin-top: 4px;
+    background-color: rebeccapurple; /* defines the background color of the image */
+    mask: url(https://images.ctfassets.net/s5n2t79q9icq/45958FxkGokQAacUNVQ1Bh/a611cf3f197e9a8352fd2fe591097704/swamp.svg) no-repeat center / contain;
+    -webkit-mask: url(https://images.ctfassets.net/s5n2t79q9icq/45958FxkGokQAacUNVQ1Bh/a611cf3f197e9a8352fd2fe591097704/swamp.svg) no-repeat center / contain;
+}
+.mtg-mana-red {
+    width: 24px;
+    height: 24px;
+    margin-top: 4px;
+    background-color: darkred; /* defines the background color of the image */
+    mask: url(https://images.ctfassets.net/s5n2t79q9icq/192VSSLFeZSzAKZGOXrHCG/dec6be6eb6a80a40e156ecbf2cd385cf/mountain.svg) no-repeat center / contain;
+    -webkit-mask: url(https://images.ctfassets.net/s5n2t79q9icq/192VSSLFeZSzAKZGOXrHCG/dec6be6eb6a80a40e156ecbf2cd385cf/mountain.svg) no-repeat center / contain;
+}
+.mtg-mana-green {
+    width: 24px;
+    height: 24px;
+    margin-top: 4px;
+    background-color: forestgreen; /* defines the background color of the image */
+    mask: url(https://images.ctfassets.net/s5n2t79q9icq/1wrQKxhCNchqYyDOMG9mm3/26e51f7d9e0bc20874b004cd4b93568c/forest.svg) no-repeat center / contain;
+    -webkit-mask: url(https://images.ctfassets.net/s5n2t79q9icq/1wrQKxhCNchqYyDOMG9mm3/26e51f7d9e0bc20874b004cd4b93568c/forest.svg) no-repeat center / contain;
+}
+.mtg-mana-blue {
+    width: 24px;
+    height: 24px;
+    margin-top: 4px;
+    background-color: royalblue; /* defines the background color of the image */
+    mask: url(https://images.ctfassets.net/s5n2t79q9icq/4HiU35WSbQDiLxLGyGlipf/1c3f9bb830d2f6c4299c30b974d27fc3/water.svg) no-repeat center / contain;
+    -webkit-mask: url(https://images.ctfassets.net/s5n2t79q9icq/4HiU35WSbQDiLxLGyGlipf/1c3f9bb830d2f6c4299c30b974d27fc3/water.svg) no-repeat center / contain;
+}

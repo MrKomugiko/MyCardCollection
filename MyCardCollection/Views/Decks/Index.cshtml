@@ -73,15 +73,15 @@
                         </button>
                     </div>
 
-                    <div class="modal-body d-flex justify-content-center">
-                          <div class="text-center w-75" id="DeckOverview_Partial">
+                    <div class="modal-body d-flex justify-content-center" style="max-height:100vh;overflow-y:scroll">
+                          <div class="text-center w-100" id="DeckOverview_Partial">
                               <!-- CONTENT FETCHED FROM SERVER via JS and load partial view -->
                           </div>
                     </div>
                     
-                    <div class="modal-footer modal-footer-borderless justify-content-center">
+            @*        <div class="modal-footer modal-footer-borderless justify-content-center">
                         <button type="button" class="btn btn-lg btn-primary my-4" data-dismiss="modal">Thanks, You're dismissed</button>
-                    </div>
+                    </div>*@
 
                 </div>
             </div>
@@ -95,6 +95,7 @@
 
 
 @section Scripts{
+    <script  type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
     <script>
         function LoadDeckOverview(_deckId){
             $.ajax({
