@@ -245,5 +245,17 @@ namespace MyCardCollection.Repository
 
       
             }
+            public async Task<Deck> GetDeckById(int deckId)
+            {
+            var deck = _context.Decks.Where(x => x.Id == deckId)
+                .Include(x => x.Content)
+                    .ThenInclude(x=>x.CardData)
+                .AsNoTracking()
+                .FirstOrDefault();
+
+                if(deck == null) return null;
+
+                return deck;
+            }
     }
 }

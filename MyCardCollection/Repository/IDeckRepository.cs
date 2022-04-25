@@ -13,6 +13,7 @@ namespace MyCardCollection.Repository
         Task AddCardToDeckAsync(string collectionOwnerId, string cardId, int deckId);
         Task ClearDeck(int deckId, string userId);
         Task<List<CardsCollection>> GetDeckDataFromDatabase(string collectionOwnerId, int? deckId);
+        Task<Deck> GetDeckById(int deckId);
         Task<bool> CreateNewDeck(string decktitle, string _userId);
         Task<bool> Update(DeckModel deck, string userId);
         Task<List<Deck>> GetUserDecksWithoutContent(string userId);

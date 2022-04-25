@@ -3,4 +3,89 @@
 <div>
     <h1 style="color:black;"> Deck statistics and simple overview land HERE</h1>
     <h3 style="color:black;"> Inspecting deck id: @Model</h3>
+
 </div>
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+<script type="text/javascript">
+    var ctx = document.getElementById("myChart");
+    var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: @Html.Raw(@ViewBag.RarityNamesArray),
+        datasets: [
+          { label: 'Cards by Rarity',
+            data: @Html.Raw(@ViewBag.RarityCountArray),
+    backgroundColor :[
+    "rgba(250, 100, 53, 0.3)",
+                "rgba(115, 228, 101, 0.3)",
+                "rgba(149, 244, 8, 0.3)",
+                "rgba(124, 107, 139, 0.3)",
+                "rgba(144, 68, 248, 0.3)",
+                "rgba(254, 141, 59, 0.3)",
+                "rgba(160, 58, 1, 0.3)",
+                "rgba(166, 153, 235, 0.3)",
+                "rgba(27, 213, 218, 0.3)",
+                "rgba(239, 143, 68, 0.3)",
+                "rgba(181, 243, 54, 0.3)",
+                "rgba(250, 240, 12, 0.3)",
+                "rgba(53, 146, 131, 0.3)",
+                "rgba(159, 32, 246, 0.3)",
+                "rgba(42, 138, 53, 0.3)",
+                "rgba(248, 180, 10, 0.3)",
+                "rgba(168, 70, 126, 0.3)",
+                "rgba(202, 84, 230, 0.3)",
+                "rgba(128, 118, 89, 0.3)",
+                "rgba(55, 157, 43, 0.3)"
+    ],
+  
+
+    borderColor: [
+                "rgba(250, 100, 53, 1)",
+                "rgba(115, 228, 101, 1)",
+                "rgba(149, 244, 8, 1)",
+                "rgba(124, 107, 139, 1)",
+                "rgba(144, 68, 248, 1)",
+                "rgba(254, 141, 59, 1)",
+                "rgba(160, 58, 1, 1)",
+                "rgba(166, 153, 235, 1)",
+                "rgba(27, 213, 218, 1)",
+                "rgba(239, 143, 68, 1)",
+                "rgba(181, 243, 54, 1)",
+                "rgba(250, 240, 12, 1)",
+                "rgba(53, 146, 131, 1)",
+                "rgba(159, 32, 246, 1)",
+                "rgba(42, 138, 53, 1)",
+                "rgba(248, 180, 10, 1)",
+                "rgba(168, 70, 126, 1)",
+                "rgba(202, 84, 230, 1)",
+                "rgba(128, 118, 89, 1)",
+                "rgba(55, 157, 43, 1)"
+
+                
+                ],
+    borderWidth : 2
+          }
+        ]
+      },
+      options: {
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        display:false
+                    }
+                }]
+            }
+        }
+    });
+  
+    </script>
+
+}
