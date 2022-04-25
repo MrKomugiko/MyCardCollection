@@ -27,13 +27,17 @@
                           <li class="list-inline-item"><i class="icon-message mr-1"></i> 0</li>
                         </ul>
                       </div>
+       
+                        <button class="btn btn-sm btn-outline-primary w-50" type="button" data-toggle="modal" data-target="#DeckOverviewModal" onclick="LoadDeckOverview(@deck.Id)">
+                          Deck Preview
+                        </button>
                       <div class="dropup">
                         <button class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="BenchButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <i class="icon-dots-three-horizontal"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-sm" aria-labelledby="BenchButton">
                           <a class="dropdown-item" href="#">Edit</a>
-                          <a class="dropdown-item" href="#">Details</a>
+                          <a class="dropdown-item" >Remove</a>
                           <a class="dropdown-item" href="#">Comment</a>
                           <div class="dropdown-divider"></div>
                           <a class="dropdown-item" href="#">Report</a>
@@ -54,14 +58,59 @@
     }
     </ul>
 
+    </div>
+    <!--end of col-->
+    </div>
+    <!--end of row-->
+        <div class="modal fade" id="DeckOverviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-center-viewport" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-header modal-header-borderless justify-content-end">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><i class="icon-cross"></i>
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body d-flex justify-content-center">
+                          <div class="text-center w-75" id="DeckOverview_Partial">
+                              <!-- CONTENT FETCHED FROM SERVER via JS and load partial view -->
+                          </div>
+                    </div>
+                    
+                    <div class="modal-footer modal-footer-borderless justify-content-center">
+                        <button type="button" class="btn btn-lg btn-primary my-4" data-dismiss="modal">Thanks, You're dismissed</button>
+                    </div>
+
+                </div>
             </div>
-            <!--end of col-->
-          </div>
-          <!--end of row-->
         </div>
-        <!--end of container-->
-      </section>
-      <!--end of section-->
+    </div>
+    <!--end of container-->
+    </section>
+    <!--end of section-->
 
  
 
+
+@section Scripts{
+    <script>
+        function LoadDeckOverview(_deckId){
+            $.ajax({
+                url:'@Url.Action("Overview","Decks")',
+                datatype:'html',
+                method: 'GET',
+                data: {
+                        deckId: _deckId
+                    },
+                success: function(res){
+                        $('#DeckOverview_Partial').html('').html(res);
+                    },
+                error: function(err){
+                        console.log(err);
+                    }
+            })
+        }
+    </script>
+}

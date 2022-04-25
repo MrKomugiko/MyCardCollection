@@ -19,5 +19,9 @@ namespace MyCardCollection.Controllers
             List<Deck> userDecks = await _deckRepository.GetUserDecks(_userId);
             return View(userDecks);
         }
+        public async Task<PartialViewResult> Overview(int deckId)
+        {
+            return PartialView("_DeckOverview", deckId);
+        }
     }
 }
