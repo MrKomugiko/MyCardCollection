@@ -33,6 +33,14 @@ namespace MyCardCollection.Controllers
 
             if (deck == null) return Json(NotFound());
 
+            var typeCountGroup = deck.Content
+                .GroupBy(x => x.CardData.Type.Split("—")[0])
+                .Select(g => new
+                {
+                    Key = g.Key,
+                    Value = g.Count()
+                }).ToDictionary(x => x.Key, x => x.Value);
+
             var manaCountGroup = deck.Content
                 .GroupBy(x => x.CardData.CMC)
                 .Select(g => new
@@ -42,7 +50,6 @@ namespace MyCardCollection.Controllers
                 });
 
             int[] manaCurveArray = new int[15];
-
             foreach(var group in manaCountGroup)
             {
                 manaCurveArray[(Int32)group.Key] = group.Value;
@@ -56,15 +63,7 @@ namespace MyCardCollection.Controllers
                 name = deck.Name,
                 size = deck.Content.Sum(x=>x.Quantity),
                 ManaCurve = manaCurveArray,
-                TypeDistribution = new Dictionary<string,int>
-                    {
-                        {"Artifact",20 },
-                        {"Creature",20 },
-                        {"Enchantment",20 },
-                        {"Instant",20 },
-                        {"Sorcery",20 },
-                        {"Land",20 },
-                    },
+                TypeDistribution = typeCountGroup,
                 Cards = deck.Content
                     .Select(x => new {
                         x.Quantity,
