@@ -19,7 +19,7 @@ namespace MyCardCollection.Controllers
         public async Task<IActionResult> Index()
         {
             List<Deck> userDecks = await _deckRepository.GetUserDecks(_userId);
-            return View(userDecks);
+            return View(userDecks.Where(x=>x.Content.Count > 0));
         }
         public async Task<PartialViewResult> Overview(int deckId)
         {
