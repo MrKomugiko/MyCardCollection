@@ -33,7 +33,7 @@ namespace MyCardCollection.Controllers
                 .Select(g => new
                 {
                     Key = g.Key,
-                    Value = g.Count()
+                    Value = g.Sum(x=>x.Quantity)
                 })
                 .OrderByDescending(x=>x.Value)
                 .ToDictionary(x => x.Key, x => x.Value);
@@ -44,7 +44,7 @@ namespace MyCardCollection.Controllers
                 .Select(g => new
                 {
                     Key = g.Key,
-                    Value = g.Count()
+                    Value = g.Sum(x => x.Quantity)
                 });
 
             int[] manaCurveArray = new int[15];
@@ -52,6 +52,32 @@ namespace MyCardCollection.Controllers
             {
                 manaCurveArray[(Int32)group.Key] = group.Value;
             }
+
+            var setDistribution = deck.Content
+                .GroupBy(x => x.CardData.SetCode)
+                .Select(g => new
+                {
+                    Key = g.Key,
+                    Value = g.Sum(x => x.Quantity)
+                })
+                .OrderByDescending(x => x.Value)
+                .ToDictionary(x => x.Key, x => x.Value);
+
+            char black = Char.Parse("B");
+            char red = Char.Parse("R");
+            char white = Char.Parse("W");
+            char green = Char.Parse("G");
+            char blue = Char.Parse("U");
+
+
+            var colorDistribution = new Dictionary<string, int>
+            {
+                { "B", deck.Content.Where(x=>x.CardData.Type.Contains("Land") == false ).Sum(x=>x.CardData.Mana_Cost.Count(c=>c==black))},
+                { "R", deck.Content.Where(x=>x.CardData.Type.Contains("Land") == false ).Sum(x=>x.CardData.Mana_Cost.Count(c=>c==red))},
+                { "U", deck.Content.Where(x=>x.CardData.Type.Contains("Land") == false ).Sum(x=>x.CardData.Mana_Cost.Count(c=>c==blue))},
+                { "G", deck.Content.Where(x=>x.CardData.Type.Contains("Land") == false ).Sum(x=>x.CardData.Mana_Cost.Count(c=>c==green))},
+                { "W", deck.Content.Where(x=>x.CardData.Type.Contains("Land") == false ).Sum(x=>x.CardData.Mana_Cost.Count(c=>c==white))}
+            };
 
             var model = new DeckStatisticsViewModel
             {
@@ -61,6 +87,8 @@ namespace MyCardCollection.Controllers
                 Size = deck.Content.Sum(x => x.Quantity),
                 ManaCurve = manaCurveArray,
                 TypeDistribution = typeCountGroup,
+                SetDistribution = setDistribution,
+                ColorDistribution = colorDistribution,
                 Cards = deck.Content
                     .Select(x=>(x.Quantity, x.CardData))
             };

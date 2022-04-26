@@ -10,6 +10,10 @@ namespace MyCardCollection.ViewModel
         public int Size { get; set; }
         public int[] ManaCurve { get; set; }
         public Dictionary<string, int> TypeDistribution { get; set; }
+        public Dictionary<string, int> SetDistribution { get; set; }
+        public Dictionary<string, int> ColorDistribution { get; set; }
+
+
         public IEnumerable<(int Quantity, CardData data)> Cards { get; set; }
     }
 }
