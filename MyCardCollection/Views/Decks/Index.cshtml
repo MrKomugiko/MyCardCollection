@@ -7,13 +7,14 @@
 
  <ul class="row mb-3 feature-list feature-list-sm">
 @{
-    if(Model != null)
-    {
-        foreach(var deck in Model)
-        {
-             <li class="col-12 col-md-6 col-lg-4">
-                    <div class="card shadow">
-                        <img class="card-img-top" src="@deck.Content.First().CardData.ImageURLCropped" style="object-fit: cover; height:10rem; object-position:0 25%" alt="Card image cap">
+                        if(Model != null)
+                        {
+                            foreach(var deck in Model)
+                            {
+                                <li class="col-12 col-md-6 col-lg-4">
+                                    <div class="card shadow">
+                                    @{var deckimg = deck.Content.FirstOrDefault()==null?"":deck.Content.First().CardData.ImageURLCropped;} 
+                        <img class="card-img-top" src="@deckimg" style="object-fit: cover; height:10rem; object-position:0 25%" alt="Card image cap">
                       <div class="card-body">
                         <h4 class="card-title">@deck.Name</h4>
                         <p class="card-text text-body">Accounting for creative people

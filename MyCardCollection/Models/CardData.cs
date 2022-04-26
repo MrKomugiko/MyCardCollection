@@ -92,7 +92,6 @@ namespace MyCardCollection.Models
                 Transform_Type = CardObject.card_faces[1].type_line;
                 Transform_Health = CardObject.card_faces[1].toughness != null ? int.Parse(CardObject.card_faces[1].toughness) : null;
                 Transform_Power = CardObject.card_faces[1].power != null ? int.Parse(CardObject.card_faces[1].power) : null;
-                Mana_Cost = CardObject.card_faces[1].mana_cost;
                 Transform_ImageURL = CardObject.card_faces[1].image_uris != null ?  CardObject.card_faces[1].image_uris.normal : null;
                 Transform_ImageURLCropped = CardObject.card_faces[1].image_uris != null ?  CardObject.card_faces[1].image_uris.art_crop : null;
                 Transform_Description = CardObject.card_faces[1].oracle_text;
