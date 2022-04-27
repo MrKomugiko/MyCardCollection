@@ -24,6 +24,7 @@ namespace MyCardCollection.Controllers
             _collectionRepository = collectionRepository;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index(int page = 1)
         { 
             var PageSize = 12;
@@ -66,10 +67,10 @@ namespace MyCardCollection.Controllers
 
             return View(model);
         }
-
-        // [Authorize]
+        
+        [Authorize]
         [Route("OwnedSets")]
-        public async Task<IActionResult> Index(int page = 1, bool owned = true)
+        public async Task<IActionResult> OwnedSets(int page = 1)
         {
             var PageSize = 12;
             var PageRange = 6;
@@ -114,7 +115,7 @@ namespace MyCardCollection.Controllers
             {
                 model = listdata.Where(x => userSets.ContainsKey(x.setcode));
             }
-            return View(model);
+            return View("Index",model);
         }
 
         public async Task<IActionResult> List(string set = "mid")
