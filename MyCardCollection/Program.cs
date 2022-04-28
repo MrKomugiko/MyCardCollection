@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
@@ -37,6 +38,8 @@ builder.Services.AddScoped<IScryfallService,ScryfallService>();
 builder.Services.AddScoped<ICollectionRepository, CollectionRepository>();
 builder.Services.AddScoped<IDeckRepository, DeckRepository>();
 builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+
 
 
 var app = builder.Build();
