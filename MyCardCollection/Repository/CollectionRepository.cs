@@ -18,51 +18,6 @@ namespace MyCardCollection.Services
             _cacheService = cacheService;
         }
 
-        //public async Task<CollectionStatistic> GetFullStatistics_v2(string _userId)
-        //{
-        //    var fullData = context.Collection.Where(x => x.UserId == _userId);
-
-        //    Dictionary<string, int> setsdict = await fullData
-        //        .GroupBy(x => x.CardData.SetCode)
-        //        .Select(g => new
-        //        {
-        //            g.Key,
-        //            SUM = g.Sum(s => s.Quantity)
-        //        })
-        //        .ToDictionaryAsync(k => k.Key, v => v.SUM);
-
-        //    var rawModel = await context.Collection_Details_Stats
-        //        .FromSqlRaw("EXEC GetUserCollectionStatistics @_userId = {0}", _userId).ToListAsync();
-
-        //    CollectionDetails models = rawModel.FirstOrDefault();
-
-        //    var data = new CollectionStatistic()
-        //    {
-        //        CardCount = fullData.Sum(x => x.Quantity),
-        //        DisctinctCardCount = fullData.Count(),
-        //        RarityCount = new RarityTypes()
-        //        {
-        //            common = models.Common_Count ?? 0,
-        //            uncommon = models.Uncommon_Count ?? 0,
-        //            rare = models.Rare_Count ?? 0,
-        //            mythic = models.Mythic_Count ?? 0
-        //        },
-        //        MainCardTypesCount = new MainCardTypes()
-        //        {
-        //            Creature = models.Creature_Count ?? 0,
-        //            Instant = models.Instant_Count ?? 0,
-        //            Land = models.Land_Count ?? 0,
-        //            Artifact = models.Artifact_Count ?? 0,
-        //            Enchantment = models.Enchantment_Count ?? 0,
-        //            Planeswalker = models.Planeswalker_Count ?? 0,
-        //            Sorcery = models.Sorcery_Count ?? 0
-        //        },
-        //        SetDict = setsdict
-        //    };
-
-        //    return data;
-        //}
-
         public async Task ClearCollectionAsync(string collectionOwnerId)
         {
             var deletedCards = _context.Collection.Where(x => x.UserId == collectionOwnerId);

@@ -13,12 +13,20 @@ namespace MyCardCollection.Models
             Quantity = quantity;
         }
 
-        [Key]                       public int Id { get; set; }
-        [Required]                  public string UserId { get; set; }
-        [Required]                  public string CardId { get; set; }
-        [Required]                  public int Quantity { get; set; }
+        [Key]                       
+        public int Id { get; set; }
 
-        [ForeignKey("CardId")]  public virtual CardData CardData { get; set; }
+        [Required]                  
+        public string UserId { get; set; }
+        [ForeignKey("UserId")] 
+        public  AppUser AppUser { get; set; }
+        [Required]                  
+        public int Quantity { get; set; }
+
+        [Required]                  
+        public string CardId { get; set; }
+        [ForeignKey("CardId")]  
+        public virtual CardData CardData { get; set; }
 
         public object Clone()
         {

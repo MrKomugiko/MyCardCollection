@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyCardCollection.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyCardCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220428222644_appusermodelupdated")]
+    partial class appusermodelupdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,9 +180,6 @@ namespace MyCardCollection.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("DecksCreated")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -222,17 +221,8 @@ namespace MyCardCollection.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
-                    b.Property<int>("TotalCards")
-                        .HasColumnType("integer");
-
-                    b.Property<float>("TotalValue")
-                        .HasColumnType("real");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
-
-                    b.Property<int>("UniqueCards")
-                        .HasColumnType("integer");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -343,6 +333,9 @@ namespace MyCardCollection.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("text");
+
                     b.Property<string>("CardId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -356,9 +349,9 @@ namespace MyCardCollection.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CardId");
+                    b.HasIndex("AppUserId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("CardId");
 
                     b.ToTable("Collection");
                 });
@@ -486,19 +479,15 @@ namespace MyCardCollection.Migrations
 
             modelBuilder.Entity("MyCardCollection.Models.CardsCollection", b =>
                 {
+                    b.HasOne("MyCardCollection.Models.AppUser", null)
+                        .WithMany("Cards")
+                        .HasForeignKey("AppUserId");
+
                     b.HasOne("MyCardCollection.Models.CardData", "CardData")
                         .WithMany()
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("MyCardCollection.Models.AppUser", "AppUser")
-                        .WithMany("Cards")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
 
                     b.Navigation("CardData");
                 });
