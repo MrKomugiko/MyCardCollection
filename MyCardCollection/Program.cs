@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MyCardCollection.Areas.Identity;
 using MyCardCollection.Data;
 using MyCardCollection.Models;
 using MyCardCollection.Repository;
@@ -17,7 +18,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddDefaultIdentity<AppUser>(options =>
+        {
+            options.SignIn.RequireConfirmedAccount = false;
+            options.User.RequireUniqueEmail = true;
+        }
+    )
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddMemoryCache();
