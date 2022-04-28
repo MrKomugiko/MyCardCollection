@@ -126,12 +126,12 @@ namespace MyCardCollection.Controllers
             foreach (var card_raw in respond)
             {
 
-                    listCards.Add (
-                        new CardListViewModel()
-                        {
-                            Card = new CardData(card_raw)
-                        });
-  
+                listCards.Add (
+                    new CardListViewModel()
+                    {
+                        Card = new CardData(card_raw)
+                    });
+
             }
 
             ViewBag.OwnedCards = new HashSet<string>();

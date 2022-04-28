@@ -1,11 +1,180 @@
-﻿<h1>RANKING page colelctioners by unique cards colelcted</h1>
-<br />  
-<h1>List of recent users</h1>
-<br />
-<h1>switching beetween colelction / value / total cards ? </h1>
-<br />
-<h1>Redirecting to users profile</h1>
-<br />
-<h1>Comments on user page - like on steam</h1>
-<br />
-<h1>Collectioners near you - based on city</h1>
+﻿<section class="bg-gradient text-light p-0">
+        <div class="container">
+          <div class="row justify-content-between align-items-center">
+            <div class="col-12 col-md-7">
+              <div class="space-sm pb-0">
+                <h1 class="display-4 mb-0 no-wrap">
+                   Collectioners Hall
+                </h1>
+                <span class="lead">
+                  Total members: 2
+                </span>
+              </div>
+            </div>
+            <!--end of col-->
+          </div>
+          <!--end of row-->
+        </div>
+        <!--end of container-->
+        <svg class="decorative-divider" preserveAspectRatio="none" viewBox="0 0 100 100">
+          <polygon fill="#F8F9FB" points="0 100 100 100 100 0"></polygon>
+        </svg>
+      </section>
+<section class="bg-grey overflow-hidden pt-0">
+    <div class="container" style="min-height:calc(100vh - 30vh)">
+        <div class="row align-items-center">
+            <div class="col-12 mb-3 position-relative">
+                <div class="d-flex mb-2 col-6 float-left" style="z-index:2; position:relative;">
+                    <form class="w-100">
+                        <input class="form-control" placeholder="Search" type="text" name="search-table"/>
+                    </form>
+                </div>
+
+                <div class="d-flex mb-2 float-right col-6 col-md-3" style="z-index:2; position:relative;">
+                    <form class="d-flex align-items-center w-100">
+                      <span class="mr-2 text-muted text-small text-nowrap">Sort by:</span>
+                      <select class="custom-select">
+                        <option value="alpha">Alphabetical</option>
+                        <option value="old-new" selected="">Newest</option>
+                        <option value="new-old">Oldest</option>
+                        <option value="recent">Recently Modified</option>
+                      </select>
+                    </form>
+                </div>
+
+@*                <h3>RANKING page colelctioners by unique cards colelcted</h3> 
+                <h3>List of recent users</h3>
+                <h3>switching beetween colelction / value / total cards ? </h3>
+                <h3>Redirecting to users profile</h3>
+                <h3>Comments on user page - like on steam</h3>
+                <h3>Collectioners near you - based on city</h3>*@
+
+     @*  <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <div class="mb-3">
+                    <a type="button" class="btn btn-secondary mb-1" href="/users?page=1&amp;category=-1">All</a>
+                        <a type="button" class="btn btn-secondary mb-1" href="/users?page=1&amp;category=0">Admin</a>
+                        <a type="button" class="btn btn-secondary mb-1" href="/users?page=1&amp;category=1">Mod</a>
+                        <a type="button" class="btn btn-secondary mb-1" href="/users?page=1&amp;category=2">Begginer</a>
+                </div>
+            </div>
+        </div>
+    </div>*@
+  
+          
+         
+           <div class="col">
+              <table class="table table-hover align-items-center table-borderless table-responsive">
+                <thead>
+                  <tr style="color:white;">
+                    <th scope="col">Name</th>
+                    <th scope="col">Nick</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Decks</th>
+                    <th scope="col">Unique Cards</th>
+                    <th scope="col">Total Cards</th>
+                    <th scope="col">Collection Value</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <tr class="bg-white">
+                    <th scope="row">
+                      <div class="media align-items-center">
+                        <img alt="Image" src="https://wingman.mediumra.re/assets/img/avatar-male-1.jpg" class="avatar">
+                        <div class="media-body">
+                          <span class="h6 mb-0">Kamil Mąka
+                            <span class="badge badge-secondary">Admin</span>
+                          </span>
+                          <span class="text-muted">Unemployed Goblin</span>
+                        </div>
+                      </div>
+                    </th>
+                    <td>MrKomugiko</td>
+                    <td>Gdańsk, PL</td>
+                    <td>1</td>
+                    <td>610</td>
+                    <td>881</td>
+                    <td>152,64$</td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="dropdownMenuButton-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="icon-dots-three-horizontal"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-sm">
+                          <a class="dropdown-item" href="#">Contact</a>
+                          <a class="dropdown-item" href="#">Assign</a>
+                          <a class="dropdown-item" href="#">Share</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="#">Remove</a>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="table-divider">
+                    <th></th>
+                    <td></td>
+                  </tr>
+
+                  <tr class="bg-white">
+                    <th scope="row">
+                      <div class="media align-items-center">
+                        <img alt="Image" src="https://wingman.mediumra.re/assets/img/avatar-male-1.jpg" class="avatar">
+                        <div class="media-body">
+                          <span class="h6 mb-0">Lucifer Morningstar</span>
+                          <span class="text-muted">Fallen Angel</span>
+                        </div>
+                      </div>
+                    </th>
+                    <td>Devil</td>
+                    <td>Gehenna, HELL</td>
+                    <td>6</td>
+                    <td>666</td>
+                    <td>866</td>
+                    <td>666,0$</td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="dropdownMenuButton-12" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="icon-dots-three-horizontal"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-sm">
+                          <a class="dropdown-item" href="#">Contact</a>
+                          <a class="dropdown-item" href="#">Assign</a>
+                          <a class="dropdown-item" href="#">Share</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="#">Remove</a>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="table-divider">
+                    <th></th>
+                    <td></td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+ 
+         <div class="d-flex justify-content-center align-items-center w-100">
+                <div class="col-auto">
+                    <nav aria-label="Page navigation"> 
+                        <ul class="pagination" style="background-color:white;">
+                            <li class="page-item active"><a class="page-link" href="Home?page=1&amp;">1</a></li>
+                            <li class="page-item "><a class="page-link" href="Home?page=2&amp;">2</a></li>
+                            <li class="page-item "><a class="page-link" href="Home?page=3&amp;">3</a></li>
+                            <li class="page-item "><a class="page-link" href="Home?page=4&amp;">4</a></li>
+                            <li class="page-item "><a class="page-link" href="Home?page=5&amp;">5</a></li>
+                            <li class="page-item"><a class="page-link" href="Home?page=10&amp;">Last</a></li> 
+                        </ul>
+                    </nav>
+                </div>
+         </div>
+
+   
+            </div>
+        </div>
+        </div>
+</section>
