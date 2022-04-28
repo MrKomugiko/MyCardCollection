@@ -17,7 +17,7 @@ browsing for new inspiration and sharing briew ideas.
 
 | **Website**       | https://demo-mrkomugiko.herokuapp.com           | 
 |:-------------|:-------------| 
-| **Login**        | Mr.Komugiko@gmail.com           | 
+| **Login**        | MrKomugiko           | 
 | **Password**       | Test123!           | 
 
 **INFO:** *possible interruptions in the availability of the test page due to the cyclical rewriting   
