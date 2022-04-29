@@ -14,12 +14,16 @@ namespace MyCardCollection.Controllers
 
         public async Task<IActionResult> Index(int category = 0, int page = 1, int pageSize = 6)
         {
-            _usersRepository.UpdateAllPlayersStatistics();
+            if(page==1 && category==0)
+            {
+                _usersRepository.UpdateAllPlayersStatistics();
+            }
 
             var users = await _usersRepository.GetFullUsersDataAsync();
             CollectionersViewModel model = new()
             {
-                Users = users,
+                Users = users.Skip((page-1)*pageSize).Take(pageSize),
+                TotalUsers = users.Count(),
                 Category = category,
                 Page = page,
                 PageSize = pageSize,
