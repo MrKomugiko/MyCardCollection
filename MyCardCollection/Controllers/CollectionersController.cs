@@ -14,6 +14,8 @@ namespace MyCardCollection.Controllers
 
         public async Task<IActionResult> Index(int category = 0, int page = 1, int pageSize = 6)
         {
+            _usersRepository.UpdateAllPlayersStatistics();
+
             var users = await _usersRepository.GetFullUsersDataAsync();
             CollectionersViewModel model = new()
             {

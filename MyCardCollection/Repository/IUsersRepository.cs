@@ -12,5 +12,7 @@ namespace MyCardCollection.Repository
         bool Save();
         bool Update(AppUser user);
         Task<IEnumerable<AppUser>> GetFullUsersDataAsync();
+        void UpdatePlayerStatistics(string userId);
+        void UpdateAllPlayersStatistics();
     }
 }
