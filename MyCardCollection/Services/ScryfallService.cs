@@ -59,18 +59,26 @@ namespace MyCardCollection.Services
             CardList responseData = new CardList();
             List<CardData> cards_content = new List<CardData>();
 
+            if (_memoryCache.TryGetValue(set, out cards_content))
+            {
+                return cards_content;
+            }
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://api.scryfall.com");
                 int page = 1;
+                cards_content = new List<CardData>();
                 while (true)
                 {
+
                     var response = await client.GetAsync($"cards/search?format=json&include_extras=false&include_multilingual=false&order=collector_number&page={page}&q=set={set}&unique=cards");
                     if (response.IsSuccessStatusCode)
                     {
                         var readTask = response.Content.ReadAsStringAsync().Result;
                         responseData = JsonConvert.DeserializeObject<CardList>(readTask);
-                        cards_content.AddRange(responseData.data.Select(x => new CardData(x)));
+                        cards_content.AddRange(responseData.data.Select(x => new CardData(x)
+                        ));
                     }
                     page++;
                     if (responseData.has_more == false)
@@ -104,8 +112,7 @@ namespace MyCardCollection.Services
                 // check if first set is loaded
                 MemoryCacheEntryOptions _cacheExpiryOptions = new MemoryCacheEntryOptions
                 {
-                    Priority = CacheItemPriority.Low,
-                    SlidingExpiration = TimeSpan.FromSeconds(3600)
+                    Priority = CacheItemPriority.NeverRemove
                 };
                 foreach(var set in listdata)
                 {
