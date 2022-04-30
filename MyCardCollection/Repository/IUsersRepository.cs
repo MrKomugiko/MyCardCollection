@@ -1,4 +1,5 @@
-﻿using MyCardCollection.Models;
+﻿using MyCardCollection.Controllers;
+using MyCardCollection.Models;
 
 namespace MyCardCollection.Repository
 {
@@ -11,8 +12,9 @@ namespace MyCardCollection.Repository
         Task<AppUser> GetUserByIdAsync(string id);
         bool Save();
         bool Update(AppUser user);
-        Task<IEnumerable<AppUser>> GetFullUsersDataAsync();
         void UpdatePlayerStatistics(string userId);
         void UpdateAllPlayersStatistics();
+        Task<IEnumerable<AppUser>> GetFullUsersDataAsync();
+        Task<IEnumerable<AppUser>> GetFullUsersDataAsyncByCategory(CollectionersSortCategory category);
     }
 }

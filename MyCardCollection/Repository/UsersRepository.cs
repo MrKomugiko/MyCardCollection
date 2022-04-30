@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyCardCollection.Controllers;
 using MyCardCollection.Data;
 using MyCardCollection.Models;
 using Npgsql;
@@ -55,6 +56,18 @@ namespace MyCardCollection.Repository
                 .Include(x=>x.Decks)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+        public async Task<IEnumerable<AppUser>> GetFullUsersDataAsyncByCategory(CollectionersSortCategory category)
+        {
+            switch(category)
+            {
+                case CollectionersSortCategory.alphabetical: return await _context.Users.OrderBy(x=>x.UserName).Include(x => x.Decks).AsNoTracking().ToListAsync();
+                case CollectionersSortCategory.oldest:       return await _context.Users.OrderBy(x=>x.Created).Include(x => x.Decks).AsNoTracking().ToListAsync();
+                case CollectionersSortCategory.newest:       return await _context.Users.OrderByDescending(x => x.Created).Include(x => x.Decks).AsNoTracking().ToListAsync();
+                case CollectionersSortCategory.biggest:      return await _context.Users.OrderByDescending(x => x.TotalCards).Include(x => x.Decks).AsNoTracking().ToListAsync();
+                case CollectionersSortCategory.value:        return await _context.Users.OrderByDescending(x => x.TotalValue).Include(x => x.Decks).AsNoTracking().ToListAsync();
+            }
+            return await _context.Users.Include(x => x.Decks).AsNoTracking().ToListAsync();
         }
         public void UpdatePlayerStatistics(string userId)
         {
