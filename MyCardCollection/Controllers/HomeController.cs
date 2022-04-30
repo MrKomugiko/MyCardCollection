@@ -26,7 +26,8 @@ namespace MyCardCollection.Controllers
 
         [AllowAnonymous]
         public async Task<IActionResult> Index(int page = 1)
-        { 
+        {
+
             var PageSize = 12;
             var PageRange = 6;
             if (! _cacheService.TryGetValue<List<SetListViewModel>>("Sets", out var listdata))
@@ -50,6 +51,8 @@ namespace MyCardCollection.Controllers
                 }
                 _cacheService.Set("Sets", listdata);
             }
+           
+            await _scryfall.CacheAllSetsDataCards(listdata);
 
             ViewBag.TotalPages = (Int32)Math.Ceiling((double)listdata.Count() / PageSize);
             ViewBag.CurrentPage = page;
@@ -121,18 +124,8 @@ namespace MyCardCollection.Controllers
         public async Task<IActionResult> List(string set = "mid")
         {
             var respond = await _scryfall.GetCardsListBySet(set);
-            List<CardListViewModel> listCards = new List<CardListViewModel>();
 
-            foreach (var card_raw in respond)
-            {
-
-                listCards.Add (
-                    new CardListViewModel()
-                    {
-                        Card = new CardData(card_raw)
-                    });
-
-            }
+            IEnumerable<CardData> listCards = respond;
 
             ViewBag.OwnedCards = new HashSet<string>();
 

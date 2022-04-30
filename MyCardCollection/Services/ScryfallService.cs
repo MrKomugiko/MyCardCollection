@@ -1,11 +1,21 @@
-﻿using MyCardCollection.Services.Scryfall;
+﻿using Microsoft.Extensions.Caching.Memory;
+using MyCardCollection.Models;
+using MyCardCollection.Repository;
+using MyCardCollection.Services.Scryfall;
 using MyCardCollection.Services.Scryfall.Card;
+using MyCardCollection.ViewModel;
 using Newtonsoft.Json;
 
 namespace MyCardCollection.Services
 {
     public class ScryfallService : IScryfallService
     {
+        private readonly IMemoryCache _memoryCache;
+        public ScryfallService(IMemoryCache memoryCache)
+        {
+            _memoryCache = memoryCache;
+        }
+
         public async Task<Root> FindCard(string set = "mid", int number = 305)
         {
             Root responseData = new Root();
@@ -44,10 +54,10 @@ namespace MyCardCollection.Services
             return responseData;
         }
 
-        public async Task<List<Root>> GetCardsListBySet(string set)
+        public async Task<IEnumerable<CardData>> GetCardsListBySet(string set)
         {
             CardList responseData = new CardList();
-            List<Root> cardList = new List<Root>();
+            List<CardData> cards_content = new List<CardData>();
 
             using (var client = new HttpClient())
             {
@@ -60,7 +70,7 @@ namespace MyCardCollection.Services
                     {
                         var readTask = response.Content.ReadAsStringAsync().Result;
                         responseData = JsonConvert.DeserializeObject<CardList>(readTask);
-                        cardList.AddRange(responseData.data);
+                        cards_content.AddRange(responseData.data.Select(x => new CardData(x)));
                     }
                     page++;
                     if (responseData.has_more == false)
@@ -68,7 +78,7 @@ namespace MyCardCollection.Services
                 }
             }
 
-            return cardList.OrderBy(x => x.collector_number.PadLeft(4, '0')).ToList();
+            return cards_content;
         }
 
         public async Task<IEnumerable<SetData>> GetSetsList()
@@ -85,6 +95,31 @@ namespace MyCardCollection.Services
                 }
             }
             return null;
+        }
+
+        public async Task CacheAllSetsDataCards(List<SetListViewModel> listdata)
+        {
+            if(!_memoryCache.TryGetValue(listdata.First().setcode, out var cards))
+            {
+                // check if first set is loaded
+                MemoryCacheEntryOptions _cacheExpiryOptions = new MemoryCacheEntryOptions
+                {
+                    Priority = CacheItemPriority.Low,
+                    SlidingExpiration = TimeSpan.FromSeconds(3600)
+                };
+                foreach(var set in listdata)
+                {
+                    if (_memoryCache.TryGetValue(set.setcode, out var c))
+                    {
+                        return;
+                        // all sets loaded before
+                    }
+
+                    var setCards = await GetCardsListBySet(set.setcode);
+                    _memoryCache.Set(set.setcode, setCards, _cacheExpiryOptions);
+                    Console.WriteLine(set.setcode+" SAVED IN MEMORY");
+                }
+            }
         }
     }
 }

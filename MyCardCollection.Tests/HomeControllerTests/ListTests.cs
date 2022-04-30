@@ -25,45 +25,7 @@ namespace MyCardCollection.HomeControllerTests.Tests
             _homeController = new HomeController(_scryfallServiceMock.Object, _cacheService.Object, _collectionRepository.Object);
 
             string setCode = "vow";
-            _scryfallServiceMock.Setup(x => x.GetCardsListBySet(setCode).Result)
-                .Returns(new List<Root>(){
-                    new Root()
-                    {
-                        Name = "card 1",
-                        collector_number = "1",
-                        cmc = 5,
-                        set = "vow",
-                        image_uris = new ImageUris()
-                        {
-                            normal = "http://image.png"
-                        }
-                        /* simplified for test purpose */
-                    },
-                    new Root()
-                    {
-                        Name = "card 3",
-                        collector_number = "3",
-                        cmc = 3,
-                        set = "vow",
-                        image_uris = new ImageUris()
-                        {
-                            normal = "http://image.png"
-                        }
-                        /* simplified for test purpose */
-                    },
-                    new Root()
-                    {
-                        Name = "card 2",
-                        collector_number = "2",
-                        cmc = 0,
-                        set = "vow",
-                        image_uris = new ImageUris()
-                        {
-                            normal = "http://image.png"
-                        }
-                        /* simplified for test purpose */
-                    }
-                }); ;
+        
         }
         
        

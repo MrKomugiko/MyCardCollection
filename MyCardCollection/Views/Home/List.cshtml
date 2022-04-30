@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MyCardCollection.ViewModel.CardListViewModel>
+﻿@model IEnumerable<MyCardCollection.Models.CardData>
 
 @{
     bool isAuthenticated = User.Identity.IsAuthenticated;
@@ -58,39 +58,39 @@ width!-- Toast -->
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model.Where(x=>ViewBag.OwnedCards.Contains(x.Card.CardId))) {
+                                    @foreach (var item in Model.Where(x=>ViewBag.OwnedCards.Contains(x.CardId))) {
                                     <tr >
-                                        @if (item.Card.HasTransform == false)
+                                        @if (item.HasTransform == false)
                                         {
-                                            <td> @item.Card.Name                            </td>
-                                            <td> @item.Card.CMC                             </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Type                            </td>
-                                            <td >@item.Card.SetCode                         </td>
-                                            <td >@item.Card.CollectionNumber                </td>
-                                            <td >@item.Card.Rarity                          </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.ImageURL                        </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Mana_Cost                       </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Description                     </td>
-                                            <td >@item.Card.Power                           </td>
-                                            <td >@item.Card.Health                          </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.FlavorDescription               </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Price_USD                       </td>
+                                            <td> @item.Name                            </td>
+                                            <td> @item.CMC                             </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Type                            </td>
+                                            <td >@item.SetCode                         </td>
+                                            <td >@item.CollectionNumber                </td>
+                                            <td >@item.Rarity                          </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.ImageURL                        </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Mana_Cost                       </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Description                     </td>
+                                            <td >@item.Power                           </td>
+                                            <td >@item.Health                          </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.FlavorDescription               </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Price_USD                       </td>
                                         }
                                         else // back side, revers, transformation...
                                         {
-                                            <td> @item.Card.Transform_Name                 </td>
-                                            <td> @item.Card.CMC                             </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_Type                  </td>
-                                            <td> @item.Card.SetCode                         </td>
-                                            <td> @item.Card.CollectionNumber                </td>
-                                            <td> @item.Card.Rarity                          </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_ImageURL              </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Mana_Cost                       </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_Description           </td>
-                                            <td> @item.Card.Transform_Power                 </td>
-                                            <td> @item.Card.Transform_Health                </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_FlavorDescription     </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Price_USD                       </td>
+                                            <td> @item.Transform_Name                 </td>
+                                            <td> @item.CMC                             </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Transform_Type                  </td>
+                                            <td> @item.SetCode                         </td>
+                                            <td> @item.CollectionNumber                </td>
+                                            <td> @item.Rarity                          </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Transform_ImageURL              </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Mana_Cost                       </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Transform_Description           </td>
+                                            <td> @item.Transform_Power                 </td>
+                                            <td> @item.Transform_Health                </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Transform_FlavorDescription     </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Price_USD                       </td>
                                         }
                                     </tr>
                                     }
@@ -100,10 +100,10 @@ width!-- Toast -->
                     <!-- Gallery -->
                         <div id="contentGallery_owned" class="container"  style="display:none;">
                             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
-                            @foreach (var item in Model.Where(x=>ViewBag.OwnedCards.Contains(x.Card.CardId))) {
+                            @foreach (var item in Model.Where(x=>ViewBag.OwnedCards.Contains(x.CardId))) {
                                     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                                         @{
-                                            string cardCover = item.Card.ImageURL != null ? item.Card.ImageURL : "/assets/img/card_cover_not_found.png";
+                                            string cardCover = item.ImageURL != null ? item.ImageURL : "/assets/img/card_cover_not_found.png";
                                         }
                                     <img src="@cardCover" style="border-radius:8px; width:100%; padding:5px;"/>
                                 </div>
@@ -113,7 +113,7 @@ width!-- Toast -->
                     </div>
                 </div>
                 @{
-                    var notCollectedModel = @Model.Where(x => ViewBag.OwnedCards.Contains(x.Card.CardId) == false);
+                    var notCollectedModel = @Model.Where(x => ViewBag.OwnedCards.Contains(x.CardId) == false);
                 }
                 <div class="accordion-item">
                     <a data-toggle="collapse" data-parent="#accordion-1" href="#accordion-panel-2" aria-expanded="false" aria-controls="accordion-1">
@@ -146,37 +146,37 @@ width!-- Toast -->
                                 <tbody>
                                     @foreach (var item in notCollectedModel) {
                                     <tr >
-                                        @if (item.Card.HasTransform == false)
+                                        @if (item.HasTransform == false)
                                         {
-                                            <td> @item.Card.Name                            </td>
-                                            <td> @item.Card.CMC                             </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Type                            </td>
-                                            <td >@item.Card.SetCode                         </td>
-                                            <td >@item.Card.CollectionNumber                </td>
-                                            <td >@item.Card.Rarity                          </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.ImageURL                        </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Mana_Cost                       </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Description                     </td>
-                                            <td >@item.Card.Power                           </td>
-                                            <td >@item.Card.Health                          </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.FlavorDescription               </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Price_USD                       </td>
+                                            <td> @item.Name                            </td>
+                                            <td> @item.CMC                             </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Type                            </td>
+                                            <td >@item.SetCode                         </td>
+                                            <td >@item.CollectionNumber                </td>
+                                            <td >@item.Rarity                          </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.ImageURL                        </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Mana_Cost                       </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Description                     </td>
+                                            <td >@item.Power                           </td>
+                                            <td >@item.Health                          </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.FlavorDescription               </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Price_USD                       </td>
                                         }
                                         else // back side, revers, transformation...
                                         {
-                                            <td> @item.Card.Transform_Name                 </td>
-                                            <td> @item.Card.CMC                             </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_Type                  </td>
-                                            <td> @item.Card.SetCode                         </td>
-                                            <td> @item.Card.CollectionNumber                </td>
-                                            <td> @item.Card.Rarity                          </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_ImageURL              </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Mana_Cost                       </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_Description           </td>
-                                            <td> @item.Card.Transform_Power                 </td>
-                                            <td> @item.Card.Transform_Health                </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_FlavorDescription     </td>
-                                            <td class="text-truncate" style="max-width:75px;"> @item.Card.Price_USD                       </td>
+                                            <td> @item.Transform_Name                 </td>
+                                            <td> @item.CMC                             </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Transform_Type                  </td>
+                                            <td> @item.SetCode                         </td>
+                                            <td> @item.CollectionNumber                </td>
+                                            <td> @item.Rarity                          </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Transform_ImageURL              </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Mana_Cost                       </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Transform_Description           </td>
+                                            <td> @item.Transform_Power                 </td>
+                                            <td> @item.Transform_Health                </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Transform_FlavorDescription     </td>
+                                            <td class="text-truncate" style="max-width:75px;"> @item.Price_USD                       </td>
                                         }
                                     </tr>
                                     }
@@ -189,7 +189,7 @@ width!-- Toast -->
                             @foreach (var item in notCollectedModel) {
                                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                                     @{
-                                        string cardCover = item.Card.ImageURL != null ? item.Card.ImageURL : "/assets/img/card_cover_not_found.png";
+                                        string cardCover = item.ImageURL != null ? item.ImageURL : "/assets/img/card_cover_not_found.png";
                                     }
                                     <img src="@cardCover" style="border-radius:8px; width:100%; padding:5px;"/>
                                 </div>
@@ -224,37 +224,37 @@ width!-- Toast -->
                         <tbody>
                             @foreach (var item in Model) {
                             <tr >
-                                @if (item.Card.HasTransform == false)
+                                @if (item.HasTransform == false)
                                 {
-                                    <td> @item.Card.Name                            </td>
-                                    <td> @item.Card.CMC                             </td>
-                                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Type                            </td>
-                                    <td >@item.Card.SetCode                         </td>
-                                    <td >@item.Card.CollectionNumber                </td>
-                                    <td >@item.Card.Rarity                          </td>
-                                    <td class="text-truncate" style="max-width:75px;"> @item.Card.ImageURL                        </td>
-                                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Mana_Cost                       </td>
-                                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Description                     </td>
-                                    <td >@item.Card.Power                           </td>
-                                    <td >@item.Card.Health                          </td>
-                                    <td class="text-truncate" style="max-width:75px;"> @item.Card.FlavorDescription               </td>
-                                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Price_USD                       </td>
+                                    <td> @item.Name                            </td>
+                                    <td> @item.CMC                             </td>
+                                    <td class="text-truncate" style="max-width:75px;"> @item.Type                            </td>
+                                    <td >@item.SetCode                         </td>
+                                    <td >@item.CollectionNumber                </td>
+                                    <td >@item.Rarity                          </td>
+                                    <td class="text-truncate" style="max-width:75px;"> @item.ImageURL                        </td>
+                                    <td class="text-truncate" style="max-width:75px;"> @item.Mana_Cost                       </td>
+                                    <td class="text-truncate" style="max-width:75px;"> @item.Description                     </td>
+                                    <td >@item.Power                           </td>
+                                    <td >@item.Health                          </td>
+                                    <td class="text-truncate" style="max-width:75px;"> @item.FlavorDescription               </td>
+                                    <td class="text-truncate" style="max-width:75px;"> @item.Price_USD                       </td>
                                 }
                                 else // back side, revers, transformation...
                                 {
-                                    <td> @item.Card.Transform_Name                 </td>
-                                    <td> @item.Card.CMC                             </td>
-                                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_Type                  </td>
-                                    <td> @item.Card.SetCode                         </td>
-                                    <td> @item.Card.CollectionNumber                </td>
-                                    <td> @item.Card.Rarity                          </td>
-                                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_ImageURL              </td>
-                                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Mana_Cost                       </td>
-                                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_Description           </td>
-                                    <td> @item.Card.Transform_Power                 </td>
-                                    <td> @item.Card.Transform_Health                </td>
-                                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Transform_FlavorDescription     </td>
-                                    <td class="text-truncate" style="max-width:75px;"> @item.Card.Price_USD                       </td>
+                                    <td> @item.Transform_Name                 </td>
+                                    <td> @item.CMC                             </td>
+                                    <td class="text-truncate" style="max-width:75px;"> @item.Transform_Type                  </td>
+                                    <td> @item.SetCode                         </td>
+                                    <td> @item.CollectionNumber                </td>
+                                    <td> @item.Rarity                          </td>
+                                    <td class="text-truncate" style="max-width:75px;"> @item.Transform_ImageURL              </td>
+                                    <td class="text-truncate" style="max-width:75px;"> @item.Mana_Cost                       </td>
+                                    <td class="text-truncate" style="max-width:75px;"> @item.Transform_Description           </td>
+                                    <td> @item.Transform_Power                 </td>
+                                    <td> @item.Transform_Health                </td>
+                                    <td class="text-truncate" style="max-width:75px;"> @item.Transform_FlavorDescription     </td>
+                                    <td class="text-truncate" style="max-width:75px;"> @item.Price_USD                       </td>
                                 }
                             </tr>
                             }
@@ -267,7 +267,7 @@ width!-- Toast -->
                 @foreach (var item in Model) {
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                             @{
-                                string cardCover = item.Card.ImageURL != null ? item.Card.ImageURL : "/assets/img/card_cover_not_found.png";
+                                string cardCover = item.ImageURL != null ? item.ImageURL : "/assets/img/card_cover_not_found.png";
                             }
                         <img src="@cardCover" style="border-radius:8px; width:100%; padding:5px;"/>
                     </div>

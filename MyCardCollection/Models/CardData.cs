@@ -24,11 +24,11 @@ namespace MyCardCollection.Models
                     
             Rarity = CardObject.rarity;
 
-            if (CardObject.power == "*")
+            if (CardObject.power != null && CardObject.power.Contains("*"))
             {
                 CardObject.power = "0";
             }
-            if (CardObject.toughness == "*")
+            if (CardObject.toughness != null && CardObject.toughness.Contains("*"))
             {
                 CardObject.toughness = "0";
             }
@@ -46,7 +46,6 @@ namespace MyCardCollection.Models
                 {
                     // ex. MID 177
                     // card atk, hp depends on effect */*+1
-               
                 }
                 Power = CardObject.power != null ? int.Parse(CardObject.power) : null;
                 Mana_Cost = CardObject.mana_cost;
