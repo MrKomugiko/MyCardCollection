@@ -137,6 +137,19 @@ namespace MyCardCollection.Services
                 .Select(x => x.CardId);
         }
 
+        public async Task<IEnumerable<CardData>> GetTopValuableCards(string _userId, int _take)
+        {
+            var result = await _context.Collection
+                .Where(x => x.UserId == _userId)
+                .Include(x => x.CardData)
+                    .OrderByDescending(x => x.CardData.Price_USD)
+                        .Where(x=>x.CardData.Price_USD>0)
+                .Take(_take)
+                .Select(x=>x.CardData)
+                .ToListAsync();
+
+            return result;
+        }
         //-------------------------------------------------------------------
 
 

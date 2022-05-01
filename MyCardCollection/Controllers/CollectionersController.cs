@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MyCardCollection.Enums;
 using MyCardCollection.Models;
 using MyCardCollection.Repository;
+using MyCardCollection.Services;
 using MyCardCollection.ViewModel;
 
 namespace MyCardCollection.Controllers
@@ -10,9 +11,12 @@ namespace MyCardCollection.Controllers
     public class CollectionersController : Controller
     {
         private readonly IUsersRepository _usersRepository;
-        public CollectionersController(IUsersRepository usersRepository)
+        private readonly ICollectionRepository _collectionRepository;
+
+        public CollectionersController(IUsersRepository usersRepository, ICollectionRepository collectionRepository)
         {
             _usersRepository = usersRepository;
+            _collectionRepository = collectionRepository;
         }
 
         public async Task<IActionResult> Index(int category = 0, int page = 1, int pageSize = 6)
@@ -23,14 +27,10 @@ namespace MyCardCollection.Controllers
                 _usersRepository.UpdateAllPlayersStatistics();
 
             bool valid_category = Enum.IsDefined(typeof(CollectionersSortCategory), category);
-            if (category != 0)
-            {
-                if (valid_category)
-                    users = await _usersRepository.GetFullUsersDataAsyncByCategory((CollectionersSortCategory)category);
-            }
-            
-            if(category==0 || !valid_category)
-                users = await _usersRepository.GetFullUsersDataAsync();
+            if (category != 0 && valid_category)
+                users = await _usersRepository.GetUsersAsyncByCategory((CollectionersSortCategory)category);
+            else if(category==0 || !valid_category)
+                users = await _usersRepository.GetUsersDataAsync();
             
 
             CollectionersViewModel model = new()
@@ -45,6 +45,18 @@ namespace MyCardCollection.Controllers
 
             return View(model);
         }
+        
+        [Route("Collectioner/{userId}")]
+        public async Task<IActionResult> Profile(string userId)
+        {
+            CollectionerProfileViewModel model = new()
+            {
+                AppUser = await _usersRepository.GetUserByIdAsync(userId),
+                TopCards = await _collectionRepository.GetTopValuableCards(userId,take:8)
+            };
+            return View(model);
+        }
+
         private IEnumerable<SelectListItem> GetSelectList<T>(T selectedCategory)
         {
             var values =Enum.GetValues(typeof(T)).Cast<T>();
@@ -58,13 +70,5 @@ namespace MyCardCollection.Controllers
             return items;
         }
         
-        [Route("Collectioner/{userId}")]
-        public async Task<IActionResult> Profile(string userId)
-        {
-            var model = await _usersRepository.GetUserByIdAsync(userId);
-            return View(model);
-        }
-
-    
     }
 }

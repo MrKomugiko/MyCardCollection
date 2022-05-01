@@ -1,4 +1,4 @@
-﻿@model MyCardCollection.Models.AppUser;
+﻿@model MyCardCollection.ViewModel.CollectionerProfileViewModel;
 
 <div class="main-container"  style="min-height:calc(100vh - 15vh)">
 @*    <nav aria-label="breadcrumb" role="navigation" class="bg-primary text-white">
@@ -23,22 +23,22 @@
         <!--end of container-->
     </nav>*@
     <section class="bg-dark">
-        <img alt="Image" src="@Model.BackgroundProfileImage" class="bg-image opacity-40 text-center" style="object-position:50% 15%;">
+        <img alt="Image" src="@Model.AppUser.BackgroundProfileImage" class="bg-image opacity-40 text-center" style="object-position:50% 15%;">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-8">
                     <div class="media">
-                        <img alt="Image" src="@Model.AvatarImage" class="mt-md-5 mr-md-5 avatar avatar-xlg">
+                        <img alt="Image" src="@Model.AppUser.AvatarImage" class="mt-md-5 mr-md-5 avatar avatar-xlg">
                         <div class="media-body">
                             <div class="mb-2">
-                                <h1 class="h2 mb-2">@Model.Name "@Model.UserName" @Model.Lastname</h1>
+                                <h1 class="h2 mb-2">@Model.AppUser.Name "@Model.AppUser.UserName" @Model.AppUser.Lastname</h1>
                                 <p class="badge badge-primary badge-pill mb-2">Admin</p><p class="badge badge-secondary badge-pill mb-2">Begginer</p>
-                                <p><span><i class="icon-location"></i> @Model.City, @Model.CountryCode</span></p>
+                                <p><span><i class="icon-location"></i> @Model.AppUser.City, @Model.AppUser.CountryCode</span></p>
                             </div>
                             <p>
-                                Total Cards: <b> @Model.TotalCards</b> (Unique:<b> @Model.UniqueCards</b>)<br />
-                                Total Value: <b>  @Math.Round(Model.TotalValue,2)$</b> <br />
-                                Member since:<b>  @Model.Created.ToShortDateString()</b> <br />
+                                Total Cards: <b> @Model.AppUser.TotalCards</b> (Unique:<b> @Model.AppUser.UniqueCards</b>)<br />
+                                Total Value: <b>  @Math.Round(Model.AppUser.TotalValue,2)$</b> <br />
+                                Member since:<b>  @Model.AppUser.Created.ToShortDateString()</b> <br />
                             </p>
                             <p>
                                 Bit of a go-getter me, creating lovely things that help others. You'll most often find me out back in the hammock, listening to tunes and bending pixels to my will.
@@ -284,34 +284,29 @@
 
             <div class="tab-pane fade active show" id="topcards" role="tabpanel" aria-labelledby="topcards-tab">
                 <div class="container">
-                    <div class="row justify-content-between">
-                       <div class="col m-2 ">
-                            <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="https://c1.scryfall.com/file/scryfall-cards/normal/front/4/3/432ecd5f-966f-4403-a973-51e175a524a0.jpg?1594736810" alt="img">
+                    @if(Model.TopCards.Any())
+                    {
+                        <div class="row justify-content-between">
+                            @foreach (var item in Model.TopCards.Take(4))
+                            {
+                                <div class="col-6 col-sm-4 col-md ">
+                                    <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="@item.ImageURL" alt="img">
+                                </div>
+                            }
                         </div>
-                        <div class="col m-2">
-                            <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="https://c1.scryfall.com/file/scryfall-cards/normal/front/3/a/3af78d76-ad5c-44ba-880d-b834bcde5398.jpg?1594737470" alt="img">
-                        </div>
-                        <div class="col m-2">
-                            <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="https://c1.scryfall.com/file/scryfall-cards/normal/front/5/f/5f1e7d34-f250-4a61-a95b-75450d134eec.jpg?1643597525" alt="img">
-                        </div>
-                        <div class="col m-2">
-                            <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="https://c1.scryfall.com/file/scryfall-cards/normal/front/0/b/0b8aff2c-1f7b-4507-b914-53f8c4706b3d.jpg?1596259277" alt="img">
-                        </div>
-                     </div>
-                    <div class="row justify-content-between">
-                        <div class="col m-2">
-                            <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="https://c1.scryfall.com/file/scryfall-cards/normal/front/1/8/18092f68-b96e-4084-9eba-b240d2195d81.jpg?1634346539" alt="img">
-                        </div>
-                        <div class="col m-2">
-                            <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="https://c1.scryfall.com/file/scryfall-cards/normal/front/0/d/0dbac7ce-a6fa-466e-b6ba-173cf2dec98e.jpg?1634347036" alt="img">
-                        </div>
-                        <div class="col m-2">
-                            <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="https://c1.scryfall.com/file/scryfall-cards/normal/front/5/2/52e59170-aa80-45e1-ad0d-ce4818e78d2a.jpg?1643591771" alt="img">
-                        </div>
-                        <div class="col m-2">
-                            <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="https://c1.scryfall.com/file/scryfall-cards/normal/front/f/d/fdb4b2ef-5196-4f7f-88ff-64b2cdb36c6b.jpg?1584831630" alt="img">
-                        </div>
-                    </div>
+
+                        @if (Model.TopCards.Count() > 4)
+                        {
+                            <div class="row justify-content-between">
+                                @foreach (var item in Model.TopCards.Skip(4).Take(4))
+                                {
+                                    <div class="col-6 col-sm-4 col-md">
+                                        <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="@item.ImageURL" alt="img">
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
                 </div>
                     <!--end of row-->
             </div>

@@ -26,15 +26,11 @@ namespace MyCardCollection.Repository
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<AppUser>> GetAllUsersAsync()
-        {
-            return await _context.Users.ToListAsync();
-        }
-
         public async Task<AppUser> GetUserByIdAsync(string id)
         {
             return await _context.Users.FindAsync(id);
         }
+
         public async Task<int> GetCountUsersAsync()
         {
             return await _context.Users.CountAsync();
@@ -51,24 +47,23 @@ namespace MyCardCollection.Repository
             _context.Update(user);
             return Save();
         }
-        public async Task<IEnumerable<AppUser>> GetFullUsersDataAsync()
+        public async Task<IEnumerable<AppUser>> GetUsersDataAsync()
         {
             return await _context.Users
-                .Include(x=>x.Decks)
                 .AsNoTracking()
                 .ToListAsync();
         }
-        public async Task<IEnumerable<AppUser>> GetFullUsersDataAsyncByCategory(CollectionersSortCategory category)
+        public async Task<IEnumerable<AppUser>> GetUsersAsyncByCategory(CollectionersSortCategory category)
         {
             switch(category)
             {
-                case CollectionersSortCategory.alphabetical: return await _context.Users.OrderBy(x=>x.UserName).Include(x => x.Decks).AsNoTracking().ToListAsync();
-                case CollectionersSortCategory.oldest:       return await _context.Users.OrderBy(x=>x.Created).Include(x => x.Decks).AsNoTracking().ToListAsync();
-                case CollectionersSortCategory.newest:       return await _context.Users.OrderByDescending(x => x.Created).Include(x => x.Decks).AsNoTracking().ToListAsync();
-                case CollectionersSortCategory.biggest:      return await _context.Users.OrderByDescending(x => x.TotalCards).Include(x => x.Decks).AsNoTracking().ToListAsync();
-                case CollectionersSortCategory.value:        return await _context.Users.OrderByDescending(x => x.TotalValue).Include(x => x.Decks).AsNoTracking().ToListAsync();
+                case CollectionersSortCategory.alphabetical: return await _context.Users.OrderBy(x=>x.UserName).AsNoTracking().ToListAsync();
+                case CollectionersSortCategory.oldest:       return await _context.Users.OrderBy(x=>x.Created).AsNoTracking().ToListAsync();
+                case CollectionersSortCategory.newest:       return await _context.Users.OrderByDescending(x => x.Created).AsNoTracking().ToListAsync();
+                case CollectionersSortCategory.biggest:      return await _context.Users.OrderByDescending(x => x.TotalCards).AsNoTracking().ToListAsync();
+                case CollectionersSortCategory.value:        return await _context.Users.OrderByDescending(x => x.TotalValue).AsNoTracking().ToListAsync();
             }
-            return await _context.Users.Include(x => x.Decks).AsNoTracking().ToListAsync();
+            return await _context.Users.AsNoTracking().ToListAsync();
         }
         public void UpdatePlayerStatistics(string userId)
         {
