@@ -61,8 +61,8 @@ namespace MyCardCollection.Controllers
         [Route("Collectioner/{userId}")]
         public async Task<IActionResult> Profile(string userId)
         {
-
-            return View();
+            var model = await _usersRepository.GetUserByIdAsync(userId);
+            return View(model);
         }
 
     

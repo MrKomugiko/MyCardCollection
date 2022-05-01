@@ -1,4 +1,6 @@
-﻿<div class="main-container"  style="min-height:calc(100vh - 15vh)">
+﻿@model MyCardCollection.Models.AppUser;
+
+<div class="main-container"  style="min-height:calc(100vh - 15vh)">
 @*    <nav aria-label="breadcrumb" role="navigation" class="bg-primary text-white">
         <div class="container">
             <div class="row justify-content-center">
@@ -21,44 +23,46 @@
         <!--end of container-->
     </nav>*@
     <section class="bg-dark">
-        <img alt="Image" src="https://c1.scryfall.com/file/scryfall-cards/art_crop/front/3/e/3eeef24b-b937-408e-a32e-1a546d3e7b0f.jpg?1634346590" class="bg-image opacity-40 text-center" style="object-position:50% 15%;">
+        <img alt="Image" src="@Model.BackgroundProfileImage" class="bg-image opacity-40 text-center" style="object-position:50% 15%;">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-8">
                     <div class="media">
-                        <img alt="Image" src="https://c1.scryfall.com/file/scryfall-cards/art_crop/front/3/e/3eeef24b-b937-408e-a32e-1a546d3e7b0f.jpg?1634346590" class="mt-md-5 mr-md-5 avatar avatar-xlg">
+                        <img alt="Image" src="@Model.AvatarImage" class="mt-md-5 mr-md-5 avatar avatar-xlg">
                         <div class="media-body">
                             <div class="mb-2">
-                                <h1 class="h2 mb-2">MrKomugiko</h1>
+                                <h1 class="h2 mb-2">@Model.Name "@Model.UserName" @Model.Lastname</h1>
                                 <p class="badge badge-primary badge-pill mb-2">Admin</p><p class="badge badge-secondary badge-pill mb-2">Begginer</p>
-                                <p><span><i class="icon-location"></i> Gdańsk, PL</span></p>
+                                <p><span><i class="icon-location"></i> @Model.City, @Model.CountryCode</span></p>
                             </div>
                             <p>
-                                Total Cards: <br />
-                                Total Value: <br />
-                                Ranking: <br />
-                                Member since:
+                                Total Cards: <b> @Model.TotalCards</b> (Unique:<b> @Model.UniqueCards</b>)<br />
+                                Total Value: <b>  @Math.Round(Model.TotalValue,2)$</b> <br />
+                                Member since:<b>  @Model.Created.ToShortDateString()</b> <br />
                             </p>
                             <p>
                                 Bit of a go-getter me, creating lovely things that help others. You'll most often find me out back in the hammock, listening to tunes and bending pixels to my will.
                             </p>
                             <div>
-                                <button class="btn btn-primary" data-toggle="button"><i class="icon-add-user"></i> Follow</button>
-                                <button class="btn btn-primary">
-                                    <i class="icon-mail"></i>
-                                </button>
-                                <div class="dropdown d-inline-block">
-                                    <button class="btn btn-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="icon-dots-three-horizontal"></i>
+                                 @if (User.Identity.IsAuthenticated)
+                                {
+                                    <button class="btn btn-primary" data-toggle="button"><i class="icon-add-user"></i> Follow</button>
+                                    <button class="btn btn-primary">
+                                        <i class="icon-mail"></i>
                                     </button>
-                                    <div class="dropdown-menu dropdown-menu-sm" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 36px, 0px);">
-                                        <a class="dropdown-item" href="#">Add to group</a>
-                                        <a class="dropdown-item" href="#">Share Profile</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Block</a>
-                                        <a class="dropdown-item" href="#">Report</a>
+                                    <div class="dropdown d-inline-block">
+                                        <button class="btn btn-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="icon-dots-three-horizontal"></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-sm" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 36px, 0px);">
+                                            <a class="dropdown-item" href="#">Add to group</a>
+                                            <a class="dropdown-item" href="#">Share Profile</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Block</a>
+                                            <a class="dropdown-item" href="#">Report</a>
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -275,8 +279,7 @@
                     </div>
                 </div>
             </div>
-             
-  
+               
 <!-- TOP CARDS -->
 
             <div class="tab-pane fade active show" id="topcards" role="tabpanel" aria-labelledby="topcards-tab">
@@ -312,7 +315,6 @@
                 </div>
                     <!--end of row-->
             </div>
-
 
 <!-- FOLLOWERS -->
 
@@ -944,7 +946,6 @@
                         <!--end of container-->
                     </div>
 
-    <!--end of section-->
 </div>
 </section>
 </div>
