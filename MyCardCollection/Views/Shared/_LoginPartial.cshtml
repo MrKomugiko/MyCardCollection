@@ -23,7 +23,7 @@
                     <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Settings</a>
                    @* <a class="dropdown-item" href="#">Groups</a>*@
                     <form method="post" class="form-inline dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                        <button type="submit" class="btn p-0" style="color:black;">Logout</button>
+                        <button type="submit" class="btn p-0 w-100" style="color:black; text-align:left;">Logout</button>
                     </form>
                   </div>
     </li>
