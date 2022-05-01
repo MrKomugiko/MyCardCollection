@@ -17,10 +17,15 @@ namespace MyCardCollection.Models
             CollectionNumber = int.TryParse(CardObject.collector_number, out int res)?res:-1;
             SetCode = CardObject.set;
             CMC = CardObject.cmc;
-                if(CardObject.prices != null)
-                {
-                    Price_USD = CardObject.prices.usd != null ? float.Parse(CardObject.prices.usd.Replace(".", ",").Trim()) : null;
-                }
+            if(CardObject.prices != null)
+            {
+                #if DEBUG
+                    Price_USD = CardObject.prices.usd != null ? float.Parse(CardObject.prices.usd) : null;
+                #endif
+                #if (!DEBUG)
+                    Price_USD = CardObject.prices.usd != null ? float.Parse(CardObject.prices.usd.Replace(".",",")) : null;
+                #endif
+            }
                     
             Rarity = CardObject.rarity;
 
