@@ -1,4 +1,5 @@
 ﻿using MyCardCollection.Controllers;
+using MyCardCollection.Enums;
 using MyCardCollection.Models;
 
 namespace MyCardCollection.Repository

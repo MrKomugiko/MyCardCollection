@@ -49,10 +49,13 @@ namespace MyCardCollection.Controllers
                         }
                     );
                 }
+               
                 _cacheService.Set("Sets", listdata);
             }
-           
+
+            #if (!DEBUG)
             await _scryfall.CacheAllSetsDataCards(listdata);
+            #endif
 
             ViewBag.TotalPages = (Int32)Math.Ceiling((double)listdata.Count() / PageSize);
             ViewBag.CurrentPage = page;

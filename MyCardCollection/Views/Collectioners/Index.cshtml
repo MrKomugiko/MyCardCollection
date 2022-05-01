@@ -27,6 +27,7 @@
         <div class="row align-items-center">
             <div class="col-12 mb-3 position-relative">
                 <div class="d-flex mb-2 float-right col-6 col-md-3" style="z-index:2; position:relative;">
+                    <!-- Soring selection -->
                     <form class="d-flex align-items-center w-100">
                       <span class="mr-2 text-muted text-small text-nowrap">Sort by:</span>
                       <select id="categorySelection" class="custom-select">
@@ -41,7 +42,7 @@
                       </select>
                     </form>
                 </div>
-        
+            <!-- Users list -->
            <div class="col">
               <table class="table table-hover align-items-center table-borderless table-responsive-md">
                 <thead>
@@ -58,83 +59,51 @@
                 </thead>
                 <tbody>
                     @foreach(var user in Model.Users)
-                            {
-                            <tr class="bg-white">
-                    <th scope="row" style="padding-bottom: 5px; padding-top:5px">
-                      <div class="media align-items-center">
-                        <img alt="Image" src="https://wingman.mediumra.re/assets/img/avatar-male-1.jpg" class="avatar">
-                        <div class="media-body">
-                          <span class="h6 mb-0">@user.Name @user.Lastname
-                                <span class="badge badge-secondary">@if (user.Email == "mr.komugiko@gmail.com") { <text>Admin</text> }</span>
-                            </span>
-                          <span class="text-muted">title??</span>
-                        </div>
-                      </div>
-                    </th>
-                    <td>@user.UserName</td>
-                    <td>@user.City, @user.CountryCode</td>
-                    <td>@user.DecksCreated</td>
-                    <td>@user.UniqueCards</td>
-                    <td>@user.TotalCards</td>
-                    <td>@Math.Round(user.TotalValue,2)$</td>
-                    <td>
-                      <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="dropdownMenuButton-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="icon-dots-three-horizontal"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-sm">
-                          <a class="dropdown-item" href="#">Contact</a>
-                          <a class="dropdown-item" href="#">Assign</a>
-                          <a class="dropdown-item" href="#">Share</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="#">Remove</a>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="table-divider">
-                    <th></th>
-                    <td></td>
-                  </tr>
+                    {
+                    <tr class="bg-white">
+                        <th scope="row" style="padding-bottom: 5px; padding-top:5px">
+                            <div class="media align-items-center">
+                                <img alt="Image" src="https://wingman.mediumra.re/assets/img/avatar-male-1.jpg" class="avatar">
+                                <div class="media-body">
+                                    <span class="h6 mb-0">@user.Name @user.Lastname
+                                        <span class="badge badge-secondary">@if (user.Email == "mr.komugiko@gmail.com") { <text>Admin</text> }</span>
+                                    </span>
+                                    <span class="text-muted">title??</span>
+                                </div>
+                            </div>
+                        </th>
+                        <td>@user.UserName</td>
+                        <td>@user.City, @user.CountryCode</td>
+                        <td>@user.DecksCreated</td>
+                        <td>@user.UniqueCards</td>
+                        <td>@user.TotalCards</td>
+                        <td>@Math.Round(user.TotalValue,2)$</td>
+                        <td>
+
+                            <div class="btn-group">
+                               <a class="btn btn-sm btn-primary" href="Collectioner/@user.Id">Profile</a>
+
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="dropdownMenuButton-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="icon-dots-three-horizontal"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-sm">
+                                        <a class="dropdown-item" href="Collectioner/@user.Id">Profile</a>
+                                        <a class="dropdown-item" href="#">Contact WIP</a>
+                                        <a class="dropdown-item" href="#">Follow WIP</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="#">Report WIP</a>
+                                    </div>
+                                </div>
                                 
-                            }
-
-                  <tr class="bg-white">
-                    <th scope="row" style="padding-bottom: 5px; padding-top:5px">
-                      <div class="media align-items-center">
-                        <img alt="Image" src="https://wingman.mediumra.re/assets/img/avatar-male-1.jpg" class="avatar">
-                        <div class="media-body">
-                          <span class="h6 mb-0">Lucifer Morningstar</span>
-                          <span class="text-muted">Fallen Angel</span>
-                        </div>
-                      </div>
-                    </th>
-                    <td>Devil</td>
-                    <td>Gehenna, HELL</td>
-                    <td>6</td>
-                    <td>666</td>
-                    <td>866</td>
-                    <td>666,0$</td>
-                    <td>
-                      <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="dropdownMenuButton-12" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="icon-dots-three-horizontal"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-sm">
-                          <a class="dropdown-item" href="#">Contact</a>
-                          <a class="dropdown-item" href="#">Assign</a>
-                          <a class="dropdown-item" href="#">Share</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="#">Remove</a>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="table-divider">
-                    <th></th>
-                    <td></td>
-                  </tr>
-
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="table-divider">
+                        <th></th>
+                        <td></td>
+                    </tr>
+                    }
                 </tbody>
               </table>
             </div>

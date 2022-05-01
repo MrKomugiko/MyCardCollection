@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyCardCollection.Controllers;
 using MyCardCollection.Data;
+using MyCardCollection.Enums;
 using MyCardCollection.Models;
 using Npgsql;
 

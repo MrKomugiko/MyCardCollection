@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MyCardCollection.Enums;
 using MyCardCollection.Models;
 using MyCardCollection.Repository;
 using MyCardCollection.ViewModel;
@@ -56,16 +57,14 @@ namespace MyCardCollection.Controllers
                 });
             return items;
         }
-    }
+        
+        [Route("Collectioner/{userId}")]
+        public async Task<IActionResult> Profile(string userId)
+        {
 
+            return View();
+        }
 
-    public enum CollectionersSortCategory
-    {
-        none,
-        alphabetical,
-        oldest,
-        newest,
-        biggest,
-        value
+    
     }
 }

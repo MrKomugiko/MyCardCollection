@@ -59,9 +59,9 @@
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                          <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Collectioners" asp-action="Index"><b>Collectioners</b></a>
+                            <a class="nav-link" asp-area="" asp-controller="Collectioners" asp-action="Index">Collectioners</a>
                         </li>
-                    @if (User.Identity.IsAuthenticated)
+                    @if (User.Identity.IsAuthenticated) 
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Collection" asp-action="Index">My Collection</a>
