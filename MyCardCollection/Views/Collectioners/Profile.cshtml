@@ -105,8 +105,6 @@
 <section class="flush-with-above">
 <div class="tab-content"> 
 <!-- DECKS -->
-
-
     <div class="tab-pane fade" id="decks" role="tabpanel" aria-labelledby="decks-tab">
         <div class="container">
             <div class="row align-items-center">
@@ -287,10 +285,39 @@
                     @if(Model.TopCards.Any())
                     {
                         <div class="row justify-content-between">
+                        <style>
+
+
+                            /* Style the button and place it in the middle of the container/image */
+                            #flipbtn.btn {
+                                position: absolute;
+                                top: 90%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);  
+                                -ms-transform: translate(-50%, -50%);
+                                background-color: rgba(64,64,64,0.85); 
+                                color: white;
+                                font-size: 12px;
+                                border: none;cursor: pointer;
+                                border-radius: 10px; 
+                            }
+
+                            #flipbtn.btn:hover {
+                                background-color: black;
+                            }
+                        </style>
                             @foreach (var item in Model.TopCards.Take(4))
                             {
-                                <div class="col-6 col-sm-4 col-md ">
-                                    <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="@item.ImageURL" alt="img">
+                                <div class="col-6 col-sm-4 col-md">
+                                    @if(item.HasTransform)
+                                    {
+                                        <img  class="img-fluid" src="@item.ImageURL" style="border-radius:15px; background-color: #fff; padding: 5px;" alt="card">
+                                        <button id="flipbtn" class="btn img-fluid" onclick="FlipCard(this,'@item.ImageURL','@item.Transform_ImageURL')"> Flip </button>
+                                    }
+                                    else
+                                    {
+                                        <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="@item.ImageURL" alt="img">
+                                    }
                                 </div>
                             }
                         </div>
@@ -301,7 +328,15 @@
                                 @foreach (var item in Model.TopCards.Skip(4).Take(4))
                                 {
                                     <div class="col-6 col-sm-4 col-md">
-                                        <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="@item.ImageURL" alt="img">
+                                        @if(item.HasTransform)
+                                        {
+                                            <img   class="img-fluid" src="@item.ImageURL"  style="border-radius:15px; background-color: #fff; padding: 5px;" alt="card">
+                                            <button id="flipbtn" class="btn img-fluid" onclick="FlipCard(this,'@item.ImageURL','@item.Transform_ImageURL')"> Flip </button>
+                                        }
+                                        else
+                                        {
+                                            <img class="img-fluid" style="border-radius:15px; background-color: #fff; padding: 5px;" src="@item.ImageURL" alt="img">
+                                        }
                                     </div>
                                 }
                             </div>
@@ -944,3 +979,20 @@
 </div>
 </section>
 </div>
+
+
+    <script>
+        function FlipCard(card,frontSrc, backSrc)
+        {
+            var currentImage = card.previousElementSibling.src;
+            if(currentImage == frontSrc)
+            {
+                card.previousElementSibling.src = backSrc;
+            }
+            if(currentImage == backSrc)
+            {
+                card.previousElementSibling.src = frontSrc;
+            }
+        }
+    </script>
+

@@ -21,6 +21,26 @@ width!-- Toast -->
     </div>
 </div>*@
 <section class="overflow-hidden" style="min-height:calc(100vh - 30vh)">
+    <style>
+        /* Style the button and place it in the middle of the container/image */
+        #flipbtn.btn {
+            position: absolute;
+            top: 90%;
+            left: 50%;
+            transform: translate(-50%, -50%);  
+            -ms-transform: translate(-50%, -50%);
+            background-color: rgba(64,64,64,0.85); 
+            color: white;
+            font-size: 12px;
+            border: none;cursor: pointer;
+            border-radius: 10px; 
+        }
+
+        #flipbtn.btn:hover {
+            background-color: black;
+        }
+    </style>
+
     <div class="container">
         <!-- Toggle switch list/gallery -->
         <div class="custom-control custom-switch mx-2" style="margin-left:auto; margin-right:auto; text-align:right;">
@@ -101,11 +121,15 @@ width!-- Toast -->
                         <div id="contentGallery_owned" class="container"  style="display:none;">
                             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
                             @foreach (var item in Model.Where(x=>ViewBag.OwnedCards.Contains(x.CardId))) {
-                                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="col-6 col-sm-6 col-md-4 col-lg-3">
                                         @{
                                             string cardCover = item.ImageURL != null ? item.ImageURL : "/assets/img/card_cover_not_found.png";
                                         }
                                     <img src="@cardCover" style="border-radius:8px; width:100%; padding:5px;"/>
+                                    @if(item.HasTransform)
+                                    {
+                                    <button id="flipbtn" class="btn img-fluid" onclick="FlipCard(this,'@cardCover','@item.Transform_ImageURL')"> Flip </button>
+                                    }
                                 </div>
                             }
                             </div>
@@ -187,11 +211,15 @@ width!-- Toast -->
                         <div id="contentGallery_notowned" class="container"  style="display:none;">
                             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
                             @foreach (var item in notCollectedModel) {
-                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                <div class="col-6 col-sm-6 col-md-4 col-lg-3">
                                     @{
                                         string cardCover = item.ImageURL != null ? item.ImageURL : "/assets/img/card_cover_not_found.png";
                                     }
                                     <img src="@cardCover" style="border-radius:8px; width:100%; padding:5px;"/>
+                                    @if(item.HasTransform)
+                                    {
+                                    <button id="flipbtn" class="btn img-fluid" onclick="FlipCard(this,'@cardCover','@item.Transform_ImageURL')"> Flip </button>
+                                    }
                                 </div>
                             }
                             </div>
@@ -265,11 +293,15 @@ width!-- Toast -->
             <div id="contentGallery" class="container"  style="display:none;">
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
                 @foreach (var item in Model) {
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="col-6 col-sm-6 col-md-4 col-lg-3">
                             @{
                                 string cardCover = item.ImageURL != null ? item.ImageURL : "/assets/img/card_cover_not_found.png";
                             }
                         <img src="@cardCover" style="border-radius:8px; width:100%; padding:5px;"/>
+                        @if(item.HasTransform)
+                        {
+                        <button id="flipbtn" class="btn img-fluid" onclick="FlipCard(this,'@cardCover','@item.Transform_ImageURL')"> Flip </button>
+                        }
                     </div>
                 }
                 </div>
@@ -318,29 +350,18 @@ width!-- Toast -->
         }
 
 
+        function FlipCard(card,frontSrc, backSrc)
+        {
+            var currentImage = card.previousElementSibling.src;
+            if(currentImage == frontSrc)
+            {
+                card.previousElementSibling.src = backSrc;
+            }
+            if(currentImage == backSrc)
+            {
+                card.previousElementSibling.src = frontSrc;
+            }
+        }
 
-        // $(function(){
-        //    $("a.tglGallery").click(function(e){
-        //        console.log("click");
-        //        e.preventDefault();
-        //        $(this).css("display","none");
-        //        $(".tglList").css("display","");
-
-        //        $("#contentGallery").css("display","");
-        //        $("#contentList").css("display","none");
-        //    });
-        //});
-        //$(function(){
-        //    $("a.tglList").click(function(e){
-        //        console.log("click");
-
-        //        e.preventDefault();
-        //        $(this).css("display","none");
-        //        $(".tglGallery").css("display","");
-
-        //        $("#contentList").css("display","");
-        //        $("#contentGallery").css("display","none");
-        //    });
-        //});
     </script>
 }
