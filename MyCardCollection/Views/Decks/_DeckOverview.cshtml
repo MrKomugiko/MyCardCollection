@@ -3,7 +3,7 @@
 @model DeckStatisticsViewModel
 
 <style>
-    p, h1, h2, h3, h4, h5 {
+    #contentdescription > p, #contentdescription >h1, #contentdescription >h2, #contentdescription >h3,#contentdescription > h4, #contentdescription >h5 {
         color: black !important;
     } 
     .mtg-mana-white {
@@ -48,12 +48,12 @@
     }
 </style>
 
-<div>
+<div id="contentdescription">
     <h1 > <b> @Model.DeckName</b></h1>
-    <p > ID: @Model.DeckId</p>
+@*    <p > ID: @Model.DeckId</p>
     <p > Cards: @Model.Size</p>
     <p > Owner: @Model.OwnerId</p>
-
+*@
     @{
         IEnumerable<(int Quantity, CardData data)> DATA = Model.Cards;
         var PLANESWALKERS = DATA.Where(x=>x.data.Type.Contains("Planeswalker")).ToList();

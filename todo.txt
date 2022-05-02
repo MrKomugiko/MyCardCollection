@@ -1,0 +1,36 @@
+TODO:
+* customize/Edit decks (not cards, just ui stuff)
+	- select image from its content as background
+	- title, description
+* Update profile/privacy settings, name, email, location
+* Change decks visiblity public/private
+* Exporting|Importing a deck,
+	- importing deck from file =! importing cards to collection
+	- make a summary what cards you miss to make this deck for yourself
+	- add to your decks under "not able to build": not public 
+* Like a deck
+	- block multiple likes, make add/cancel like on click
+	- change like <3 to red
+* Add deck to favorite
+	- display fav decks on Decks page 
+		- remove all setting options to not owned decks	
+* Comments system
+	- crud coment
+	- redirect to dedicated page or open in modal? 
+	- reporting comments -> auto hide or send to approval
+* Make a Patchnote page displaying current changes and short description whats new
+* Reporting system: Decks,Comments, Bug Reports/Ideas to improve
+* Add roles [admin, moderator]
+	- approves on comment?
+	- delete,hide,edit user` comments, decks descriptions/names
+* Change home page to actual home page ;d not sets list
+	- latest decks make by users
+	- top decks, most commented
+	- simple showcase in image carussel ?
+------------------------------------------------------------------------------------
+- optimalize/switch to importing using cards from server cache 
+- more charts, improve builder -> steal idea from other builders websites xD
+- cards legality, decks types checking 
+- price daily calculating, add user price logs
+- steal more ideas ;d, scrape MTG:WoTC website ?
+ 

@@ -1,0 +1,122 @@
+﻿@model IEnumerable<MyCardCollection.Models.Deck>
+
+<div class="container">    
+    <div class="row align-items-center">
+        <div class="col-12 position-relative">
+            <ul class="row mb-3 feature-list feature-list-sm">
+                <style>
+                    /* Style the button and place it in the middle of the container/image */
+                    #specialOnImage.dropup {
+                        position: absolute;
+                        top: 8%;
+                        left: 92%;
+                        transform: translate(-50%, -50%);  
+                        -ms-transform: translate(-50%, -50%); 
+                        background: white;
+                        font-size: 12px;
+                        cursor: pointer;
+                        border-radius: 5px; 
+                        z-index:2;
+                    }
+
+                </style>
+                @{
+                    if(Model != null)
+                    {
+                        foreach(var deck in Model.Where(x=>x.Content.Count > 0))
+                        {
+                            <li class="col-12 col-md-6 col-lg-4">
+                                <div class="card shadow">
+                                    @{var deckimg = deck.Content.FirstOrDefault()==null?"":deck.Content.First().CardData.ImageURLCropped;} 
+                                    <img class="card-img-top" src="@deckimg" style="object-fit: cover; height:10rem; object-position:0 25%" alt="Card image cap">
+                                         <div id="specialOnImage" class="dropup">
+                                            <button class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="BenchButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="icon-dots-three-horizontal"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-sm" aria-labelledby="BenchButton">
+                                                <a class="dropdown-item" href="#">Add to Favorite</a>
+                                                <a class="dropdown-item" href="#">Add Review</a>
+
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" style="color:darkred;" href="#">Report</a>
+                                            </div>
+                                        </div>
+                                    <div class="card-body">
+                                        <h4 class="card-title">@deck.Name</h4>
+                                        <p class="card-text text-body">Accounting for creative people
+                                         @deck.IsValid , @deck.CardsNumber , @deck.TotalValue  
+                                        </p>
+                                    </div>
+                                    <div class="card-footer card-footer-borderless d-flex justify-content-between">
+                                        <div class="text-small">
+                                        <ul class="list-inline">
+                                            <li class="list-inline-item">
+                                              <a class="btn btn-primary btn-sm" href="#">
+                                                    <i class="icon-heart mr-1"></i> 0
+                                              </a>
+                                            </li>
+                                            <li class="list-inline-item">
+                                             <a class="btn btn-outline-primary btn-sm" href="#">
+                                            <i class="icon-message mr-1"></i> 0
+                                            Comment
+                                            </a>
+                                            </li>
+                                        </ul>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-toggle="modal" data-target="#DeckOverviewModal" onclick="LoadDeckOverview(@deck.Id)">
+                                            Deck Preview
+                                        </button>
+                                   
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    }
+                }
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+    <div class="modal fade" id="DeckOverviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-center-viewport" role="document">
+            <div class="modal-content">
+                <div class="modal-header modal-header-borderless justify-content-end">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> 
+                        <span aria-hidden="true"><i class="icon-cross"></i>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="modal-body d-flex justify-content-center" style="max-height:85vh;overflow-y:scroll">
+                    <div class="text-center w-100" id="DeckOverview_Partial">
+                        <!-- CONTENT FETCHED FROM SERVER via JS and load partial view -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  
+
+<script  type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+    function LoadDeckOverview(_deckId){
+        $.ajax({
+            url:'@Url.Action("Overview","Decks")',
+            datatype:'html',
+            method: 'GET',
+            data: {
+                    deckId: _deckId
+                },
+            success: function(res){
+                    $('#DeckOverview_Partial').html('').html(res);
+                },
+            error: function(err){
+                    console.log(err);
+                }
+        })
+    }
+</script>

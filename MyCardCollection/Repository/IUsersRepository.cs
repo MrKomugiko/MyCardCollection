@@ -9,7 +9,7 @@ namespace MyCardCollection.Repository
         bool Add(AppUser user);
         bool Delete(AppUser user);
         Task<int> GetCountUsersAsync();
-        Task<AppUser> GetUserByIdAsync(string id);
+        Task<AppUser?> GetUserByIdIncludeDecksWithCardsAsync(string id);
         bool Save();
         bool Update(AppUser user);
         void UpdatePlayerStatistics(string userId);

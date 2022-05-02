@@ -26,9 +26,15 @@ namespace MyCardCollection.Repository
             throw new NotImplementedException();
         }
 
-        public async Task<AppUser> GetUserByIdAsync(string id)
+        public async Task<AppUser?> GetUserByIdIncludeDecksWithCardsAsync(string id)
         {
-            return await _context.Users.FindAsync(id);
+            return await _context.Users
+                .Where(x => x.Id == id)
+                .Include(x => x.Decks)
+                    .ThenInclude(x => x.Content)
+                        .ThenInclude(x=>x.CardData)
+                .AsNoTracking()
+                .SingleOrDefaultAsync();
         }
 
         public async Task<int> GetCountUsersAsync()
