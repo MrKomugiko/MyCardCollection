@@ -117,7 +117,7 @@ https://localhost:7011/
 
 ## Overwiew - screens
 ![overview](https://i.ibb.co/TKtVsJt/image.png)
-![overview](https://i.ibb.co/HTMzYYm/overviewupdated.png)
+![overview](https://i.ibb.co/x2B7gRD/overviewupdated.jpg)
 
 
 
