@@ -51,6 +51,9 @@ of the Postgress database by the Heroku host and the need to manually refresh th
 &check; Creating personal accounts.  
 &check; Displaying collection value and most valuable cards.  
 &cross; Live updating card values (currently, price is locked with date of import). 
+&cross; List of Other registered colelctioners with sorting by date,collection size or colelction value
+&cross; Collectioners profile with customized background, easy acces to user top cards and his decks
+&cross; Decks preview with charts - cost, color, set, type
 
 <a name="run"/>
 
@@ -114,3 +117,6 @@ https://localhost:7011/
 
 ## Overwiew - screens
 ![overview](https://i.ibb.co/yXLbtH5/overviewonly.jpg)
+![overview](https://i.ibb.co/TKtVsJt/image.png)
+
+
