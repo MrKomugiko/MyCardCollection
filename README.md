@@ -116,7 +116,8 @@ https://localhost:7011/
 <a name="screens"/>
 
 ## Overwiew - screens
-![overview](https://i.ibb.co/yXLbtH5/overviewonly.jpg)
 ![overview](https://i.ibb.co/TKtVsJt/image.png)
+![overview](https://i.ibb.co/HTMzYYm/overviewupdated.png)
+
 
 
