@@ -29,7 +29,7 @@
                     <input name="Name" type="text" class="card-title w-100" value="@deck.Name">
                     <span asp-validation-for="Name" class="text-danger"></span>
 
-                    <textarea name="Description" type="text" class="card-text text-body w-100" rows="3" style="resize:none; overflow:hidden;">Accounting for creative people</textarea>
+                    <textarea name="Description" asp-for="Description" type="text" class="card-text text-body w-100" rows="3" style="resize:none; overflow:hidden;"></textarea>
                 </div>
             <div class="card-footer card-footer-borderless d-flex justify-content-between">
             <a class="btn btn-sm btn-outline-danger" style="margin-right:1em;" onclick="Cancel(this,@Model.DeckId)"> Cancel </a>   
