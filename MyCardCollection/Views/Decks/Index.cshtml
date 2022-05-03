@@ -1,98 +1,99 @@
+@using MyCardCollection.ViewModel
 @model IEnumerable<MyCardCollection.Models.Deck>
 
-      <section class="space-md bg-gradient overflow-hidden" style="min-height:calc(100vh - 30vh)">
-        <div class="container">
-          <div class="row align-items-center">
-              <div class="col-12 position-relative">
-
- <ul class="row mb-3 feature-list feature-list-sm">
-@{
+<section class="space-md bg-gradient overflow-hidden" style="min-height:calc(100vh - 30vh)">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 position-relative">
+                <ul class="row mb-3 feature-list feature-list-sm">
+                    @{
                         if(Model != null)
                         {
                             foreach(var deck in Model)
                             {
                                 <li class="col-12 col-md-6 col-lg-4">
-                                    <div class="card shadow">
-                                    @{var deckimg = deck.Content.FirstOrDefault()==null?"":deck.Content.First().CardData.ImageURLCropped;} 
-                        <img class="card-img-top" src="@deckimg" style="object-fit: cover; height:10rem; object-position:0 25%" alt="Card image cap">
-                      <div class="card-body">
-                        <h4 class="card-title">@deck.Name</h4>
-                        <p class="card-text text-body">Accounting for creative people
-                         @deck.IsValid , @deck.CardsNumber , @deck.TotalValue  
-                        </p>
-                    </div>
-                    <div class="card-footer card-footer-borderless d-flex justify-content-between">
-                      <div class="text-small">
-                        <ul class="list-inline">
-                          <li class="list-inline-item"><i class="icon-heart mr-1"></i> 0</li>
-                          <li class="list-inline-item"><i class="icon-message mr-1"></i> 0</li>
-                        </ul>
-                      </div>
-       
-                        <button class="btn btn-sm btn-outline-primary w-50" type="button" data-toggle="modal" data-target="#DeckOverviewModal" onclick="LoadDeckOverview(@deck.Id)">
-                          Deck Preview
-                        </button>
-                      <div class="dropup">
-                        <button class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="BenchButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="icon-dots-three-horizontal"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-sm" aria-labelledby="BenchButton">
-                          <a class="dropdown-item" href="#">Edit</a>
-                          <a class="dropdown-item" >Remove</a>
-                          <a class="dropdown-item" href="#">Comment</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="#">Report</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-            </li>
+                                    
+                                    <!-- Normal Template -->
+                                    <div id="deck-@deck.Id" class="card shadow">
+                                        @{
+                                            var deckimg = deck.Content.FirstOrDefault()==null?"":deck.Content.First().CardData.ImageURLCropped;
+                                            deckimg = String.IsNullOrEmpty(deck.BackgroundImage) ? deckimg : deck.BackgroundImage;                
+                                        } 
+                                        <img id="deckBackgroundImage-@deck.Id" class="card-img-top" src="@deckimg" style="object-fit: cover; height:10rem; object-position:0 25%" alt="Card image cap">
+                                        <div class="card-body">
+                                            <h4 id="deckName-@deck.Id" class="card-title">@deck.Name</h4>
+                                            <p id="deckDescription-@deck.Id" class="card-text text-body">@deck.Description </p>
+                                        </div>
+                                        <div class="card-footer card-footer-borderless d-flex justify-content-between">
+                                            <div class="text-small">
+                                                <ul class="list-inline">
+                                                    <li class="list-inline-item"><i class="icon-heart mr-1"></i> 0</li>
+                                                    <li class="list-inline-item"><i class="icon-message mr-1"></i> 0</li>
+                                                </ul>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary w-50" type="button" data-toggle="modal" data-target="#DeckOverviewModal" onclick="LoadDeckOverview(@deck.Id)">
+                                                Deck Preview
+                                            </button>
+                                            <div class="dropup">
+                                                <button class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="BenchButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="icon-dots-three-horizontal"></i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-sm" aria-labelledby="BenchButton">
+                                                    <a class="dropdown-item" onclick="ShowEditLayout(this,@deck.Id);">Edit</a>
+                                                    <a class="dropdown-item" >Remove</a>
+                                                    <a class="dropdown-item" href="#">Comment</a>
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item" href="#">Report</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Edit Template -->
 
-            }
-        }
-        else
-        {
-            <h1>You dont have decks in your colelction.</h1>
+                                    <div id="editDeck-@deck.Id" style="display:none;">
+                                        @await Html.PartialAsync("_EditDeckTemplate", new DeckEditViewModel{
+                                            DeckId = deck.Id,
+                                            Name = deck.Name,
+                                            Description = deck.Description,
+                                            BackgroundImage = deckimg
+                                        })
+                                    </div>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <h1>You dont have decks in your colelction.</h1>
 
-            <a class="btn btn-primary" asp-controller="DeckBuilder" asp-action="Index">create your first deck here...</a>
-        }
-    }
-    </ul>
+                            <a class="btn btn-primary" asp-controller="DeckBuilder" asp-action="Index">create your first deck here...</a>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
 
-    </div>
-    <!--end of col-->
-    </div>
-    <!--end of row-->
         <div class="modal fade" id="DeckOverviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-center-viewport" role="document">
                 <div class="modal-content">
-
                     <div class="modal-header modal-header-borderless justify-content-end">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true"><i class="icon-cross"></i>
                             </span>
                         </button>
                     </div>
-
                     <div class="modal-body d-flex justify-content-center" style="max-height:85vh;overflow-y:scroll">
-                          <div class="text-center w-100" id="DeckOverview_Partial">
-                              <!-- CONTENT FETCHED FROM SERVER via JS and load partial view -->
-                          </div>
+                        <div class="text-center w-100" id="DeckOverview_Partial">
+                            <!-- CONTENT FETCHED FROM SERVER via JS and load partial view -->
+                        </div>
                     </div>
-                    
-            @*        <div class="modal-footer modal-footer-borderless justify-content-center">
-                        <button type="button" class="btn btn-lg btn-primary my-4" data-dismiss="modal">Thanks, You're dismissed</button>
-                    </div>*@
-
                 </div>
             </div>
         </div>
     </div>
-    <!--end of container-->
-    </section>
-    <!--end of section-->
+</section>
 
- 
+
 
 
 @section Scripts{
@@ -114,5 +115,19 @@
                     }
             })
         }
+
+
+      
+    function ShowEditLayout(btn, deckId)
+    {
+        console.log(deckId);
+        // hide 'normal' deck tamplate
+        var deckNormal = btn.closest('#deck-'+deckId);
+        deckNormal.style.display = "none";
+        // load 'edit' deck template
+        var deckEdit = deckNormal.nextElementSibling;
+        deckEdit.style.display = "block";
+    }
+
     </script>
 }

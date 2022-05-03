@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using MyCardCollection.Controllers;
 using MyCardCollection.Data;
 using MyCardCollection.Models;
+using MyCardCollection.ViewModel;
 
 namespace MyCardCollection.Repository
 {
@@ -110,6 +111,24 @@ namespace MyCardCollection.Repository
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> UpdateSingle(DeckEditViewModel editdeck)
+        {
+           
+            var deck = await _context.Decks.FirstOrDefaultAsync(x=>x.Id == editdeck.DeckId);
+            if (deck == null) return false;
+
+            deck.Name = editdeck.Name;
+            deck.BackgroundImage = editdeck.BackgroundImage;
+            deck.Description = editdeck.Description;
+            deck.Updated = DateTime.Now.ToUniversalTime();
+
+            if(await _context.SaveChangesAsync() >= 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public async Task<Dictionary<int,string>> GetDeckNames(string userId) => 
             await _context.Decks
                 .Where(x => x.AppUserId == userId)

@@ -1,6 +1,7 @@
 using Microsoft.Build.Framework;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribute;
 
 namespace MyCardCollection.Models
 {
@@ -17,7 +18,9 @@ namespace MyCardCollection.Models
 
         [Key]
         public int Id { get; set; }
-        public string Name { get; set; }
+        [Required] public string Name { get; set; }
+        public string Description { get; set; }
+        [Required] public string BackgroundImage { get; set; }
         public int CardsNumber { get; set; } = 0;
         public float TotalValue { get; set; } = 0;
         public bool IsValid { get; set; } = false;

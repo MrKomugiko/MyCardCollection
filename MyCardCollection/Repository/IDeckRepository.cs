@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyCardCollection.Controllers;
 using MyCardCollection.Models;
+using MyCardCollection.ViewModel;
 
 namespace MyCardCollection.Repository
 {
@@ -18,6 +19,6 @@ namespace MyCardCollection.Repository
         Task<bool> Update(DeckModel deck, string userId);
         Task<List<Deck>> GetUserDecksWithoutContent(string userId);
         Task<List<Deck>> GetUserDecks(string userId);
-
+        Task<bool> UpdateSingle(DeckEditViewModel editdeck);
     }
 }

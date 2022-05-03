@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "chart.js": "^3.7.1",
-    "gulp": "^4.0.2"
+    "gulp": "^4.0.2",
+    "jquery-ajax-unobtrusive": "^3.2.6"
   }
 }

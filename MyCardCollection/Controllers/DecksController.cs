@@ -144,5 +144,17 @@ namespace MyCardCollection.Controllers
             return Json(objectx);
         }
 
+        [HttpPost]
+        public async Task<JsonResult> EditDeckAsync(DeckEditViewModel deck)
+        {
+            // TODO, autorization, check user id and compare with deck owner id
+
+            if(await _deckRepository.UpdateSingle(deck))
+            {
+                return Json(Ok());
+            }
+
+            return Json(new { Message = "Error, saving failed." });
+        }
     }
 }
