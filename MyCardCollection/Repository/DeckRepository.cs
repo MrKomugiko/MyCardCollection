@@ -109,7 +109,7 @@ namespace MyCardCollection.Repository
 
             _context.RemoveRange(currentDeckData);
             await _context.AddRangeAsync(updatedDeckData);
-           // await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             var masterdeck = _context.Decks.Where(x => x.Id == deck.deckId).Select(x => new Deck
             {
@@ -141,7 +141,7 @@ namespace MyCardCollection.Repository
 
             deck.Name = editdeck.Name;
             deck.BackgroundImage = editdeck.BackgroundImage;
-            deck.Description = editdeck.Description;
+            deck.Description = editdeck.Description??"";
             deck.Updated = DateTime.Now.ToUniversalTime();
 
             if(await _context.SaveChangesAsync() >= 0)

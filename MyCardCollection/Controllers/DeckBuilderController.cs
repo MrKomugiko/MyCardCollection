@@ -46,7 +46,7 @@ namespace MyCardCollection.Controllers
             ViewBag.PageRange = pageSize > 6 ? 6:pageSize;
             ViewBag.TotalPages = (int)Math.Ceiling(((decimal)((int)totalMatches)) / pageSize);
 
-            ViewBag.CurrentDeckID = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? -1;
+            ViewBag.CurrentDeckID = HttpContext.Session.GetInt32("CurrentSelectedDeck"+ _userId) ?? -1;
 
             return PartialView("_GridView", cardsOnPage);
         }
@@ -63,7 +63,7 @@ namespace MyCardCollection.Controllers
             ViewBag.PageRange = pageSize > 6 ? 6 : pageSize;
             ViewBag.TotalPages = (int)Math.Ceiling(((decimal)((int)totalMatches)) / pageSize);
 
-            ViewBag.CurrentDeckID = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? -1;
+            ViewBag.CurrentDeckID = HttpContext.Session.GetInt32("CurrentSelectedDeck"+ _userId) ?? -1;
 
             return PartialView("_DeckView", cardsOnPage);
         }
@@ -75,7 +75,7 @@ namespace MyCardCollection.Controllers
             int lastDeckPage = HttpContext.Session.GetInt32("lastDeckPage") ?? 1;
 
 
-            int deckId = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? -1;
+            int deckId = HttpContext.Session.GetInt32("CurrentSelectedDeck"+ _userId) ?? -1;
             ViewBag.CurrentDeckID = deckId;
 
             await _deckRepository.AddCardToDeckAsync(_userId, id, deckId);
@@ -139,7 +139,7 @@ namespace MyCardCollection.Controllers
         public JsonResult RevertLocalChangesCardsQuantity()
         {
             // var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int? currentDeckID = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? -1;
+            int? currentDeckID = HttpContext.Session.GetInt32("CurrentSelectedDeck"+ _userId) ?? -1;
             var deck_cacheKey = _userId + "Deck" + currentDeckID;
 
             _cacheService.Remove(deck_cacheKey);
@@ -189,7 +189,7 @@ namespace MyCardCollection.Controllers
                 data.Add(new SelectListItem { Value = deck.Key.ToString(), Text = deck.Value });
             }
 
-            int? currentDeckID = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? -1;
+            int? currentDeckID = HttpContext.Session.GetInt32("CurrentSelectedDeck"+ _userId) ?? -1;
             if(currentDeckID != -1 && !data.Any(x => x.Value == currentDeckID.ToString()))
             {
                 data.Add(new SelectListItem { Value = currentDeckID.ToString(), Text = userDecks[(int)currentDeckID].Trim() });
@@ -214,7 +214,7 @@ namespace MyCardCollection.Controllers
             await _deckRepository.CreateNewDeck(deckTitle, owner);
 
             Dictionary<int, string> userDecks = await _deckRepository.GetDeckNames(_userId);
-            HttpContext.Session.SetInt32("CurrentSelectedDeck", userDecks.First(x=>x.Value == deckTitle).Key);
+            HttpContext.Session.SetInt32("CurrentSelectedDeck"+ _userId, userDecks.First(x=>x.Value == deckTitle).Key);
 
             return RedirectToAction("Index");
         }
@@ -223,7 +223,7 @@ namespace MyCardCollection.Controllers
         public async Task<IActionResult> LoadDeck(string deckid)
         {
             Dictionary<int, string> userDecks = await _deckRepository.GetDeckNames(_userId);
-            HttpContext.Session.SetInt32("CurrentSelectedDeck", Int32.Parse(deckid));
+            HttpContext.Session.SetInt32("CurrentSelectedDeck"+ _userId, Int32.Parse(deckid));
 
             List<CardsCollection> cardsInDeck = new();
             var deck_cacheKey = _userId + "Deck" + deckid;
@@ -256,7 +256,7 @@ namespace MyCardCollection.Controllers
      
         public async Task<IActionResult> Clear()
         {
-            int? currentDeck = HttpContext.Session.GetInt32("CurrentSelectedDeck") ?? null;    
+            int? currentDeck = HttpContext.Session.GetInt32("CurrentSelectedDeck"+ _userId) ?? null;    
 
             if(currentDeck != null && currentDeck != -1)
             {

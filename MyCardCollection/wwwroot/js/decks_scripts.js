@@ -2,7 +2,7 @@
 function LoadDeckOverview(_deckId)
 {
     $.ajax({
-        url: '@Url.Action("Overview","Decks")',
+        url: '/Decks/Overview',
         datatype: 'html',
         method: 'GET',
         data: {
