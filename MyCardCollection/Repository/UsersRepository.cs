@@ -26,15 +26,65 @@ namespace MyCardCollection.Repository
             throw new NotImplementedException();
         }
 
-        public async Task<AppUser?> GetUserByIdIncludeDecksWithCardsAsync(string id)
+        public async Task<AppUser?> GetUserByIdIncludeDecksAsync(string id)
         {
+            //return await _context.Users
+            //    .Where(x => x.Id == id)
+            //    .Include(x => x.Decks)
+            //        .ThenInclude(x => x.Content)
+            //            .ThenInclude(x=>x.CardData)
+            //    .AsNoTracking()
+            //    .SingleOrDefaultAsync();
+
+
+            /* 
+              potrzeba:
+                AppUser.BackgroundProfileImage
+                AppUser.AvatarImage
+                AppUser.Name
+                AppUser.UserName
+                AppUser.Lastname
+                AppUser.City
+                AppUser.CountryCode
+                AppUser.UniqueCards
+                AppUser.TotalCards
+                AppUser.TotalValue
+                AppUser.Created
+                    AppUser.Decks.Id
+                    AppUser.Decks.BackgroundImage
+                    AppUser.Decks.Name
+                    AppUser.Decks.Description
+            
+
+            */
             return await _context.Users
-                .Where(x => x.Id == id)
-                .Include(x => x.Decks)
-                    .ThenInclude(x => x.Content)
-                        .ThenInclude(x=>x.CardData)
-                .AsNoTracking()
-                .SingleOrDefaultAsync();
+               .Where(x => x.Id == id)
+               .Select(x => new AppUser
+               {
+                   Id = x.Id,
+                   BackgroundProfileImage = x.BackgroundProfileImage,
+                   AvatarImage = x.AvatarImage,
+                   Name = x.Name,
+                   UserName = x.UserName,
+                   Lastname = x.Lastname,
+                   City = x.City,
+                   CountryCode = x.CountryCode,
+                   UniqueCards = x.UniqueCards,
+                   TotalCards = x.TotalCards,
+                   TotalValue = x.TotalValue,
+                   Decks = x.Decks.Select(x => new Deck
+                   {
+                       Id = x.Id,
+                       BackgroundImage = x.BackgroundImage,
+                       Name = x.Name,
+                       Description = x.Description,
+                       CardsNumber = x.CardsNumber,
+                       TotalValue = x.TotalValue
+                   }).ToList()
+               })
+               .AsNoTracking()
+               .SingleOrDefaultAsync();
+
         }
 
         public async Task<int> GetCountUsersAsync()

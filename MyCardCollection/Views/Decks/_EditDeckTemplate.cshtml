@@ -17,14 +17,14 @@
 </style>
 
    <!-- Edit Template -->
-    <div class="card shadow">
-        <form id="editform">
+    <div id="editCardDeck-@deck.DeckId" class="card shadow">
+        <form id="editform-@deck.DeckId">
             <input type="number" asp-for="DeckId" type="hidden" name="DeckId" />
-            <input asp-for="BackgroundImage" type="hidden" name="BackgroundImage" />
-            <img class="card-img-top" src="@deck.BackgroundImage" style="object-fit: cover; height:10rem; object-position:0 25%" alt="Card image cap">
-                <a href="#" type="button" id="changebutton" class="btn btn-secondary opacity-70" style="height:5rem;">
-                <img class="h-100" src="https://cdn.iconscout.com/icon/free/png-256/photo-size-select-actual-1782180-1512958.png">
-                </a>
+            <input id="editInputBackgroundImage-@deck.DeckId" type="hidden" asp-for="BackgroundImage" name="BackgroundImage" />
+            <img id="editDeckBackgroundImage-@deck.DeckId" type="button" class="card-img-top" src="@deck.BackgroundImage" style="object-fit: cover; height:10rem; object-position:0 25%" alt="Card image cap">
+                <button type="button" onclick="openBackgroundSelectionWindow(@deck.DeckId)" id="changebutton" class="btn btn-secondary opacity-70" style="height:5rem;">
+                    <img class="h-100" src="https://cdn.iconscout.com/icon/free/png-256/photo-size-select-actual-1782180-1512958.png">
+                </button>
             <div class="card-body">
                     <input name="Name" type="text" class="card-title w-100" value="@deck.Name">
                     <span asp-validation-for="Name" class="text-danger"></span>
@@ -33,58 +33,8 @@
                 </div>
             <div class="card-footer card-footer-borderless d-flex justify-content-between">
             <a class="btn btn-sm btn-outline-danger" style="margin-right:1em;" onclick="Cancel(this,@Model.DeckId)"> Cancel </a>   
-            <input type="button" value="Save" onclick="postedit(this);" class="btn btn-sm btn-outline-success" style="margin-right:1em;"/>
+            <input type="button" value="Save" onclick="postedit(@deck.DeckId);" class="btn btn-sm btn-outline-success" style="margin-right:1em;"/>
             <a class="w-100">  </a>  
             </div>
         </form>
     </div>
-
-<script>
-
-    function Cancel(btn,deckId){
-        // just hide
-        var editDeck =  btn.closest('#editDeck-'+deckId);
-        editDeck.style.display='none';
-        editDeck.previousElementSibling.style="block";
-    }
-
-    function postedit(btn){
-        //Serialize the form datas.   
-        var valdata = $(btn.closest("#editform")).serialize();   
-        var dataArr = $(btn.closest("#editform")).serializeArray();
-        var payload = valdata;
- 
-        $.ajax({   
-            url: '/Decks/EditDeck',   
-            method: "POST",   
-            dataType: 'json',   
-            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',   
-            data: payload,
-            success: function(result){
-                console.log("succesfully Edited");
-                    
-                var editDeck =  btn.closest('#editDeck-'+dataArr[0].value);
-                var normalDeckView =editDeck.previousElementSibling;
-                    
-                // replace data on main page
-                var ID = dataArr[0].value;
-                    document.getElementById("deckBackgroundImage-"+ID).src = dataArr[1].value;
-                    document.getElementById("deckName-"+ID).textContent = dataArr[2].value;
-                    document.getElementById("deckDescription-"+ID).textContent = dataArr[3].value;
-
-                // close window
-                    editDeck.style.display='none';
-                    normalDeckView.style="block";
-
-            },
-            error: function(err){
-                console.log("error");
-
-                //saveButton.removeClass("btn-primary");
-                //saveButton.removeClass("btn-warning");
-                //saveButton.addClass("btn-danger");
-                }
-        });  
-    }
-
-</script>

@@ -156,5 +156,17 @@ namespace MyCardCollection.Controllers
 
             return Json(new { Message = "Error, saving failed." });
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetDeckBackgrounds(int deckId)
+        {
+            string[] backgroundUrls = await _deckRepository.GetDeckBackgrounds(deckId);
+            if(backgroundUrls.Length > 0)
+            {
+                return (Json(Ok(backgroundUrls)));
+            }
+
+            return Json(NotFound());
+        }
     }
 }

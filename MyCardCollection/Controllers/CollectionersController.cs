@@ -51,7 +51,7 @@ namespace MyCardCollection.Controllers
         {
             CollectionerProfileViewModel model = new()
             {
-                AppUser = await _usersRepository.GetUserByIdIncludeDecksWithCardsAsync(userId),
+                AppUser = await _usersRepository.GetUserByIdIncludeDecksAsync(userId),
                 TopCards = await _collectionRepository.GetTopValuableCards(userId,take:8)
             };
             return View(model);

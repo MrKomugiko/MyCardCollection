@@ -79,6 +79,7 @@ namespace MyCardCollection.Repository
             await _context.DecksCollections
                 .Where(x => x.UserId == collectionOwnerId && x.DeckId == deckId)
                 .Include(x => x.CardData)
+                .AsNoTracking()
                 .ForEachAsync(x =>
                 {
                     var cc = new CardsCollection(x.UserId, x.CardId, x.Quantity);
@@ -108,6 +109,27 @@ namespace MyCardCollection.Repository
 
             _context.RemoveRange(currentDeckData);
             await _context.AddRangeAsync(updatedDeckData);
+           // await _context.SaveChangesAsync();
+
+            var masterdeck = _context.Decks.Where(x => x.Id == deck.deckId).Select(x => new Deck
+            {
+                CardsNumber = x.CardsNumber,
+                TotalValue = x.TotalValue,
+                Content = x.Content.Select(x => new DecksCollection
+                {
+                    Quantity = x.Quantity,
+                    CardData = new CardData()
+                    {
+                        Price_USD = x.CardData.Price_USD
+                    }
+                }).ToList(),
+            }).AsNoTracking().First();
+
+            var ctxdeck = _context.Decks.Where(x => x.Id == deck.deckId).First();
+            ctxdeck.CardsNumber = masterdeck.Content.Sum(x=>x.Quantity);
+            ctxdeck.TotalValue = masterdeck.Content.Sum(x => x.Quantity * x.CardData.Price_USD ?? 0);
+
+            _context.Update(ctxdeck);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -136,8 +158,15 @@ namespace MyCardCollection.Repository
                 .ToDictionaryAsync(x => x.Id, x => x.Name);
         public async Task ClearDeck(int deckId, string userId)
         {
-            _context.DecksCollections.RemoveRange(_context.DecksCollections
-                .Where(x => x.UserId == userId && x.DeckId == deckId));
+            var deckContent = _context.DecksCollections
+                .Where(x => x.UserId == userId && x.DeckId == deckId);
+
+            _context.DecksCollections.RemoveRange(deckContent);
+
+            var masterdeck = _context.Decks.FirstOrDefault(x => x.Id == deckId);
+            masterdeck.CardsNumber = 0;
+            masterdeck.TotalValue = 0;
+
             await _context.SaveChangesAsync();
         }
         public async Task<List<Deck>> GetUserDecksWithoutContent(string userId) => 
@@ -266,15 +295,26 @@ namespace MyCardCollection.Repository
             }
             public async Task<Deck> GetDeckById(int deckId)
             {
-            var deck = _context.Decks.Where(x => x.Id == deckId)
-                .Include(x => x.Content)
-                    .ThenInclude(x=>x.CardData)
-                .AsNoTracking()
-                .FirstOrDefault();
+                var deck = _context.Decks.Where(x => x.Id == deckId)
+                    .Include(x => x.Content)
+                        .ThenInclude(x=>x.CardData)
+                    .AsNoTracking()
+                    .FirstOrDefault();
 
                 if(deck == null) return null;
 
                 return deck;
             }
+
+        public async Task<string[]> GetDeckBackgrounds(int deckId)
+        {
+            var bglist = await _context.Decks.Where(x => x.Id == deckId)
+                .SelectMany(x => x.Content
+                    .Select(x => x.CardData.ImageURLCropped))
+                .AsNoTracking()
+                .ToArrayAsync();
+
+            return bglist;
+        }
     }
 }

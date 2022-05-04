@@ -1,8 +1,31 @@
 @using MyCardCollection.ViewModel
 @model IEnumerable<MyCardCollection.Models.Deck>
 
+
 <section class="space-md bg-gradient overflow-hidden" style="min-height:calc(100vh - 30vh)">
     <div class="container">
+
+        <div class="modal fade" id="deckBackgroundSelectionModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-center-viewport" role="document">
+                <div class="modal-content">
+                    <div class="modal-header modal-header-borderless justify-content-end">
+                        <h3 class="m-0 w-100 text-center"style="color:black;">
+                                Select Background
+                        </h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="icon-cross"></i>
+                        </span>
+                        </button>
+                    </div>
+                    <div class="modal-body modal-xl d-flex justify-content-center" style="max-height:75vh;overflow-y:scroll">                    
+                          <div class="content row">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row align-items-center">
             <div class="col-12 position-relative">
                 <ul class="row mb-3 feature-list feature-list-sm">
@@ -50,8 +73,8 @@
                                     </div>
                                     
                                     <!-- Edit Template -->
-
                                     <div id="editDeck-@deck.Id" style="display:none;">
+                                        <!-- Partial deck edit here -->    
                                         @await Html.PartialAsync("_EditDeckTemplate", new DeckEditViewModel{
                                             DeckId = deck.Id,
                                             Name = deck.Name,
@@ -96,38 +119,8 @@
 
 
 
-@section Scripts{
-    <script  type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
-    <script>
-        function LoadDeckOverview(_deckId){
-            $.ajax({
-                url:'@Url.Action("Overview","Decks")',
-                datatype:'html',
-                method: 'GET',
-                data: {
-                        deckId: _deckId
-                    },
-                success: function(res){
-                        $('#DeckOverview_Partial').html('').html(res);
-                    },
-                error: function(err){
-                        console.log(err);
-                    }
-            })
-        }
-
-
-      
-    function ShowEditLayout(btn, deckId)
-    {
-        console.log(deckId);
-        // hide 'normal' deck tamplate
-        var deckNormal = btn.closest('#deck-'+deckId);
-        deckNormal.style.display = "none";
-        // load 'edit' deck template
-        var deckEdit = deckNormal.nextElementSibling;
-        deckEdit.style.display = "block";
-    }
-
-    </script>
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script type="text/javascript" src="~/js/decks_scripts.js"></script>
 }

@@ -23,11 +23,13 @@
                 @{
                     if(Model != null)
                     {
-                        foreach(var deck in Model.Where(x=>x.Content.Count > 0))
+                        foreach(var deck in Model.Where(x=>x.CardsNumber > 0))
                         {
                             <li class="col-12 col-md-6 col-lg-4">
                                 <div class="card shadow">
-                                    @{var deckimg = deck.Content.FirstOrDefault()==null?"":deck.Content.First().CardData.ImageURLCropped;} 
+                                    @{
+                                        var deckimg = deck.BackgroundImage;             
+                                    } 
                                     <img class="card-img-top" src="@deckimg" style="object-fit: cover; height:10rem; object-position:0 25%" alt="Card image cap">
                                          <div id="specialOnImage" class="dropup">
                                             <button class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="BenchButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -43,8 +45,7 @@
                                         </div>
                                     <div class="card-body">
                                         <h4 class="card-title">@deck.Name</h4>
-                                        <p class="card-text text-body">Accounting for creative people
-                                         @deck.IsValid , @deck.CardsNumber , @deck.TotalValue  
+                                        <p class="card-text text-body">@deck.Description
                                         </p>
                                     </div>
                                     <div class="card-footer card-footer-borderless d-flex justify-content-between">

@@ -20,7 +20,7 @@ namespace MyCardCollection.Models
         public int Id { get; set; }
         [Required] public string Name { get; set; }
         public string Description { get; set; }
-        [Required] public string BackgroundImage { get; set; }
+        [Required] public string BackgroundImage { get; set; } = "https://media-dominaria.cursecdn.com/attachments/165/391/636430808895507600.jpg";
         public int CardsNumber { get; set; } = 0;
         public float TotalValue { get; set; } = 0;
         public bool IsValid { get; set; } = false;

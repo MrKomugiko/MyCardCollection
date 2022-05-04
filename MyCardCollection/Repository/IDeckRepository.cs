@@ -20,5 +20,6 @@ namespace MyCardCollection.Repository
         Task<List<Deck>> GetUserDecksWithoutContent(string userId);
         Task<List<Deck>> GetUserDecks(string userId);
         Task<bool> UpdateSingle(DeckEditViewModel editdeck);
+        Task<string[]> GetDeckBackgrounds(int deckId);
     }
 }
