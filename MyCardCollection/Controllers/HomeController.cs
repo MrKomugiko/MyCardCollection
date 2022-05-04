@@ -54,7 +54,8 @@ namespace MyCardCollection.Controllers
             }
 
             #if (!DEBUG)
-            await _scryfall.CacheAllSetsDataCards(listdata);
+            // long task load dests and his cards into memory - run in background ONCE
+            _scryfall.CacheAllSetsDataCards(listdata);
             #endif
 
             ViewBag.TotalPages = (Int32)Math.Ceiling((double)listdata.Count() / PageSize);
