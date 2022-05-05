@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyCardCollection.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyCardCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220505211059_addedprivacymodel2")]
+    partial class addedprivacymodel2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,8 +174,8 @@ namespace MyCardCollection.Migrations
                     b.Property<string>("BackgroundProfileImage")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("Birthday")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("Birthday")
+                        .HasColumnType("date");
 
                     b.Property<string>("City")
                         .HasColumnType("text");
@@ -485,6 +487,7 @@ namespace MyCardCollection.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -605,7 +608,9 @@ namespace MyCardCollection.Migrations
                 {
                     b.HasOne("MyCardCollection.Models.AppUser", "User")
                         .WithOne("PrivacySettings")
-                        .HasForeignKey("MyCardCollection.Models.PrivacySettings", "UserId");
+                        .HasForeignKey("MyCardCollection.Models.PrivacySettings", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

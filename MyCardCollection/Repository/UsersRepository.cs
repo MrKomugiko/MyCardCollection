@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyCardCollection.Areas.Identity.Pages.Account.Manage;
 using MyCardCollection.Controllers;
 using MyCardCollection.Data;
 using MyCardCollection.Enums;
@@ -195,6 +196,41 @@ namespace MyCardCollection.Repository
                 END  
                 $$;  
              */
+        }
+
+        public async Task<PrivacySettings> GetPrivacyDataByUser(AppUser user) => await _context.UserPrivacySettings.AsNoTracking().FirstAsync(x => x.UserId == user.Id);
+
+        public async Task<bool> UpdateUserData(AppUser _user, IndexModel.InputModel input)
+        {
+            var user = await _context.Users.Where(x => x.Id == _user.Id).FirstAsync();
+            var userPrivacy = await _context.UserPrivacySettings.Where(x=>x.UserId == _user.Id).FirstAsync();
+
+            user.UserName = input.UserName;
+            user.NormalizedUserName = input.UserName.ToUpper();
+
+            user.AvatarImage = input.AvatarImage;
+            user.Name = input.Name??"";
+            user.Lastname = input.Lastname??"";
+            user.City = input.City??"";
+            user.CountryCode = input.CountryCode ?? "";
+            user.Description = input.Description ?? "";
+            user.Birthday = ((DateTime)(input.Birthday)).ToUniversalTime();
+            user.Website = input.Website ?? "";
+
+            userPrivacy.AllowEmail = input.Privacy.AllowEmail;
+            userPrivacy.AllowFirstName = input.Privacy.AllowFirstName;
+            userPrivacy.AllowLastName = input.Privacy.AllowLastName;
+            userPrivacy.AllowCity = input.Privacy.AllowCity;
+            userPrivacy.AllowCountry = input.Privacy.AllowCountry;
+            userPrivacy.AllowBirthday = input.Privacy.AllowBirthday;
+            userPrivacy.AllowWebsite = input.Privacy.AllowWebsite;
+
+            _context.Update(user);
+            _context.Update(userPrivacy);
+            await _context.SaveChangesAsync();
+
+
+            return true;
         }
     }
 }

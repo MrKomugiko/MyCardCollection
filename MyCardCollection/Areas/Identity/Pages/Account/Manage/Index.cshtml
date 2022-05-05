@@ -57,13 +57,16 @@
         </div>
 
         <div class="col-12 col-md-8 order-md-1">
-            <form class="row">
+            <form class="row" method="post">
+            <input asp-for="Input.AvatarImage" hidden>
+            <input asp-for="Input.Privacy.Id" hidden>
+
             <!-- USERNAME -->
                 <div class="col-12">
                     <div class="form-group">
                         <div class="row"> 
                             <label class="col" for="username">Username:<span class="text-red">*</span></label>
-                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="userName" id="username">
+                            <input asp-for="Input.UserName" class="form-control form-control-lg ml-1 mb-1 mr-1" type="text"  id="username">
                             <small class="col">Used to log in to app.</small>
                         </div>
                     </div>
@@ -74,9 +77,10 @@
                         <div class="row">
                             <label class="col" for="first-name">First Name:</label>
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="nameSwitch">  <label class="custom-control-label" for="nameSwitch"></label>
+                                <input asp-for="Input.Privacy.AllowFirstName" type="checkbox" class="custom-control-input" id="nameSwitch">  
+                                <label class="custom-control-label" for="nameSwitch"></label>
                             </div>
-                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="firstName" value="Alannah" id="first-name">
+                            <input asp-for="Input.Name" class="form-control form-control-lg ml-1 mb-1 mr-1" type="text">
                         </div>
                     </div>
                 </div>
@@ -86,9 +90,10 @@
                         <div class="row">
                             <label class="col" for="last-name">Last Name:</label>
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="lastNameSwitch">  <label class="custom-control-label" for="lastNameSwitch"></label>
+                                <input asp-for="Input.Privacy.AllowLastName" type="checkbox" class="custom-control-input" id="lastNameSwitch">  
+                                <label class="custom-control-label" for="lastNameSwitch"></label>
                             </div>
-                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="lastName" value="Cunningham" id="last-name">
+                            <input asp-for="Input.Lastname" class="form-control form-control-lg ml-1 mb-1 mr-1" type="text">
                         </div>
                     </div>
                 </div>
@@ -98,9 +103,10 @@
                         <div class="row">
                             <label class="col" for="city">City:</label>
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" onclick="switchClicked(this,'countrySwitch')" class="custom-control-input" id="citySwitch">  <label class="custom-control-label" for="citySwitch"></label>
+                                <input asp-for="Input.Privacy.AllowCity" type="checkbox" onclick="switchClicked(this,'countrySwitch')" class="custom-control-input" id="citySwitch"> 
+                                <label class="custom-control-label" for="citySwitch"></label>
                             </div>
-                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="profileCity" value="Melbourne" id="city">
+                            <input asp-for="Input.City" class="form-control form-control-lg ml-1 mb-1 mr-1" type="text">
                         </div>
                     </div>
                 </div>
@@ -110,9 +116,10 @@
                         <div class="row">
                             <label class="col" for="country">Country:</label>
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="countrySwitch">  <label class="custom-control-label" for="countrySwitch"></label>
+                                <input asp-for="Input.Privacy.AllowCountry" type="checkbox" class="custom-control-input" id="countrySwitch">  
+                                <label class="custom-control-label" for="countrySwitch"></label>
                             </div>
-                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="profileCountry" value="Australia" id="country">
+                            <input asp-for="Input.CountryCode" class="form-control form-control-lg ml-1 mb-1 mr-1" type="text">
                         </div>
                     </div>
                 </div>
@@ -121,7 +128,8 @@
                     <div class="form-group">
                         <div class="row">
                             <label class="col" for="birthday">Birthday:</label>
-                            <input class="form-control form-control-lg flatpickr-input ml-1 mb-1 mr-1" type="hidden" placeholder="Select a date" name="profileBirthday" id="birthday" data-flatpickr="" data-alt-input="true">
+                            <input asp-for="Input.Birthday" class="form-control form-control-lg flatpickr-input ml-1 mb-1 mr-1" type="hidden"
+                                placeholder="Select a date" data-flatpickr="" data-alt-input="true" data-date-format="d-m-Y">
                             @*<input class="form-control form-control-lg flatpickr-input form-control input" placeholder="Select a date" tabindex="0" type="text" readonly="readonly">*@
                             <small class="col" >This will never be made public.</small>
                         </div>
@@ -133,9 +141,9 @@
                         <div class="row">
                         <label class="col" for="website">Website:</label>
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="customSwitch1">  <label class="custom-control-label" for="customSwitch1"></label>
+                            <input asp-for="Input.Privacy.AllowWebsite" type="checkbox" class="custom-control-input" id="customSwitch1">  <label class="custom-control-label" for="customSwitch1"></label>
                         </div>
-                        <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="profileWebsite" id="website">
+                        <input asp-for="Input.Website" class="form-control form-control-lg ml-1 mb-1 mr-1" type="text">
                         </div>
                     </div>
                 </div>
@@ -144,18 +152,15 @@
                     <div class="form-group">
                         <div class="row">
                             <label class="col"for="about-me">About me:  </label>
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="websiteSwitch">  <label class="custom-control-label" for="websiteSwitch"></label>
-                            </div>
-                            <textarea class="form-control form-control-lg  ml-1 mb-1 mr-1" name="profileBio" rows="4" id="about-me"></textarea>
+                            <textarea  asp-for="Input.Description" class="form-control form-control-lg  ml-1 mb-1 mr-1"></textarea>
                         </div>
                     </div>
                 </div>
-                    
+
             <!-- SUBMIT BUTTON -->
                 <div class="col-12">
                     <div class="form-group">
-                        <button class="btn btn-secondary" type="submit" disabled="">Save changes</button>
+                        <button class="btn btn-secondary" type="submit" >Save changes</button>
                     </div>
                 </div>
             </form>
