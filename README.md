@@ -116,8 +116,18 @@ https://localhost:7011/
 <a name="screens"/>
 
 ## Overwiew - screens
-![overview](https://i.ibb.co/TKtVsJt/image.png)
-![overview](https://i.ibb.co/x2B7gRD/overviewupdated.jpg)
-
-
+![Manage page](MCC%20album/ManagePAge.png)
+![Profile](MCC%20album/ProfilePage.png)
+![Collectioners](MCC%20album/CollectionersPage.png)
+![Home](MCC%20album/HomePage.png)
+![Deckspage](MCC%20album/DecksPage.png)
+![Deck edition](MCC%20album/Decks_Edition.png)
+![Deck selecting new bg image](MCC%20album/Decks_Edition-selectbg.png)
+![Home_Set Gallery](MCC%20album/Home_Set-Gallery.png)
+![Home Set list](MCC%20album/Home-Set-List.png)
+![MyCollection](MCC%20album/MyCollectionPage.png)
+![Deck builder](MCC%20album/DeckBuilderPage.png)
+![Deck overview modal](MCC%20album/DeckOverviewModal.png)
+![CardDetailPage_1](MCC%20album/CardDetailPage_1.png)
+![CardDetailPage_2](MCC%20album/CardDetailPage_2.png)
 
