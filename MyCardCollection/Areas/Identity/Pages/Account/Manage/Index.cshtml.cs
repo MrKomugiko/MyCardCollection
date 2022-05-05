@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyCardCollection.Models;
+using MyCardCollection.Repository;
 
 namespace MyCardCollection.Areas.Identity.Pages.Account.Manage
 {
@@ -17,17 +18,21 @@ namespace MyCardCollection.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IUsersRepository _usersRepository;
 
-        public IndexModel(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager)
+
+        public IndexModel(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IUsersRepository usersRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _usersRepository = usersRepository;
         }
 
-        public string Username { get; set; }
+
 
         [TempData]
         public string StatusMessage { get; set; }
+        public PrivacySettings Privacy { get; set; }
 
 
         [BindProperty]
@@ -35,9 +40,20 @@ namespace MyCardCollection.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            [Required] public string UserName { get; set; }
+            public string? Name { get; set; }
+            [Phone] [Display(Name = "Phone number")] public string PhoneNumber { get; set; }
+            public string? Lastname { get; set; }
+            public string? City { get; set; }
+            public string? CountryCode { get; set; }
+            public DateTime? Birthday { get; set; }
+            public string? Description { get; set; }
+            public string? Website { get; set; }
+            public string? AvatarImage { get; set; }
+
+
+
+            public PrivacySettings Privacy { get; set; }
         }
 
         private async Task LoadAsync(AppUser user)
@@ -45,11 +61,21 @@ namespace MyCardCollection.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            Username = userName;
+            PrivacySettings _privacySettings = await _usersRepository.GetPrivacyDataByUser(user);
 
             Input = new InputModel
-            {
-                PhoneNumber = phoneNumber
+            {   
+                UserName = userName, 
+                PhoneNumber = phoneNumber,
+                Name = user.Name,
+                Lastname = user.Lastname,
+                City = user.City,
+                CountryCode = user.CountryCode,
+                Birthday = ((DateTime)(user.Birthday)).ToLocalTime(),
+                Description = user.Description ,
+                Website = user.Website,
+                AvatarImage = user.AvatarImage,
+                Privacy = _privacySettings
             };
         }
 
@@ -79,16 +105,18 @@ namespace MyCardCollection.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
-            }
+            await _usersRepository.UpdateUserData(user, Input);
+
+            //var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            //if (Input.PhoneNumber != phoneNumber)
+            //{
+            //    var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+            //    if (!setPhoneResult.Succeeded)
+            //    {
+            //        StatusMessage = "Unexpected error when trying to set phone number.";
+            //        return RedirectToPage();
+            //    }
+            //}
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";

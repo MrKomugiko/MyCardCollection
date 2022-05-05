@@ -1,4 +1,5 @@
-﻿using MyCardCollection.Controllers;
+﻿using MyCardCollection.Areas.Identity.Pages.Account.Manage;
+using MyCardCollection.Controllers;
 using MyCardCollection.Enums;
 using MyCardCollection.Models;
 
@@ -16,5 +17,7 @@ namespace MyCardCollection.Repository
         void UpdateAllPlayersStatistics();
         Task<IEnumerable<AppUser>> GetUsersDataAsync();
         Task<IEnumerable<AppUser>> GetUsersAsyncByCategory(CollectionersSortCategory category);
+        Task<PrivacySettings> GetPrivacyDataByUser(AppUser user);
+        Task<bool> UpdateUserData(AppUser user, IndexModel.InputModel input);
     }
 }
