@@ -1,0 +1,206 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<AppUser> UserManager
+
+<div class="container">
+    <div class="row mb-2">
+         <!-- IMAGE SELEC SECTION -->
+            <div class="row m-2">
+                <div class="row media flex-wrap mb-0 align-items-center">
+                    <img alt="Image" src="@UserManager.GetUserAsync(User).Result.AvatarImage" class="avatar avatar-lg mb-md-0 ml-2">
+                    <div class="col media-body pl-0 pr-0">
+                        <div class="btn-group">
+                        <div class="row">
+                            <label class="col-12 col-md ml-1 mr-1">
+                            <input type="button" class="custom-file-input height-0">
+                                <span class="btn btn-primary">SELECT FROM COLLECTION</span>
+                            </label>
+                            <label class="col-12 col-md-3 ml-1 mr-1">
+                                <input type="button" class="custom-file-input height-0">
+                                <span class="btn btn-outline-primary">RANDOMIZE</span>
+                            </label>
+                        </div>
+                            </div>
+                        <small>
+                            Avatar image and background for your profile page, select one of art from your colelction<br>
+                            and enjoy your unique profile 
+                        </small>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    
+
+
+    <hr class="mt-1 mb-1">
+    <!-- TITLE -->
+        <div class="row mb-1">
+            <div class="col">
+                <h5>Profile Information</h5>
+            </div>
+        </div>
+
+    <div class="row">
+        <div class="col-12 col-md-4 order-md-2">
+            <!-- PRIVACY INFORMATION -->
+                <div class="alert alert-info text-small" role="alert">
+                <i class="icon-user"></i>
+                <span> Some of this information will appear on your public profile. Toggle switch to set it as public/private.</span>
+                <a href="/Collectioner/@UserManager.GetUserId(User)">View your public profile</a>
+                </div>
+        </div>
+
+        <div class="col-12 col-md-8 order-md-1">
+            <form class="row">
+            <!-- USERNAME -->
+                <div class="col-12">
+                    <div class="form-group">
+                        <div class="row"> 
+                            <label class="col" for="username">Username:<span class="text-red">*</span></label>
+                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="userName" id="username">
+                            <small class="col">Used to log in to app.</small>
+                        </div>
+                    </div>
+                </div>
+            <!-- FIRST NAME -->
+                <div class="col-6">
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col" for="first-name">First Name:</label>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="nameSwitch">  <label class="custom-control-label" for="nameSwitch"></label>
+                            </div>
+                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="firstName" value="Alannah" id="first-name">
+                        </div>
+                    </div>
+                </div>
+            <!-- LAST NAME -->
+                <div class="col-6">
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col" for="last-name">Last Name:</label>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="lastNameSwitch">  <label class="custom-control-label" for="lastNameSwitch"></label>
+                            </div>
+                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="lastName" value="Cunningham" id="last-name">
+                        </div>
+                    </div>
+                </div>
+            <!-- CITY -->
+                <div class="col-6">
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col" for="city">City:</label>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" onclick="switchClicked(this,'countrySwitch')" class="custom-control-input" id="citySwitch">  <label class="custom-control-label" for="citySwitch"></label>
+                            </div>
+                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="profileCity" value="Melbourne" id="city">
+                        </div>
+                    </div>
+                </div>
+            <!-- COUNTRY -->
+                <div class="col-6">
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col" for="country">Country:</label>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="countrySwitch">  <label class="custom-control-label" for="countrySwitch"></label>
+                            </div>
+                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="profileCountry" value="Australia" id="country">
+                        </div>
+                    </div>
+                </div>
+            <!-- BIRTHDAY -->
+                <div class="col-6">
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col" for="birthday">Birthday:</label>
+                            <input class="form-control form-control-lg flatpickr-input ml-1 mb-1 mr-1" type="hidden" placeholder="Select a date" name="profileBirthday" id="birthday" data-flatpickr="" data-alt-input="true">
+                            @*<input class="form-control form-control-lg flatpickr-input form-control input" placeholder="Select a date" tabindex="0" type="text" readonly="readonly">*@
+                            <small class="col" >This will never be made public.</small>
+                        </div>
+                    </div>
+                </div>
+            <!-- WEBSITE -->
+                <div class="col-6">
+                    <div class="form-group">
+                        <div class="row">
+                        <label class="col" for="website">Website:</label>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="customSwitch1">  <label class="custom-control-label" for="customSwitch1"></label>
+                        </div>
+                        <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="profileWebsite" id="website">
+                        </div>
+                    </div>
+                </div>
+            <!-- ABOUT ME -->
+                <div class="col-12">
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col"for="about-me">About me:  </label>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="websiteSwitch">  <label class="custom-control-label" for="websiteSwitch"></label>
+                            </div>
+                            <textarea class="form-control form-control-lg  ml-1 mb-1 mr-1" name="profileBio" rows="4" id="about-me"></textarea>
+                        </div>
+                    </div>
+                </div>
+                    
+            <!-- SUBMIT BUTTON -->
+                <div class="col-12">
+                    <div class="form-group">
+                        <button class="btn btn-secondary" type="submit" disabled="">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function switchClicked(currentSwitchState, switchToToggle) {
+          var switchElement = document.getElementById(switchToToggle);
+          if(currentSwitchState.checked)
+          {
+              switchElement.checked = currentSwitchState.checked;  
+          }
+        }
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+@*<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input asp-for="Username" class="form-control" disabled />
+                <label asp-for="Username" class="form-label"></label>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.PhoneNumber" class="form-control" />
+                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+        </form>
+    </div>
+</div>*@

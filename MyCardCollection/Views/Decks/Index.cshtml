@@ -26,13 +26,13 @@
             </div>
         </div>
 
-        <div class="row align-items-center">
-            <div class="col-12 position-relative">
-                <ul class="row mb-3 feature-list feature-list-sm">
-                    @{
-                        if(Model != null)
-                        {
-                            foreach(var deck in Model)
+            @if(Model.Any())
+            {
+                <!-- Decks list -->
+                <div class="row align-items-center">
+                    <div class="col-12 position-relative">
+                        <ul class="row mb-3 feature-list feature-list-sm">
+                            @foreach(var deck in Model)
                             {
                                 <li class="col-12 col-md-6 col-lg-4">
                                     
@@ -84,17 +84,32 @@
                                     </div>
                                 </li>
                             }
-                        }
-                        else
-                        {
-                            <h1>You dont have decks in your colelction.</h1>
-
-                            <a class="btn btn-primary" asp-controller="DeckBuilder" asp-action="Index">create your first deck here...</a>
-                        }
-                    }
-                </ul>
-            </div>
-        </div>
+                            </ul>
+                        </div>
+                    </div>
+            }
+            else
+            {
+                <!-- Not created deck yet, redirect button info -->
+                <section class="height-70">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                        <div class="col-12 col-md-6 col-lg-5">
+                            <div class="card card-lg text-center">
+                            <div class="card-body">
+                                <i class="icon-add-to-list display-4 opacity-20"></i>
+                                <h1 class="h5">You haven't created anything yet</h1>
+                                <p>
+                                    Start creating decks from your collection by hitting the button below. Let's start the journey now
+                                </p>
+                                <a class="btn btn-lg btn-primary" asp-controller="DeckBuilder" asp-action="Index">Create something</a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </section>
+            }
 
         <div class="modal fade" id="DeckOverviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-center-viewport" role="document">
