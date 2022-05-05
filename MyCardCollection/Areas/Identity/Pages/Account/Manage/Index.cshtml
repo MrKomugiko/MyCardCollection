@@ -8,205 +8,184 @@
 @inject UserManager<AppUser> UserManager
 
 <div class="container">
-              <div class="row mb-2">
-                <div class="col-12">
-                  <div class="media flex-wrap mb-0 align-items-center">
-                    <img alt="Image" src="@UserManager.GetUserAsync(User).Result.AvatarImage" class="avatar avatar-lg mb-3 mb-md-0">
-                    <div class="media-body">
-                          <div class="btn-group col">
-                            <label class="row mb-2 mr-1">
-                              <input type="button" class="custom-file-input height-0">
-                              <span class="btn btn-primary">SELECT FROM COLLECTION</span>
+    <div class="row mb-2">
+         <!-- IMAGE SELEC SECTION -->
+            <div class="row m-2">
+                <div class="row media flex-wrap mb-0 align-items-center">
+                    <img alt="Image" src="@UserManager.GetUserAsync(User).Result.AvatarImage" class="avatar avatar-lg mb-md-0 ml-2">
+                    <div class="col media-body pl-0 pr-0">
+                        <div class="btn-group">
+                        <div class="row">
+                            <label class="col-12 col-md ml-1 mr-1">
+                            <input type="button" class="custom-file-input height-0">
+                                <span class="btn btn-primary">SELECT FROM COLLECTION</span>
                             </label>
-                              <label class="row mb-2 ml-1">
+                            <label class="col-12 col-md-3 ml-1 mr-1">
                                 <input type="button" class="custom-file-input height-0">
-                              <span class="btn btn-outline-primary">RANDOMIZE</span>
+                                <span class="btn btn-outline-primary">RANDOMIZE</span>
                             </label>
-                          </div>
-                          <div>
-                          <small>
-                              Avatar image and background for your profile page, select one of art from your colelction<br />
-                              and enjoy your unique profile 
-                          </small>
+                        </div>
+                            </div>
+                        <small>
+                            Avatar image and background for your profile page, select one of art from your colelction<br>
+                            and enjoy your unique profile 
+                        </small>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    
+
+
+    <hr class="mt-1 mb-1">
+    <!-- TITLE -->
+        <div class="row mb-1">
+            <div class="col">
+                <h5>Profile Information</h5>
+            </div>
+        </div>
+
+    <div class="row">
+        <div class="col-12 col-md-4 order-md-2">
+            <!-- PRIVACY INFORMATION -->
+                <div class="alert alert-info text-small" role="alert">
+                <i class="icon-user"></i>
+                <span> Some of this information will appear on your public profile. Toggle switch to set it as public/private.</span>
+                <a href="/Collectioner/@UserManager.GetUserId(User)">View your public profile</a>
+                </div>
+        </div>
+
+        <div class="col-12 col-md-8 order-md-1">
+            <form class="row">
+            <!-- USERNAME -->
+                <div class="col-12">
+                    <div class="form-group">
+                        <div class="row"> 
+                            <label class="col" for="username">Username:<span class="text-red">*</span></label>
+                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="userName" id="username">
+                            <small class="col">Used to log in to app.</small>
                         </div>
                     </div>
-                  </div>
                 </div>
-                <!--end of col-->
-              </div>
-              <!--end of row-->
-              <hr class="mt-1 mb-1">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5>Account Details</h5>
-                </div>
-                <!--end of col-->
-              </div>
-              <!--end of row-->
-              <div class="row">
-                <div class="col-12 col-md-4 order-md-2" hidden>
-                  <div class="alert alert-info text-small" role="alert">
-                    <i class="icon-shield"></i>
-                    <span>
-                      Your information is always kept encrypted and can never be accessed by third parties.
-                    </span>
-                    <a href="#">See our privacy policy</a>
-                  </div>
-                </div>
-                <!--end of col-->
-                <div class="col-12 col-md-8 order-md-1">
-                  <form class="row">
-                    <div class="col-12">
-                      <div class="form-group">
-                        <label for="username">Username:
-                          <span class="text-red">*</span>
-                        </label>
-                        <input class="form-control form-control-lg" type="text" name="userName" id="username">
-                        <small>Used to log in to app.</small>
-                      </div>
-                    </div>
-                    <div class="col-12">
-                      <div class="form-group">
-                        <label for="emailaddress">Email Address:
-                          <span class="text-red">*</span>
-                        </label>
-                        <input class="form-control form-control-lg" type="email" name="emailAddress" id="emailaddress">
-                        <small>Used to confirmations details.</small>
-                      </div>
-                    </div>
-                    <div class="col-12">
-                      <div class="form-group">
-                        <button class="btn btn-secondary" type="submit" disabled="">Save changes</button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-                <!--end of col-->
-              </div>
-              <!--end of row-->
-              <hr class="mt-1 mb-1">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5>Profile Information</h5>
-                </div>
-                <!--end of col-->
-              </div>
-              <!--end of row-->
-              <div class="row">
-                <div class="col-12 col-md-4 order-md-2">
-                  <div class="alert alert-info text-small" role="alert">
-                    <i class="icon-user"></i>
-                    <span>
-                      Some of this information will appear on your public profile. Toggle switch to set it as public/private.
-                    </span>
-                    <a href="/Collectioner/@UserManager.GetUserId(User)">View your public profile</a>
-                  </div>
-                </div>
-                <!--end of col-->
-                <div class="col-12 col-md-8 order-md-1">
-                  <form class="row">
-                    <div class="col-6">
-                      <div class="form-group">
-                         <div class="row">
+            <!-- FIRST NAME -->
+                <div class="col-6">
+                    <div class="form-group">
+                        <div class="row">
                             <label class="col" for="first-name">First Name:</label>
-                             <div class="custom-control custom-switch">
+                            <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="nameSwitch">  <label class="custom-control-label" for="nameSwitch"></label>
                             </div>
-                        <input class="form-control form-control-lg" type="text" name="firstName" value="Alannah" id="first-name">
-                      </div>
+                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="firstName" value="Alannah" id="first-name">
                         </div>
                     </div>
-                    <div class="col-6">
-                      <div class="form-group">
+                </div>
+            <!-- LAST NAME -->
+                <div class="col-6">
+                    <div class="form-group">
                         <div class="row">
                             <label class="col" for="last-name">Last Name:</label>
-                             <div class="custom-control custom-switch">
+                            <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="lastNameSwitch">  <label class="custom-control-label" for="lastNameSwitch"></label>
                             </div>
-                        <input class="form-control form-control-lg" type="text" name="lastName" value="Cunningham" id="last-name">
-                      </div>
+                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="lastName" value="Cunningham" id="last-name">
                         </div>
                     </div>
-                    <div class="col-6">
-                      <div class="form-group">
+                </div>
+            <!-- CITY -->
+                <div class="col-6">
+                    <div class="form-group">
                         <div class="row">
                             <label class="col" for="city">City:</label>
                             <div class="custom-control custom-switch">
-                            <input type="checkbox" onclick="switchClicked(this,'countrySwitch')" class="custom-control-input" id="citySwitch">  <label class="custom-control-label" for="citySwitch"></label>
+                                <input type="checkbox" onclick="switchClicked(this,'countrySwitch')" class="custom-control-input" id="citySwitch">  <label class="custom-control-label" for="citySwitch"></label>
+                            </div>
+                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="profileCity" value="Melbourne" id="city">
                         </div>
-
-                        <input class="form-control form-control-lg" type="text" name="profileCity" value="Melbourne" id="city">
-                        </div>
-                      </div>
                     </div>
-
-                    <div class="col-6">
-                      <div class="form-group">
+                </div>
+            <!-- COUNTRY -->
+                <div class="col-6">
+                    <div class="form-group">
                         <div class="row">
                             <label class="col" for="country">Country:</label>
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="countrySwitch">  <label class="custom-control-label" for="countrySwitch"></label>
                             </div>
-                            <input class="form-control form-control-lg" type="text" name="profileCountry" value="Australia" id="country">
+                            <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="profileCountry" value="Australia" id="country">
                         </div>
-                      </div>
                     </div>
-                    <div class="col-6">
-                      <div class="form-group">
-                        <label for="birthday">Birthday:</label>
-                       <input class="form-control form-control-lg flatpickr-input" type="hidden" placeholder="Select a date" name="profileBirthday" id="birthday" data-flatpickr="" data-alt-input="true">
-          @*    <input class="form-control form-control-lg flatpickr-input form-control input" placeholder="Select a date" tabindex="0" type="text" readonly="readonly">*@
-                        <small>This will never be made public.</small>
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <div class="form-group">
-                          <div class="row">
-                            <label class="col" for="website">Website:</label>
-                            <div class="custom-control custom-switch">
-                              <input type="checkbox" class="custom-control-input" id="customSwitch1">  <label class="custom-control-label" for="customSwitch1"></label>
-                            </div>
-                            <input class="form-control form-control-lg" type="text" name="profileWebsite" id="website">
-                            <small>This will be displayed on your public profile</small>
-                          </div>
-                      </div>
-                    </div>
-                    @*<div class="col-12">
-                      <div class="form-group">
-                        <label for="twitter">Twitter Handle:</label>
-                        <div class="input-group input-group-lg">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text">@@</span>
-                          </div>
-                          <input type="text" class="form-control" placeholder="Username" name="profileTwitter" id="twitter">
+                </div>
+            <!-- BIRTHDAY -->
+                <div class="col-6">
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col" for="birthday">Birthday:</label>
+                            <input class="form-control form-control-lg flatpickr-input ml-1 mb-1 mr-1" type="hidden" placeholder="Select a date" name="profileBirthday" id="birthday" data-flatpickr="" data-alt-input="true">
+                            @*<input class="form-control form-control-lg flatpickr-input form-control input" placeholder="Select a date" tabindex="0" type="text" readonly="readonly">*@
+                            <small class="col" >This will never be made public.</small>
                         </div>
-                      </div>
-                    </div>*@
-                    <div class="col-12">
-                      <div class="form-group">
-                          <div class="row">
+                    </div>
+                </div>
+            <!-- WEBSITE -->
+                <div class="col-6">
+                    <div class="form-group">
+                        <div class="row">
+                        <label class="col" for="website">Website:</label>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="customSwitch1">  <label class="custom-control-label" for="customSwitch1"></label>
+                        </div>
+                        <input class="form-control form-control-lg ml-1 mb-1 mr-1" type="text" name="profileWebsite" id="website">
+                        </div>
+                    </div>
+                </div>
+            <!-- ABOUT ME -->
+                <div class="col-12">
+                    <div class="form-group">
+                        <div class="row">
                             <label class="col"for="about-me">About me:  </label>
                             <div class="custom-control custom-switch">
-                              <input type="checkbox" class="custom-control-input" id="websiteSwitch">  <label class="custom-control-label" for="websiteSwitch"></label>
+                                <input type="checkbox" class="custom-control-input" id="websiteSwitch">  <label class="custom-control-label" for="websiteSwitch"></label>
                             </div>
-                            <textarea class="form-control form-control-lg" name="profileBio" rows="4" id="about-me"></textarea>
-                          </div>
-                      </div>
+                            <textarea class="form-control form-control-lg  ml-1 mb-1 mr-1" name="profileBio" rows="4" id="about-me"></textarea>
+                        </div>
                     </div>
-                    <div class="col-12">
-                      <div class="form-group">
-                        <button class="btn btn-secondary" type="submit" disabled="">Save changes</button>
-                      </div>
-                    </div>
-                  </form>
                 </div>
-                <!--end of col-->
-              </div>
-              <!--end of row-->
-            </div>
+                    
+            <!-- SUBMIT BUTTON -->
+                <div class="col-12">
+                    <div class="form-group">
+                        <button class="btn btn-secondary" type="submit" disabled="">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-@*
-<h3>@ViewData["Title"]</h3>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function switchClicked(currentSwitchState, switchToToggle) {
+          var switchElement = document.getElementById(switchToToggle);
+          if(currentSwitchState.checked)
+          {
+              switchElement.checked = currentSwitchState.checked;  
+          }
+        }
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+@*<h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
     <div class="col-md-6">
@@ -225,16 +204,3 @@
         </form>
     </div>
 </div>*@
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script>
-        function switchClicked(currentSwitchState, switchToToggle) {
-          var switchElement = document.getElementById(switchToToggle);
-          if(currentSwitchState.checked)
-          {
-              switchElement.checked = currentSwitchState.checked;  
-          }
-        }
-    </script>
-}
