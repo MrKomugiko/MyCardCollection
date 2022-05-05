@@ -8,17 +8,17 @@
 @inject UserManager<AppUser> UserManager
 
 <div class="container">
-              <div class="row">
+              <div class="row mb-2">
                 <div class="col-12">
                   <div class="media flex-wrap mb-0 align-items-center">
-                    <img alt="Image" src="https://c1.scryfall.com/file/scryfall-cards/art_crop/front/2/a/2abc54df-773d-4f46-b241-e1f42af8ab95.jpg?1643592635" class="avatar avatar-lg mb-3 mb-md-0">
+                    <img alt="Image" src="@UserManager.GetUserAsync(User).Result.AvatarImage" class="avatar avatar-lg mb-3 mb-md-0">
                     <div class="media-body">
                           <div class="btn-group col">
-                            <label class="row mb-2">
+                            <label class="row mb-2 mr-1">
                               <input type="button" class="custom-file-input height-0">
                               <span class="btn btn-primary">SELECT FROM COLLECTION</span>
                             </label>
-                              <label class="row mb-2">
+                              <label class="row mb-2 ml-1">
                                 <input type="button" class="custom-file-input height-0">
                               <span class="btn btn-outline-primary">RANDOMIZE</span>
                             </label>
@@ -35,8 +35,8 @@
                 <!--end of col-->
               </div>
               <!--end of row-->
-              <hr>
-              <div class="row mb-4">
+              <hr class="mt-1 mb-1">
+              <div class="row mb-1">
                 <div class="col">
                   <h5>Account Details</h5>
                 </div>
@@ -84,8 +84,8 @@
                 <!--end of col-->
               </div>
               <!--end of row-->
-              <hr>
-              <div class="row mb-4">
+              <hr class="mt-1 mb-1">
+              <div class="row mb-1">
                 <div class="col">
                   <h5>Profile Information</h5>
                 </div>
