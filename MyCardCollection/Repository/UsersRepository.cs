@@ -104,23 +104,40 @@ namespace MyCardCollection.Repository
             _context.Update(user);
             return Save();
         }
-        public async Task<IEnumerable<AppUser>> GetUsersDataAsync()
+        public async Task<IEnumerable<AppUser>> GetUsersDataAsync(bool includePrivacy)
         {
-            return await _context.Users
-                .AsNoTracking()
-                .ToListAsync();
+            
+            if(includePrivacy)
+            {
+                return await _context.Users
+                    .Include(x=>x.PrivacySettings)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            else
+                return await _context.Users
+                    .AsNoTracking()
+                    .ToListAsync();
+
         }
-        public async Task<IEnumerable<AppUser>> GetUsersAsyncByCategory(CollectionersSortCategory category)
+        public async Task<IEnumerable<AppUser>> GetUsersAsyncByCategory(CollectionersSortCategory category, bool includePrivacy)
         {
+            IQueryable _userQuery;
             switch(category)
             {
-                case CollectionersSortCategory.alphabetical: return await _context.Users.OrderBy(x=>x.UserName).AsNoTracking().ToListAsync();
-                case CollectionersSortCategory.oldest:       return await _context.Users.OrderBy(x=>x.Created).AsNoTracking().ToListAsync();
-                case CollectionersSortCategory.newest:       return await _context.Users.OrderByDescending(x => x.Created).AsNoTracking().ToListAsync();
-                case CollectionersSortCategory.biggest:      return await _context.Users.OrderByDescending(x => x.TotalCards).AsNoTracking().ToListAsync();
-                case CollectionersSortCategory.value:        return await _context.Users.OrderByDescending(x => x.TotalValue).AsNoTracking().ToListAsync();
+                case CollectionersSortCategory.alphabetical: _userQuery = _context.Users.OrderBy(x => x.UserName); break;
+                case CollectionersSortCategory.oldest:       _userQuery = _context.Users.OrderBy(x => x.Created);  break;
+                case CollectionersSortCategory.newest:       _userQuery = _context.Users.OrderByDescending(x => x.Created); break;
+                case CollectionersSortCategory.biggest:      _userQuery = _context.Users.OrderByDescending(x => x.TotalCards); break;
+                case CollectionersSortCategory.value:        _userQuery = _context.Users.OrderByDescending(x => x.TotalValue); break;
+                default: _userQuery = _context.Users; break;
             }
-            return await _context.Users.AsNoTracking().ToListAsync();
+            if (includePrivacy)
+            {
+                return await _userQuery.OfType<AppUser>().Include(x=>x.PrivacySettings).AsNoTracking().ToListAsync();
+            }
+            else
+                return await _userQuery.OfType<AppUser>().AsNoTracking().ToListAsync();
         }
         public void UpdatePlayerStatistics(string userId)
         {

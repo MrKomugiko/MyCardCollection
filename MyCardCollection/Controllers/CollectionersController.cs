@@ -28,9 +28,9 @@ namespace MyCardCollection.Controllers
 
             bool valid_category = Enum.IsDefined(typeof(CollectionersSortCategory), category);
             if (category != 0 && valid_category)
-                users = await _usersRepository.GetUsersAsyncByCategory((CollectionersSortCategory)category);
+                users = await _usersRepository.GetUsersAsyncByCategory((CollectionersSortCategory)category, includePrivacy: true);
             else if(category==0 || !valid_category)
-                users = await _usersRepository.GetUsersDataAsync();
+                users = await _usersRepository.GetUsersDataAsync(includePrivacy:true);
             
 
             CollectionersViewModel model = new()

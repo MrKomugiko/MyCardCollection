@@ -60,20 +60,26 @@
                 <tbody>
                     @foreach(var user in Model.Users)
                     {
+                        string FirstName = user.PrivacySettings.AllowFirstName?user.Name:"*";
+                        string LastName = user.PrivacySettings.AllowLastName?user.Lastname:"*";
+                        string LocationString = user.PrivacySettings.AllowCity?user.City:"*";
+                            LocationString += (user.PrivacySettings.AllowCity&&user.PrivacySettings.AllowCountry)?", ":"";
+                            LocationString += user.PrivacySettings.AllowCountry? user.CountryCode:"*";
+         
                     <tr class="bg-white">
                         <th scope="row" style="padding-bottom: 5px; padding-top:5px">
                             <div class="media align-items-center">
                                 <img alt="Image" src="@user.AvatarImage" class="avatar">
                                 <div class="media-body">
-                                    <span class="h6 mb-0">@user.Name @user.Lastname
+                                    <span class="h6 mb-0">@FirstName @LastName
                                         <span class="badge badge-secondary">@if (user.Email == "mr.komugiko@gmail.com") { <text>Admin</text> }</span>
                                     </span>
-                                    <span class="text-muted">title??</span>
+                             @*       <span class="text-muted">title??</span>*@
                                 </div>
                             </div>
                         </th>
                         <td>@user.UserName</td>
-                        <td>@user.City, @user.CountryCode</td>
+                        <td>@LocationString</td>
                         <td>@user.DecksCreated</td>
                         <td>@user.UniqueCards</td>
                         <td>@user.TotalCards</td>
@@ -111,7 +117,7 @@
             </div>
  
          <div class="d-flex justify-content-center align-items-center w-100">
-            @if (@Model.TotalPages > 1)
+            @if (Model.TotalPages > 1)
             {
                 <div class="row justify-content-center">
                     <div class="col-auto">

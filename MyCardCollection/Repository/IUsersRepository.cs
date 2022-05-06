@@ -15,8 +15,8 @@ namespace MyCardCollection.Repository
         bool Update(AppUser user);
         void UpdatePlayerStatistics(string userId);
         void UpdateAllPlayersStatistics();
-        Task<IEnumerable<AppUser>> GetUsersDataAsync();
-        Task<IEnumerable<AppUser>> GetUsersAsyncByCategory(CollectionersSortCategory category);
+        Task<IEnumerable<AppUser>> GetUsersDataAsync(bool includePrivacy = false);
+        Task<IEnumerable<AppUser>> GetUsersAsyncByCategory(CollectionersSortCategory category, bool includePrivacy = false);
         Task<PrivacySettings> GetPrivacyDataByUser(AppUser user);
         Task<bool> UpdateUserData(AppUser user, IndexModel.InputModel input);
     }
