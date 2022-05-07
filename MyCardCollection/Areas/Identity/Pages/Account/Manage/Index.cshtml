@@ -14,17 +14,15 @@
          <!-- IMAGE SELEC SECTION -->
             <div class="row m-2">
                 <div class="row media flex-wrap mb-0 align-items-center">
-                    <img alt="Image" src="@UserManager.GetUserAsync(User).Result.AvatarImage" class="avatar avatar-lg mb-md-0 ml-2">
+                    <img id="avatarImg" alt="Image" src="@UserManager.GetUserAsync(User).Result.AvatarImage" class="avatar avatar-lg mb-md-0 ml-2">
                     <div class="col media-body pl-0 pr-0">
                         <div class="btn-group">
                         <div class="row">
                             <label class="col-12 col-md ml-1 mr-1">
-                            <input type="button" class="custom-file-input height-0">
-                                <span class="btn btn-primary">SELECT FROM COLLECTION</span>
+                            <input type="button" class="btn btn-outline-primary" disabled value="SELECT FROM COLLECTION" >
                             </label>
                             <label class="col-12 col-md-3 ml-1 mr-1">
-                                <input type="button" class="custom-file-input height-0">
-                                <span class="btn btn-outline-primary">RANDOMIZE</span>
+                                <input onclick="SelectRandomBGImage()" type="button"  class="btn btn-primary" value="RANDOMIZE">
                             </label>
                         </div>
                             </div>
@@ -36,9 +34,6 @@
                 </div>
             </div>
     </div>
-        
-    
-
 
     <hr class="mt-1 mb-1">
     <!-- TITLE -->
@@ -179,6 +174,39 @@
           {
               switchElement.checked = currentSwitchState.checked;  
           }
+        }
+
+        let cardBgArray = new Array();
+        $(document).ready(function(){
+           LoadAllCArdsBackground();
+        });
+
+        function LoadAllCArdsBackground()
+        {
+          $.ajax({  
+                type: "GET",  
+                url: '@Url.Action("GetRandomBackgroundUrl","Collection")',  
+                contentType: "application/json; charset=utf-8",  
+                success: function (response) {
+                    cardBgArray = response.value;
+                },  
+                error: function () {  
+                    alert("Error while Getting data");  
+                }  
+            });  
+        }
+
+        function getRandomInt(min, max) {
+          min = Math.ceil(min);
+          max = Math.floor(max);
+          return Math.floor(Math.random() * (max - min)) + min;
+        }
+
+        function SelectRandomBGImage()
+        {
+            var index = getRandomInt(0,cardBgArray.length);
+            $("#avatarImg")[0].src = cardBgArray[index];
+            $("#Input_AvatarImage")[0].value = cardBgArray[index];
         }
     </script>
 }

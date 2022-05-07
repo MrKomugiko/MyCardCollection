@@ -150,6 +150,17 @@ namespace MyCardCollection.Services
 
             return result;
         }
+
+        private Random RNG = new Random();
+        public async Task<string?[]> GetRandomCropArtImageFromCollection(string _userId)
+        {
+            string?[] collection = await _context.Collection.Where(x => x.UserId == _userId).AsNoTracking().Select(x => x.CardData.ImageURLCropped).ToArrayAsync();
+
+            if(collection.Length == 0) return null; 
+
+            return collection;
+        }
+
         //-------------------------------------------------------------------
 
 

@@ -17,5 +17,6 @@ namespace MyCardCollection.Services
         Task<Dictionary<string, int>> GetSetCardCountGroupped(string _userId);
         Task<IEnumerable<string>> GetCollectedCardIdFromSet(string _userId, string set);
         Task<IEnumerable<CardData>> GetTopValuableCards(string _userId, int take);
+        Task<string?[]> GetRandomCropArtImageFromCollection(string _userId);
     }
 }

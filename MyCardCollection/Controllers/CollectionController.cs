@@ -341,15 +341,9 @@ namespace MyCardCollection.Controllers
           
             return View(_card);
         }
-         
-        public IActionResult GetStatisticsComponent()
-        {
-            return ViewComponent("StatisticsCharts", new { _userId = _userId });
-        }
-        
-        public IActionResult GetStatisticsComponent_v2()
-        {
-            return ViewComponent("StatisticsCharts", new { _userId = _userId });
-        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetRandomBackgroundUrl() => 
+            Json(Ok(await _collectionService.GetRandomCropArtImageFromCollection(_userId)));
     }
 }
