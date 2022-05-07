@@ -29,35 +29,6 @@ namespace MyCardCollection.Repository
 
         public async Task<AppUser?> GetUserByIdIncludeDecksAsync(string id)
         {
-            //return await _context.Users
-            //    .Where(x => x.Id == id)
-            //    .Include(x => x.Decks)
-            //        .ThenInclude(x => x.Content)
-            //            .ThenInclude(x=>x.CardData)
-            //    .AsNoTracking()
-            //    .SingleOrDefaultAsync();
-
-
-            /* 
-              potrzeba:
-                AppUser.BackgroundProfileImage
-                AppUser.AvatarImage
-                AppUser.Name
-                AppUser.UserName
-                AppUser.Lastname
-                AppUser.City
-                AppUser.CountryCode
-                AppUser.UniqueCards
-                AppUser.TotalCards
-                AppUser.TotalValue
-                AppUser.Created
-                    AppUser.Decks.Id
-                    AppUser.Decks.BackgroundImage
-                    AppUser.Decks.Name
-                    AppUser.Decks.Description
-            
-
-            */
             return await _context.Users
                .Where(x => x.Id == id)
                .Select(x => new AppUser
@@ -85,7 +56,6 @@ namespace MyCardCollection.Repository
                })
                .AsNoTracking()
                .SingleOrDefaultAsync();
-
         }
 
         public async Task<int> GetCountUsersAsync()
@@ -245,7 +215,6 @@ namespace MyCardCollection.Repository
             _context.Update(user);
             _context.Update(userPrivacy);
             await _context.SaveChangesAsync();
-
 
             return true;
         }

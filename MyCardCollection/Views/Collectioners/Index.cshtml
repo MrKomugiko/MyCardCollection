@@ -31,41 +31,39 @@
                     <form class="d-flex align-items-center w-100">
                       <span class="mr-2 text-muted text-small text-nowrap">Sort by:</span>
                       <select id="categorySelection" class="custom-select">
-                        @foreach(var item in Model.Category ){
-                            if(item.Selected){
-                                <option value="@item.Value" selected> @item.Text </option>
+                        @foreach (var item in Model.Category) {
+                                if (item.Selected) {
+                                    <option value="@item.Value" selected> @item.Text </option>
+                                }
+                                else {
+                                    <option value="@item.Value"> @item.Text </option>
+                                }
                             }
-                            else{
-                                <option value="@item.Value"> @item.Text </option>
-                            }
-                        }
-                      </select>
+                        </select>
                     </form>
                 </div>
-            <!-- Users list -->
-           <div class="col">
-              <table class="table table-hover align-items-center table-borderless table-responsive-md">
-                <thead>
-                  <tr style="color:white;">
-                    <th scope="col">Name</th>
-                    <th scope="col">Nick</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">Decks</th>
-                    <th scope="col">Unique Cards</th>
-                    <th scope="col">Total Cards</th>
-                    <th scope="col">Collection Value</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                    @foreach(var user in Model.Users)
-                    {
-                        string FirstName = user.PrivacySettings.AllowFirstName?user.Name:"*";
-                        string LastName = user.PrivacySettings.AllowLastName?user.Lastname:"*";
-                        string LocationString = user.PrivacySettings.AllowCity?user.City:"*";
-                            LocationString += (user.PrivacySettings.AllowCity&&user.PrivacySettings.AllowCountry)?", ":"";
-                            LocationString += user.PrivacySettings.AllowCountry? user.CountryCode:"*";
-         
+                <!-- Users list -->
+                <div class="col">
+                    <table class="table table-hover align-items-center table-borderless table-responsive-md">
+                        <thead>
+                            <tr style="color:white;">
+                                <th scope="col"></th>
+                                <th scope="col">Nick</th>
+                                <th scope="col">Location</th>
+                                <th scope="col">Decks</th>
+                                <th scope="col">Unique Cards</th>
+                                <th scope="col">Total Cards</th>
+                                <th scope="col">Collection Value</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.Users)
+                            {
+                                string FirstName = user.PrivacySettings.AllowFirstName?user.Name:"";
+                                string LastName = user.PrivacySettings.AllowLastName?user.Lastname:"";
+                                string LocationString = user.LocationString ?? "";
+
                     <tr class="bg-white">
                         <th scope="row" style="padding-bottom: 5px; padding-top:5px">
                             <div class="media align-items-center">

@@ -28,5 +28,27 @@ namespace MyCardCollection.Models
 
         public ICollection<Deck> Decks { get; set; }    
         public ICollection<CardsCollection> Cards { get; set; }
+
+        public string? LocationString
+        {
+            get
+            {
+                bool haveCity = !String.IsNullOrWhiteSpace(this.City);
+                bool haveCountry = !String.IsNullOrWhiteSpace(this.CountryCode);
+                bool allowCity = this.PrivacySettings.AllowCity;
+                bool allowCountry = this.PrivacySettings.AllowCountry;
+
+                string? result = (haveCity, haveCountry, allowCity, allowCountry) switch
+                {
+                    (true, true, true, true) => $"{this.City}, {this.CountryCode}",  // Gdańsk, Poland
+                    (true, false, true, _) => $"{this.City}",                      // Gdańsk
+                    (true, _, true, false) => $"{this.City}",                      // Gdańsk
+                    (false, true, _, true) => $"{this.CountryCode}",               // Poland
+                    (_, true, false, true) => $"{this.CountryCode}",               // Poland
+                    (_, _, _, _) => null
+                };
+                return result;
+            }
+        }
     }
 }

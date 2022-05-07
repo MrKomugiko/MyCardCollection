@@ -54,6 +54,8 @@ namespace MyCardCollection.Controllers
                 AppUser = await _usersRepository.GetUserByIdIncludeDecksAsync(userId),
                 TopCards = await _collectionRepository.GetTopValuableCards(userId,take:8)
             };
+
+            model.AppUser.PrivacySettings = await _usersRepository.GetPrivacyDataByUser(model.AppUser);
             return View(model);
         }
 

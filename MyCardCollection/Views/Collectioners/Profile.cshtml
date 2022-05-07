@@ -33,7 +33,13 @@
                             <div class="mb-2">
                                 <h1 class="h2 mb-2">@Model.AppUser.Name "@Model.AppUser.UserName" @Model.AppUser.Lastname</h1>
                                 <p class="badge badge-primary badge-pill mb-2">Admin</p><p class="badge badge-secondary badge-pill mb-2">Begginer</p>
-                                <p><span><i class="icon-location"></i> @Model.AppUser.City, @Model.AppUser.CountryCode</span></p>
+                                @{
+                                    string? LocationString = Model.AppUser.LocationString;
+                                    if(LocationString != null)
+                                    {   
+                                        <p><span><i class="icon-location"></i> @LocationString</span></p>
+                                    }
+                                }
                             </div>
                             <p>
                                 Total Cards: <b> @Model.AppUser.TotalCards</b> (Unique:<b> @Model.AppUser.UniqueCards</b>)<br />
@@ -41,7 +47,7 @@
                                 Member since:<b>  @Model.AppUser.Created.ToShortDateString()</b> <br />
                             </p>
                             <p>
-                                Bit of a go-getter me, creating lovely things that help others. You'll most often find me out back in the hammock, listening to tunes and bending pixels to my will.
+                                @Model.AppUser.Description
                             </p>
                             <div>
                                  @if (User.Identity.IsAuthenticated)
