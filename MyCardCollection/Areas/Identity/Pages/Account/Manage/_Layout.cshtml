@@ -29,6 +29,32 @@
         </div>
     </div>
 </div>
+<div class="container">
+    <div class="modal fade" id="deckBackgroundSelectionModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-center-viewport" role="document">
+            <div class="modal-content">
+                <div class="modal-header modal-header-borderless justify-content-end">
+                    <h3 class="m-0 w-100 text-center"style="color:black;">
+                            Select Background
+                    </h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="icon-cross"></i>
+                    </span>
+                    </button>
+                </div>
+                <div class="modal-body modal-xl d-flex justify-content-center" style="max-height:75vh;overflow-y:scroll">                    
+                    <div class="col">
+                        <div class="content row">
+                        </div>
+                        <div class="text-center w-100">
+                          <a class="btn btn-outline-success" onclick="ExpandImageList()">Show more...</a>
+                        </div>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @section Scripts {

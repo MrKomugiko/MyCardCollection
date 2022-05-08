@@ -19,10 +19,10 @@
                         <div class="btn-group">
                         <div class="row">
                             <label class="col-12 col-md ml-1 mr-1">
-                            <input type="button" class="btn btn-outline-primary" disabled value="SELECT FROM COLLECTION" >
+                            <input type="button"  class="btn btn-primary"onclick="openBackgroundSelectionWindow()" value="SELECT FROM COLLECTION" >
                             </label>
                             <label class="col-12 col-md-3 ml-1 mr-1">
-                                <input onclick="SelectRandomBGImage()" type="button"  class="btn btn-primary" value="RANDOMIZE">
+                                <input onclick="SelectRandomBGImage()" type="button" class="btn btn-outline-primary"   value="RANDOM">
                             </label>
                         </div>
                             </div>
@@ -165,6 +165,7 @@
     </div>
 </div>
 
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
@@ -208,34 +209,46 @@
             $("#avatarImg")[0].src = cardBgArray[index];
             $("#Input_AvatarImage")[0].value = cardBgArray[index];
         }
+
+    var expandedSize = 20;
+    var expandCounts = 0;
+    var ModalContent = null;
+    function openBackgroundSelectionWindow() {
+        $('#deckBackgroundSelectionModal').modal('show');
+        ModalContent = document.getElementById('deckBackgroundSelectionModal').getElementsByClassName('content')[0];
+        InsertContent(0,expandedSize);
+        expandCounts++;
+    }
+
+    function ExpandImageList()
+    {
+        InsertContent(expandCounts*expandedSize,expandedSize);
+        expandCounts++;
+    }
+   
+    function InsertContent(startIndex,size)
+    {
+        if(startIndex == 0)
+              ModalContent.innerHTML = "";
+        
+         cardBgArray.slice(startIndex,startIndex+size).forEach(url => {
+            ModalContent.insertAdjacentHTML('beforeend',
+                '<div class="col-6 col-sm-4 col-lg-3 col-xl-2 pb-3">' +
+                '<a type="button" onclick=\'lockSelection(\"'+url+'\")\'>' +
+                '<img class="img-fluid" style="border-radius:10px; "src="' + url + '" />' +
+                '</a>' +
+                '</div>'
+            )
+        });
+        return false;
+    }
+
+    function lockSelection(_newSrc) {
+        $('#deckBackgroundSelectionModal').modal('hide');
+        $('#avatarImg')[0].src = _newSrc;
+        $("#Input_AvatarImage")[0].value = _newSrc;
+    }
     </script>
+
+
 }
-
-
-
-
-
-
-
-
-
-
-@*<h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-floating">
-                <input asp-for="Username" class="form-control" disabled />
-                <label asp-for="Username" class="form-label"></label>
-            </div>
-            <div class="form-floating">
-                <input asp-for="Input.PhoneNumber" class="form-control" />
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </form>
-    </div>
-</div>*@
