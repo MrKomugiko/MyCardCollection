@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyCardCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220509173753_Commentandrepliesmodel2")]
-    partial class Commentandrepliesmodel2
+    [Migration("20220509184252_commentsmodel")]
+    partial class commentsmodel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -437,6 +437,13 @@ namespace MyCardCollection.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("Depth")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ReplyTo")
+                        .IsRequired()
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp with time zone");
 
@@ -445,6 +452,8 @@ namespace MyCardCollection.Migrations
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("CommentId");
+
+                    b.HasIndex("ReplyTo");
 
                     b.ToTable("Comment_Replies");
                 });
@@ -664,15 +673,21 @@ namespace MyCardCollection.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyCardCollection.Models.Comment", "Comment")
+                    b.HasOne("MyCardCollection.Models.Comment", null)
                         .WithMany("Replies")
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MyCardCollection.Models.CommentReply", "ParentReply")
+                        .WithMany()
+                        .HasForeignKey("ReplyTo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Author");
 
-                    b.Navigation("Comment");
+                    b.Navigation("ParentReply");
                 });
 
             modelBuilder.Entity("MyCardCollection.Models.Deck", b =>

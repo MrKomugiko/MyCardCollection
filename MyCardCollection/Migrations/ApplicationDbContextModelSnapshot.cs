@@ -435,6 +435,12 @@ namespace MyCardCollection.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("Depth")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ReplyTo")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp with time zone");
 
@@ -443,6 +449,8 @@ namespace MyCardCollection.Migrations
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("CommentId");
+
+                    b.HasIndex("ReplyTo");
 
                     b.ToTable("Comment_Replies");
                 });
@@ -662,15 +670,17 @@ namespace MyCardCollection.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyCardCollection.Models.Comment", "Comment")
+                    b.HasOne("MyCardCollection.Models.Comment", null)
                         .WithMany("Replies")
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Author");
+                    b.HasOne("MyCardCollection.Models.CommentReply", null)
+                        .WithMany("ChildReplies")
+                        .HasForeignKey("ReplyTo");
 
-                    b.Navigation("Comment");
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("MyCardCollection.Models.Deck", b =>
@@ -731,6 +741,11 @@ namespace MyCardCollection.Migrations
             modelBuilder.Entity("MyCardCollection.Models.Comment", b =>
                 {
                     b.Navigation("Replies");
+                });
+
+            modelBuilder.Entity("MyCardCollection.Models.CommentReply", b =>
+                {
+                    b.Navigation("ChildReplies");
                 });
 
             modelBuilder.Entity("MyCardCollection.Models.Deck", b =>

@@ -9,7 +9,8 @@ using MyCardCollection.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+//string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+string connectionString= "Server=ec2-34-242-8-97.eu-west-1.compute.amazonaws.com;Database=dasg5jolv2emtp;Port = 5432;User Id = corbvtcgpygbfd;Password = cbaffbb9d2feb5bc8edd943570c9cf200fc77e64f669dfa251cea7536c8db1cf; ";
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
@@ -38,6 +39,8 @@ builder.Services.AddScoped<ICollectionRepository, CollectionRepository>();
 builder.Services.AddScoped<IDeckRepository, DeckRepository>();
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
+
 
 
 

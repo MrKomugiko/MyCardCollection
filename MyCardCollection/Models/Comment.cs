@@ -15,9 +15,10 @@ namespace MyCardCollection.Models
             gravida mauris, fringilla vehicula lacinia non
          */
         [Required] public string AuthorId { get; set; }
-        [ForeignKey("AuthorId")] public AppUser? Author { get; set; }
+        [ForeignKey("AuthorId")] public AppUser Author { get; set; }
         public DateTime Created { get; set; } = DateTime.Now.ToUniversalTime();
         public DateTime Updated { get; set; } = DateTime.Now.ToUniversalTime();
+
         [Required] public int DeckId { get; set; }
         [ForeignKey("DeckId")] public Deck? Deck { get; set; }
 
@@ -28,11 +29,11 @@ namespace MyCardCollection.Models
 /*
  >Deck
     - Comment
-        * CommentReply
-            * CommentReply
-            * CommentReply
-        *CommentReply
+        * CommentReply [depth:1]
+            * CommentReply [depth:2]
+            * CommentReply [depth:2]
+        *CommentReply [depth:1]
     - Comment
-        * CommentReply
+        * CommentReply [depth:1]
     - Comment
  */
