@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<MyCardCollection.Models.Deck>
-
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/js/bootstrap.js"></script>
 <div class="container">    
     <div class="row align-items-center">
         <div class="col-12 position-relative">
@@ -71,6 +72,14 @@
                                     </div>
                                 </div>
                             </li>
+
+                            <div id="Comments-@deck.Id">
+                            
+                                <script>
+                                    console.log('ready');
+                                    $("#Comments-@deck.Id").load('@Url.Action("LoadCommentByDeck","Comment", new {deckId = deck.Id})').html;
+                                </script>
+                            </div>
                         }
                     }
                 }

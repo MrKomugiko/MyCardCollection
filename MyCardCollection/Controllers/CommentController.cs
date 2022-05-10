@@ -18,28 +18,18 @@ namespace MyCardCollection.Controllers
         public async Task<JsonResult> GetComments(int deckId)
         {
             IEnumerable<Comment> data = await _commentRepository.GetCommentsByDeckId(deckId);
-
-            PrintComments(data.First());
            
             return Json(Ok(data));
         }
 
-        private void PrintComments(Comment comment)
+        [HttpGet]
+        public async Task<PartialViewResult> LoadCommentByDeck(int deckId)
         {
-            Console.WriteLine(comment.Content);
-            GetReplies(comment.Replies);
-        }
+            IEnumerable<Comment> data = await _commentRepository.GetCommentsByDeckId(deckId);
 
-        private void GetReplies(IEnumerable<CommentReply> replies)
-        {
-            foreach(var reply in replies)
-            {
-                string space = new StringBuilder("\t".Length * reply.Depth).Insert(0, "\t", reply.Depth).ToString();
-                Console.WriteLine(space+reply.Content);
-            }
+            return PartialView("_Comments",data);
         }
     }
-
 }
 
 /*

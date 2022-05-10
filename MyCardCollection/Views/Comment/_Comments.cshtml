@@ -1,0 +1,48 @@
+﻿@using MyCardCollection.Models
+@model IEnumerable<Comment>;
+
+    @if(Model.Any())
+    {
+        int deckId = @Model.First().DeckId;
+        <div class="shadow" style="background-color:white; border-radius:10px; border-style: solid;">
+            <div class="p-3">
+                comments section for "New name"
+            </div> 
+            <div class="p-3">
+                @foreach (Comment comment in Model)
+                {
+                    <p>* @comment.Content</p>
+               
+                    @foreach (CommentReply reply in comment.Replies)
+                    {
+                        <p>* * @reply.Content</p>
+                        @foreach (CommentReply reply2 in reply.ChildReplies)
+                        {
+
+                            <p>* * * @reply2.Content</p>
+                                @foreach (CommentReply reply3 in reply2.ChildReplies)
+                            {
+                                <p>* * * * @reply3.Content</p>
+                            }
+                        }
+                    }
+                }
+            </div>
+            <div class="pb-2 pr-3 pl-3 row">
+                <input class="col mr-1 form-control" type="text" style=""> 
+                <input type="button" class="btn btn-primary" value="Comment">
+            </div>
+        </div>
+
+            <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+            <script>
+                console.log('replace classes');
+                var x = $("#Comments-@deckId");
+                $("#Comments-@deckId")[0].classList.add('col-12');
+                $("#Comments-@deckId")[0].classList.add('m-1');
+                $("#Comments-@deckId")[0].classList.add('mt-n2');
+                $("#Comments-@deckId")[0].classList.add('mb-3');
+            </script>
+        
+    }
+
