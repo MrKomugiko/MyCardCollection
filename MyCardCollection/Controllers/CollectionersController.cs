@@ -56,6 +56,7 @@ namespace MyCardCollection.Controllers
             };
 
             model.AppUser.PrivacySettings = await _usersRepository.GetPrivacyDataByUser(model.AppUser);
+
             return View(model);
         }
 

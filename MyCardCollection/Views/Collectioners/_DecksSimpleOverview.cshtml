@@ -58,8 +58,8 @@
                                               </a>
                                             </li>
                                             <li class="list-inline-item">
-                                             <a class="btn btn-outline-primary btn-sm" href="#">
-                                            <i class="icon-message mr-1"></i> 0
+                                             <a class="btn btn-outline-primary btn-sm" toggled="false" onclick="ToggleComments(this,@deck.Id)">
+                                            <i class="icon-message mr-1"></i> @deck.Comments.Count()
                                             Comment
                                             </a>
                                             </li>
@@ -73,13 +73,7 @@
                                 </div>
                             </li>
 
-                            <div id="Comments-@deck.Id">
-                            
-                                <script>
-                                    console.log('ready');
-                                    $("#Comments-@deck.Id").load('@Url.Action("LoadCommentByDeck","Comment", new {deckId = deck.Id})').html;
-                                </script>
-                            </div>
+                            <div id="Comments-@deck.Id"></div>
                         }
                     }
                 }
@@ -129,4 +123,42 @@
         })
     }
 
+    function ToggleComments(btn, _deckId)
+    {
+        var parentobject = $("#Comments-"+_deckId)[0];
+        var x = $(btn).attr('toggled');
+        if( x === "false")
+        {
+            // GET call for comments data
+            var url = '@Url.Action("LoadCommentByDeck","Comment")';
+            $.get( url,
+                { 
+                    deckId: _deckId 
+                },
+                function(data) {
+                    // change state (opened)
+                    console.log("toggle comments");
+                    $(btn).attr("toggled",true);
+                    // populate content
+                    parentobject.innerHTML = data;
+
+                    // show, adjust size by adding classes
+                    parentobject.classList.add('col-12','m-1','mt-n2','mb-3');
+                }
+            );
+        }
+        else
+        {
+            // change state (closed)
+            console.log("hide comments");
+            $(btn).attr("toggled",false);
+
+            // clear content
+            parentobject.innerHTML = ""; 
+
+            // hide remove size classes
+            parentobject.classList.remove('col-12','m-1','mt-n2','mb-3');
+        }
+
+    }
 </script>

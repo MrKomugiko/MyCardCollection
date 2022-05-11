@@ -346,7 +346,7 @@ namespace MyCardCollection.Migrations
 
                     b.HasKey("CardId");
 
-                    b.ToTable("CardsDatabase");
+                    b.ToTable("CardsDatabase", (string)null);
                 });
 
             modelBuilder.Entity("MyCardCollection.Models.CardsCollection", b =>
@@ -374,7 +374,7 @@ namespace MyCardCollection.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Collection");
+                    b.ToTable("Collection", (string)null);
                 });
 
             modelBuilder.Entity("MyCardCollection.Models.Comment", b =>
@@ -409,7 +409,7 @@ namespace MyCardCollection.Migrations
 
                     b.HasIndex("DeckId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("MyCardCollection.Models.CommentReply", b =>
@@ -439,6 +439,7 @@ namespace MyCardCollection.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int?>("ReplyTo")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("Updated")
@@ -452,7 +453,7 @@ namespace MyCardCollection.Migrations
 
                     b.HasIndex("ReplyTo");
 
-                    b.ToTable("Comment_Replies");
+                    b.ToTable("Comment_Replies", (string)null);
                 });
 
             modelBuilder.Entity("MyCardCollection.Models.Deck", b =>
@@ -497,7 +498,7 @@ namespace MyCardCollection.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Decks");
+                    b.ToTable("Decks", (string)null);
                 });
 
             modelBuilder.Entity("MyCardCollection.Models.DecksCollection", b =>
@@ -530,7 +531,7 @@ namespace MyCardCollection.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DecksCollections");
+                    b.ToTable("DecksCollections", (string)null);
                 });
 
             modelBuilder.Entity("MyCardCollection.Models.PrivacySettings", b =>
@@ -570,7 +571,7 @@ namespace MyCardCollection.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserPrivacySettings");
+                    b.ToTable("UserPrivacySettings", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -676,11 +677,15 @@ namespace MyCardCollection.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyCardCollection.Models.CommentReply", null)
-                        .WithMany("ChildReplies")
-                        .HasForeignKey("ReplyTo");
+                    b.HasOne("MyCardCollection.Models.CommentReply", "ParentReply")
+                        .WithMany()
+                        .HasForeignKey("ReplyTo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Author");
+
+                    b.Navigation("ParentReply");
                 });
 
             modelBuilder.Entity("MyCardCollection.Models.Deck", b =>
@@ -741,11 +746,6 @@ namespace MyCardCollection.Migrations
             modelBuilder.Entity("MyCardCollection.Models.Comment", b =>
                 {
                     b.Navigation("Replies");
-                });
-
-            modelBuilder.Entity("MyCardCollection.Models.CommentReply", b =>
-                {
-                    b.Navigation("ChildReplies");
                 });
 
             modelBuilder.Entity("MyCardCollection.Models.Deck", b =>
