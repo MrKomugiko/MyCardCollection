@@ -34,7 +34,7 @@
                                 <h1 class="h2 mb-2">@Model.AppUser.Name "@Model.AppUser.UserName" @Model.AppUser.Lastname</h1>
                                 <p class="badge badge-primary badge-pill mb-2">Admin</p><p class="badge badge-secondary badge-pill mb-2">Begginer</p>
                                 @{
-                                    string? LocationString = Model.AppUser.LocationString;
+                                    string? LocationString = Model.AppUser.GetLocationString();
                                     if(LocationString != null)
                                     {   
                                         <p><span><i class="icon-location"></i> @LocationString</span></p>

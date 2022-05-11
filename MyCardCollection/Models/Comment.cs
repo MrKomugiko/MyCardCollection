@@ -15,7 +15,7 @@ namespace MyCardCollection.Models
             gravida mauris, fringilla vehicula lacinia non
          */
         [Required] public string AuthorId { get; set; }
-        [ForeignKey("AuthorId")] public AppUser Author { get; set; }
+        [ForeignKey("AuthorId")] public AppUser? Author { get; set; }
         public DateTime Created { get; set; } = DateTime.Now.ToUniversalTime();
         public DateTime Updated { get; set; } = DateTime.Now.ToUniversalTime();
 

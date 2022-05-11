@@ -1,7 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyCardCollection.Models;
 using MyCardCollection.Repository;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
+using static MyCardCollection.Repository.CommentsRepository;
 
 namespace MyCardCollection.Controllers
 {
@@ -44,6 +49,31 @@ namespace MyCardCollection.Controllers
             
             return Json(Ok(data));
         }
+        [HttpPost]
+        [Route("api/Comments/AddComment")]
+        public async Task<JsonResult> AddComment([FromBody] AddCommentInput data)
+        {
+            if(ModelState.IsValid)
+            {
+                string _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+                int createdCommentId = await _commentRepository.AddComment(_userId, data.DeckId, data.Content);
+                if(createdCommentId > 0)
+                {
+                    GetCommentPOST_return comment = await _commentRepository.GetCommentPOSTreturn(createdCommentId);
+                    return Json(Ok(comment));
+                }
+                else
+                    return Json(new { msg = "Error, adding comment failed." });
+            }
+            return Json(BadRequest());
+        }
+        public class AddCommentInput
+        {
+            [Required] public int DeckId { get; set; }
+            [Required][MaxLength(255)] public string Content { get; set; }
+
+        }
 
         [HttpGet]
         public async Task<PartialViewResult> LoadCommentByDeck(int deckId)
@@ -69,7 +99,7 @@ namespace MyCardCollection.Controllers
                 }
             }
 
-            return PartialView("_Comments",data);
+            return PartialView("_Comments", new ValueTuple<int,List<Comment>>(deckId, data));
         }
     }
 }

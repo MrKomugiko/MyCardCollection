@@ -2,6 +2,8 @@
 using MyCardCollection.Controllers;
 using MyCardCollection.Models;
 using MyCardCollection.ViewModel;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MyCardCollection.Repository
 {

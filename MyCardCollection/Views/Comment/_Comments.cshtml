@@ -1,5 +1,5 @@
 ﻿@using MyCardCollection.Models
-@model List<Comment>;
+@model ValueTuple<int, List<Comment>>
 
         
         <style>
@@ -29,12 +29,15 @@
         </style>
 
     @{
-        Comment? firstComment = Model.FirstOrDefault();
+        int currentDeckId = Model.Item1;
+        IEnumerable<Comment> data = Model.Item2;
+
+        Comment? firstComment = data.FirstOrDefault();
         int? deckId =firstComment!=null?firstComment.DeckId:null;
 
         void MainCommentSection(Comment comment)
         { 
-            <div class="card border-0 ">
+            <div id="mainComment-@comment.Id" class="card border-0">
                 <div class=" card-body p-0">
                     <div class="d-flex">
                         <div class="pt-2 pr-1">
@@ -47,11 +50,11 @@
                     </div>
                         <a href="*" class="reply-btn"> Reply </a>
                         <small> @comment.Created.ToLocalTime()</small><br>
-                        @if (comment.Replies != null)
+                        @if (comment.Replies != null && comment.Replies.Any())
                         {
                             CommentReply lastReply =  comment.Replies.Last();
 
-                            <a href="*" class="reply-link"> 
+                            <a href="javascript: void(0);" class="reply-link" onclick="ShowReplies(@comment.Id)"> 
                                 <i class="icon-level-down"></i>
                                 @lastReply.Author.UserName - @comment.Replies.Count() Replies 
                                 <small>@lastReply.Created.ToLocalTime()</small>
@@ -67,11 +70,8 @@
         {
             @foreach (CommentReply reply in replies.ToList())
             {
-
-
-            <div class="card border-0 m-0">
-                <div class=" card-body p-1 pl-1 pl-md-5">
-                  
+                <div id="replyComment-@reply.Id" class="card border-0 m-0" hidden>
+                    <div class=" card-body p-1 pl-1 pl-md-5">
                         <div class="d-flex">
                             <div class="pt-2 pr-1">
                                 <img alt="Image" src="@reply.Author.AvatarImage" class="avatar avatar-sm d-block">
@@ -100,31 +100,41 @@
                         }
                     </div>
                 </div>
-       
             }
         }
     }
 
-    @if(deckId != null)
-    {
-
-        <div class="shadow" style="border-radius:10px; border-style: solid; border-color:white; background-color:white;">
-            <div class="pt-3 pb-0 pl-2 pl-md-3 pr-3">
-                @foreach (Comment comment in Model)
+    <div class="shadow" style="border-radius:10px; border-style: solid; border-color:white; background-color:white;">
+        <div id="commentsSection-@currentDeckId" class="pt-3 pb-0 pl-2 pl-md-3 pr-3">
+            @if(deckId != null)
+            {
+                @foreach (Comment comment in data)
                 {
                     MainCommentSection(comment);      
-                }   
-            </div>
-            <div class="pb-2 pr-2 pl-md-3 pl-2 pl-md-3 row">
-                <input class="col mr-1 form-control" type="text" style=""> 
-                <input type="button" class="btn btn-primary" value="Comment">
-            </div>
+                }
+            }
+            else
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    <p> there is no comments yet. Add first.</p>
+                }
+                else
+                {
+                    <p class="pb-3"> Create account to add comment.</p>
+                }
+            }
         </div>
 
-
-    }
-
-    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-    <script>
-
-    </script>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <!-- Comment input -->
+            <div class="pb-2 pr-2 pl-md-3 pl-2 pl-md-3 row mr-1">
+                <form id="form_comment-@currentDeckId" class="form-inline w-100">
+                    <input name="deckId" value="@currentDeckId" type="hidden" > 
+                    <input name="content" class="col mr-1 form-control" type="text" > 
+                    <input type="button" onclick="AddComment(@currentDeckId)" class="btn btn-primary pr-2" value="Comment"/>
+                </form>
+            </div>
+        }
+    </div>

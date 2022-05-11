@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using MyCardCollection.Data;
 using MyCardCollection.Models;
 
@@ -16,8 +18,8 @@ namespace MyCardCollection.Repository
         {
             var result = await _context.Comments
                 .Where(x => x.DeckId == _deckId)
-                .Include(x=>x.Replies.Where(x=>x.Depth == 1))
-                    .ThenInclude(x=>x.ChildReplies.Where(x => x.Depth == 2))
+                .Include(x => x.Replies.Where(x => x.Depth == 1))
+                    .ThenInclude(x => x.ChildReplies.Where(x => x.Depth == 2))
                         .ThenInclude(x => x.ChildReplies.Where(x => x.Depth == 3))
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
@@ -25,7 +27,62 @@ namespace MyCardCollection.Repository
             //Select(x=>new AppUser { Id = x.Author.Id, AvatarImage = x.Author.AvatarImage, UserName = x.Author.UserName})
             return result;
         }
+
+        public async Task<GetCommentPOST_return> GetCommentPOSTreturn(int _commentId)
+        {
+            var result = await _context.Comments
+                .Where(x => x.Id == _commentId)
+                .Select(x => new GetCommentPOST_return()
+                {
+                    Id = x.Id,
+                    Content = x.Content,
+                    Author = new GetCommentPOST_return.AuthorSimple
+                    {
+                        Id = x.Author.Id,
+                        UserName = x.Author.UserName,
+                        AvatarImage = x.Author.AvatarImage
+                    },
+                    Created = x.Created
+                })
+                .AsNoTracking()
+                .SingleOrDefaultAsync();
+
+            return result;
+        }
+
+        public async Task<int> AddComment(string userId, int deckId, string content)        
+        {
+            Comment newComment = new() {
+                AuthorId = userId,
+                Content = content,
+                DeckId = deckId,
+                Created = DateTime.Now.ToUniversalTime(),
+                Updated = DateTime.Now.ToUniversalTime()
+            };
+
+            await _context.Comments.AddAsync(newComment);
+            
+            if (_context.SaveChanges() > 0)
+                return newComment.Id;    
+            else
+                return -1;
+        }
+
+        public class GetCommentPOST_return
+        {
+            public int Id { get; set; }
+            public string Content { get; set; }
+            public AuthorSimple Author { get; set; }
+            public DateTime Created { get; set; }
+            public class AuthorSimple
+            {
+                public string Id { get; set; }
+                public string UserName { get; set; }
+                public string AvatarImage { get; set; }
+            }
+        }
     }
+
 }
 
 /*

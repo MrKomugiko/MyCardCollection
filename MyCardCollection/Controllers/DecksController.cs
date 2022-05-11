@@ -3,6 +3,8 @@ using MyCardCollection.Models;
 using MyCardCollection.Repository;
 using MyCardCollection.ViewModel;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace MyCardCollection.Controllers

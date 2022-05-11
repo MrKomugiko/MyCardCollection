@@ -62,7 +62,7 @@
                             {
                                 string FirstName = user.PrivacySettings.AllowFirstName?user.Name:"";
                                 string LastName = user.PrivacySettings.AllowLastName?user.Lastname:"";
-                                string LocationString = user.LocationString ?? "";
+                                string LocationString = user.GetLocationString() ?? "";
 
                     <tr class="bg-white">
                         <th scope="row" style="padding-bottom: 5px; padding-top:5px">
