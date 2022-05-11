@@ -12,7 +12,7 @@ namespace MyCardCollection.Repository
         {
             _context = context;
         }
-        public async Task<IEnumerable<Comment>> GetCommentsByDeckId(int _deckId)
+        public async Task<List<Comment>> GetCommentsByDeckId(int _deckId)
         {
             var result = await _context.Comments
                 .Where(x => x.DeckId == _deckId)
@@ -22,7 +22,7 @@ namespace MyCardCollection.Repository
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
                 .ToListAsync();
-
+            //Select(x=>new AppUser { Id = x.Author.Id, AvatarImage = x.Author.AvatarImage, UserName = x.Author.UserName})
             return result;
         }
     }

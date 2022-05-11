@@ -8,9 +8,12 @@ namespace MyCardCollection.Controllers
     public class CommentController : Controller
     {
         private readonly ICommentsRepository _commentRepository;
-        public CommentController(ICommentsRepository commentRepository)
+        private readonly IUsersRepository _usersRepository;
+
+        public CommentController(ICommentsRepository commentRepository, IUsersRepository usersRepository)
         {
             _commentRepository = commentRepository;
+            _usersRepository = usersRepository;
         }
 
         [HttpGet]
@@ -18,14 +21,53 @@ namespace MyCardCollection.Controllers
         public async Task<JsonResult> GetComments(int deckId)
         {
             IEnumerable<Comment> data = await _commentRepository.GetCommentsByDeckId(deckId);
-           
+
+            var users = await _usersRepository.GetUsersDataAsync();
+            Dictionary<string, AppUser> usersDict = _usersRepository.GetUsersDataAsync().Result.ToDictionary(x => x.Id, x => new AppUser { Id=x.Id, UserName = x.UserName, AvatarImage = x.AvatarImage });
+
+            foreach(var comment in data)
+            {
+                comment.Author = usersDict[comment.AuthorId];
+                foreach (var reply_1 in comment.Replies)
+                {
+                    reply_1.Author = usersDict[reply_1.AuthorId];
+                    foreach (var reply_2 in reply_1.ChildReplies)
+                    {
+                        reply_2.Author = usersDict[reply_2.AuthorId];
+                        foreach (var reply_3 in reply_2.ChildReplies)
+                        {
+                            reply_3.Author = usersDict[reply_3.AuthorId];
+                        }
+                    }
+                }
+            }
+            
             return Json(Ok(data));
         }
 
         [HttpGet]
         public async Task<PartialViewResult> LoadCommentByDeck(int deckId)
         {
-            IEnumerable<Comment> data = await _commentRepository.GetCommentsByDeckId(deckId);
+            List<Comment> data = await _commentRepository.GetCommentsByDeckId(deckId);
+            var users = await _usersRepository.GetUsersDataAsync();
+            Dictionary<string, AppUser> usersDict = _usersRepository.GetUsersDataAsync().Result.ToDictionary(x => x.Id, x => new AppUser { Id = x.Id, UserName = x.UserName, AvatarImage = x.AvatarImage });
+
+            foreach (var comment in data)
+            {
+                comment.Author = usersDict[comment.AuthorId];
+                foreach (var reply_1 in comment.Replies)
+                {
+                    reply_1.Author = usersDict[reply_1.AuthorId];
+                    foreach (var reply_2 in reply_1.ChildReplies)
+                    {
+                        reply_2.Author = usersDict[reply_2.AuthorId];
+                        foreach (var reply_3 in reply_2.ChildReplies)
+                        {
+                            reply_3.Author = usersDict[reply_3.AuthorId];
+                        }
+                    }
+                }
+            }
 
             return PartialView("_Comments",data);
         }

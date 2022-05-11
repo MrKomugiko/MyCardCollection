@@ -4,6 +4,6 @@ namespace MyCardCollection.Repository
 {
     public interface ICommentsRepository
     {
-        Task<IEnumerable<Comment>> GetCommentsByDeckId(int _deckId);
+        Task<List<Comment>> GetCommentsByDeckId(int _deckId);
     }
 }

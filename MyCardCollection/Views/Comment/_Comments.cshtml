@@ -1,68 +1,127 @@
 ﻿@using MyCardCollection.Models
-@model IEnumerable<Comment>;
+@model List<Comment>;
+
+        
+        <style>
+             .comment {
+                    width: -moz-fit-content;
+                    width: fit-content;
+                    background-color: rgb(238,240,243);
+                    padding: 1em;
+                    padding-bottom: 0.5em;
+                    border-radius:20px;
+                }
+                .reply-btn {
+                    color:gray; 
+                    font-weight:bolder; 
+                    margin-left:1.5em;
+                }
+                .reply-link {
+                    color:darkgray; 
+                    font-weight:500; 
+                    margin-left:1.5em;
+                }
+                .icon-level-down{
+                    font-size:20px; 
+                    font-weight:bold;
+                }
+
+        </style>
 
     @{
-        Comment firstComment = Model.FirstOrDefault();
+        Comment? firstComment = Model.FirstOrDefault();
         int? deckId =firstComment!=null?firstComment.DeckId:null;
+
+        void MainCommentSection(Comment comment)
+        { 
+            <div class="card border-0 ">
+                <div class=" card-body p-0">
+                    <div class="d-flex">
+                        <div class="pt-2 pr-1">
+                            <img alt="Image" src="@comment.Author.AvatarImage" class="avatar avatar-sm d-block">
+                        </div>
+                        <div class="comment">
+                            <div style="font-weight:bold;">  @comment.Author.UserName </div>
+                            <div>  @comment.Content  </div>
+                        </div>
+                    </div>
+                        <a href="*" class="reply-btn"> Reply </a>
+                        <small> @comment.Created.ToLocalTime()</small><br>
+                        @if (comment.Replies != null)
+                        {
+                            CommentReply lastReply =  comment.Replies.Last();
+
+                            <a href="*" class="reply-link"> 
+                                <i class="icon-level-down"></i>
+                                @lastReply.Author.UserName - @comment.Replies.Count() Replies 
+                                <small>@lastReply.Created.ToLocalTime()</small>
+                            </a>
+                      
+                            RepliesSection(comment.Replies);// recur replies
+                        }
+               </div>
+            </div>
+        }
+
+        void RepliesSection(IEnumerable<CommentReply> replies)
+        {
+            @foreach (CommentReply reply in replies.ToList())
+            {
+
+
+            <div class="card border-0 m-0">
+                <div class=" card-body p-1 pl-1 pl-md-5">
+                  
+                        <div class="d-flex">
+                            <div class="pt-2 pr-1">
+                                <img alt="Image" src="@reply.Author.AvatarImage" class="avatar avatar-sm d-block">
+                            </div>
+                            <div class="comment">
+                                <div style="font-weight:bold;">  @reply.Author.UserName </div>
+                                <div>  @reply.Content  </div>
+                            </div>
+                        </div>
+
+                        @if(reply.Depth < 3)
+                        {
+                            <a href="*" class="reply-btn"> Reply </a>
+                            <small> @reply.Created.ToLocalTime()</small><br>
+                        
+                            @if (reply.ChildReplies!= null && reply.ChildReplies.Any())
+                            {
+                                CommentReply lastDeepReply =  reply.ChildReplies.Last();
+                                <a href="*" class="reply-link"> 
+                                    <i class="icon-level-down"></i> 
+                                    @lastDeepReply.Author.UserName - @reply.ChildReplies.Count() Replies 
+                                    <small>@lastDeepReply.Created.ToLocalTime()</small>
+                                </a>
+                                RepliesSection(reply.ChildReplies);
+                            }
+                        }
+                    </div>
+                </div>
+       
+            }
+        }
     }
 
     @if(deckId != null)
     {
-        <div class="shadow" style="border-radius:10px; border-style: solid;">
-            <div class="pt-3 pb-0 pl-3 pr-3">
+
+        <div class="shadow" style="border-radius:10px; border-style: solid; border-color:white; background-color:white;">
+            <div class="pt-3 pb-0 pl-2 pl-md-3 pr-3">
                 @foreach (Comment comment in Model)
                 {
-                <div class="card">
-                    <div class=" shadow card-body">
-                    <p><b>@comment.Content</b></p>
-                     @if (comment.Replies.Any())
-                        {
-                            <p class="w-100" style="text-align:right">Replies [@comment.Replies.Count()] <a href="*">Show</a></p>
-                            @foreach (CommentReply reply in comment.Replies)
-                            {
-
-                                <div class="card mt-1 mb-1 ml-1 mr-0">
-                                    <div class="card-body pr-0 pb-0" >
-                                        <p>-> @reply.Content </p>
-                                        @if (reply.ChildReplies.Any())
-                                        {
-                                            <p class="w-100" style="text-align:right">Replies [@reply.ChildReplies.Count()] <a href="*">Show</a></p>
-                                            @foreach (CommentReply reply2 in reply.ChildReplies)
-                                            {
-                                                <div class="card mt-1 mb-1 ml-1 mr-0">
-                                                    <div class="card-body pr-0 pb-0">
-                                                        <p>--> @reply2.Content</p>
-
-                                                        @if (reply2.ChildReplies.Any())
-                                                        {
-                                                            <p class="w-100" style="text-align:right">Replies [@reply2.ChildReplies.Count()] <a href="*">Show</a></p>
-                                                            @foreach (CommentReply reply3 in reply2.ChildReplies)
-                                                            {
-                                                                <div class="card mt-1 mb-1 ml-1 mr-0">
-                                                                    <div class="card-body p-0">
-                                                                        <p>---> @reply3.Content</p>
-                                                                    </div>
-                                                                </div>
-                                                            }
-                                                        }
-                                                    </div>
-                                                </div>
-                                            }
-                                        }
-                                    </div>
-                                </div>
-                            }
-                        }
-                    </div>
-                    </div>
-                   
-                }
+                    MainCommentSection(comment);      
+                }   
             </div>
-            <div class="pb-2 pr-3 pl-3 row">
+            <div class="pb-2 pr-2 pl-md-3 pl-2 pl-md-3 row">
                 <input class="col mr-1 form-control" type="text" style=""> 
                 <input type="button" class="btn btn-primary" value="Comment">
             </div>
         </div>
+
+
     }
 
     <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
