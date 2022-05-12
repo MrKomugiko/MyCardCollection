@@ -111,9 +111,13 @@
                             <input name="replyTo" value="@reply.Id"  class="col mr-1 form-control" type="hidden" > 
                             <input name="depth"  value="@(reply.Depth+1)" class="col mr-1 form-control" type="hidden" > 
                 
-                            <input type="button" onclick="AddReply('#form_reply-@reply.Id')" class="btn btn-primary pr-2" value="reply-wip"/>
+                            <input type="button" onclick="AddReply('#form_reply-@reply.Id')" class="btn btn-primary pr-2" value="reply"/>
                         </form>
-                        }   
+                        }
+                        else
+                        {
+                            <small> @reply.Created.ToLocalTime()</small><br>
+                        }
                     </div>
                 </div>
 

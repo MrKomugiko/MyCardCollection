@@ -1,4 +1,41 @@
-﻿    function AddComment(_deckId)
+﻿function ToggleComments(btn, _deckId) {
+    var parentobject = $("#Comments-" + _deckId)[0];
+    var x = $(btn).attr('toggled');
+    if (x === "false") {
+        // GET call for comments data
+        var base = window.location.origin;
+        var url = base + '/Comment/LoadCommentByDeck';
+        $.get(url,
+            {
+                deckId: _deckId
+            },
+            function (data) {
+                // change state (opened)
+                console.log("toggle comments");
+                $(btn).attr("toggled", true);
+                // populate content
+                parentobject.innerHTML = data;
+
+                // show, adjust size by adding classes
+                parentobject.classList.add('col-12', 'm-1', 'mt-n2', 'mb-3');
+            }
+        );
+    }
+    else {
+        // change state (closed)
+        console.log("hide comments");
+        $(btn).attr("toggled", false);
+
+        // clear content
+        parentobject.innerHTML = "";
+
+        // hide remove size classes
+        parentobject.classList.remove('col-12', 'm-1', 'mt-n2', 'mb-3');
+    }
+
+}
+
+function AddComment(_deckId)
     {
         console.log('adding new comment');
         //Serialize the form datas.
@@ -72,21 +109,15 @@ function AddReply(formId) {
         data: payload,
         success: function (result) {
             // fetch respond data
-
-            var parentContainer;
-            if (dataArr[3].value == '1') {
-                parentContainer = $("#mainComment-" + dataArr[0].value)
-            }
-            else {
-                parentContainer = $("#replyComment-" + dataArr[2].value);
-                parentContainer = parentContainer[0];
-                parentContainer = parentContainer.children;
-            }
-
             var commentelement = GetCommentTemplate('replyComment', result.value);
 
-
-            parentContainer[0].insertAdjacentHTML('beforeend', commentelement)
+            if (dataArr[3].value == '1') {
+                var parentContainer = $("#mainComment-" + dataArr[0].value)
+                parentContainer[0].insertAdjacentHTML('beforeend', commentelement);
+            }
+            else {
+                form.insertAdjacentHTML('beforebegin', commentelement);
+            }
         },
         error: function (err) {
             console.log(err.Message);
@@ -110,9 +141,13 @@ function AddReply(formId) {
                 ' <div style="font-weight:bold;"> ' + commentObject.author.userName + ' </div>' +
                 ' <div>  ' + commentObject.content + '  </div>' +
                 ' </div>' +
-                '</div>' +
-                '<a href="*" style="pointer-events: none; cursor: default ; opacity: 0.6; " class="reply-btn"> Reply </a>' +
-                '<small> ' + dateString + ' </small><br>' +
+                '</div>';
+
+            if (commentObject.depth < 3) {
+                htmldata+='<a href="*" style="pointer-events: none; cursor: default ; opacity: 0.6; " class="reply-btn"> Reply </a>';
+            }
+
+                htmldata+='<small> ' + dateString + ' </small><br>' +
                 '</div>' +
                 '</div>';
         }
@@ -130,7 +165,7 @@ function AddReply(formId) {
                 ' <div>  ' + commentObject.content + '  </div>' +
                 ' </div>' +
                 '</div>' +
-                '<a href="*" class="reply-btn"> Reply </a>' +
+                '<a href="*" style="pointer-events: none; cursor: default ; opacity: 0.6; " class="reply-btn"> Reply </a>' +
                 '<small> ' + dateString + ' </small><br>' +
                 '</div>' +
                 '</div>';
@@ -178,3 +213,14 @@ function AddReply(formId) {
         }
     }
 
+
+
+$(function () {
+    $(window).keydown(function (e) {
+        if (e.keyCode == 13) {
+            console.log('prevent enter to submit-redirect form');
+            e.preventDefault();
+            return false;
+        }
+    });
+})

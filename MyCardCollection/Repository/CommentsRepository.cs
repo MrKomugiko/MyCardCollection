@@ -63,7 +63,8 @@ namespace MyCardCollection.Repository
                          UserName = x.Author.UserName,
                          AvatarImage = x.Author.AvatarImage
                      },
-                     Created = x.Created
+                     Created = x.Created,
+                     Depth = x.Depth
                  })
                  .AsNoTracking()
                  .SingleOrDefaultAsync();
@@ -120,8 +121,10 @@ namespace MyCardCollection.Repository
         {
             public int Id { get; set; }
             public string Content { get; set; }
+            public int Depth{ get; set; }
             public AuthorSimple Author { get; set; }
             public DateTime Created { get; set; }
+
         }
         public class AuthorSimple
         {
