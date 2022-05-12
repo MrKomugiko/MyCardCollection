@@ -41,8 +41,6 @@ builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
 
 
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

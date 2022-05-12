@@ -36,7 +36,7 @@ namespace MyCardCollection.Repository
                 {
                     Id = x.Id,
                     Content = x.Content,
-                    Author = new GetCommentPOST_return.AuthorSimple
+                    Author = new AuthorSimple
                     {
                         Id = x.Author.Id,
                         UserName = x.Author.UserName,
@@ -46,6 +46,27 @@ namespace MyCardCollection.Repository
                 })
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
+
+            return result;
+        }
+        public async Task<GetReplyPOST_return> GetReplyPOSTreturn(int _replyId)
+        {
+            var result = await _context.Comment_Replies
+                 .Where(x => x.Id == _replyId)
+                 .Select(x => new GetReplyPOST_return()
+                 {
+                     Id = x.Id,
+                     Content = x.Content,
+                     Author = new AuthorSimple
+                     {
+                         Id = x.Author.Id,
+                         UserName = x.Author.UserName,
+                         AvatarImage = x.Author.AvatarImage
+                     },
+                     Created = x.Created
+                 })
+                 .AsNoTracking()
+                 .SingleOrDefaultAsync();
 
             return result;
         }
@@ -67,6 +88,26 @@ namespace MyCardCollection.Repository
             else
                 return -1;
         }
+        public async Task<int> AddReply(string userId, int commentId, int? replyTo, string content, int depth)
+        {
+            CommentReply newReply = new()
+            {
+                AuthorId = userId,
+                Content = content,
+                Created = DateTime.Now.ToUniversalTime(),
+                Updated = DateTime.Now.ToUniversalTime(),
+                CommentId = commentId,
+                ReplyTo = replyTo,
+                Depth = depth
+            };
+
+            await _context.Comment_Replies.AddAsync(newReply);
+
+            if (_context.SaveChanges() > 0)
+                return newReply.Id;
+            else
+                return -1;
+        }
 
         public class GetCommentPOST_return
         {
@@ -74,12 +115,19 @@ namespace MyCardCollection.Repository
             public string Content { get; set; }
             public AuthorSimple Author { get; set; }
             public DateTime Created { get; set; }
-            public class AuthorSimple
-            {
-                public string Id { get; set; }
-                public string UserName { get; set; }
-                public string AvatarImage { get; set; }
-            }
+        }
+        public class GetReplyPOST_return
+        {
+            public int Id { get; set; }
+            public string Content { get; set; }
+            public AuthorSimple Author { get; set; }
+            public DateTime Created { get; set; }
+        }
+        public class AuthorSimple
+        {
+            public string Id { get; set; }
+            public string UserName { get; set; }
+            public string AvatarImage { get; set; }
         }
     }
 

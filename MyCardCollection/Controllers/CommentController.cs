@@ -49,6 +49,7 @@ namespace MyCardCollection.Controllers
             
             return Json(Ok(data));
         }
+
         [HttpPost]
         [Route("api/Comments/AddComment")]
         public async Task<JsonResult> AddComment([FromBody] AddCommentInput data)
@@ -72,9 +73,35 @@ namespace MyCardCollection.Controllers
         {
             [Required] public int DeckId { get; set; }
             [Required][MaxLength(255)] public string Content { get; set; }
-
         }
 
+        [HttpPost]
+        [Route("api/Comments/AddReply")]
+        public async Task<JsonResult> AddReply([FromBody] AddReplyInput data)
+        {
+            if (ModelState.IsValid) 
+            {
+                string _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                int createdReplyId = await _commentRepository.AddReply(_userId, data.CommentId, data.ReplyTo > 0 ? data.ReplyTo : null, data.Content, data.Depth); ;
+                if (createdReplyId > 0)
+                {
+                    GetReplyPOST_return reply = await _commentRepository.GetReplyPOSTreturn(createdReplyId);
+                    return Json(Ok(reply));
+                }
+                else
+                    return Json(new { msg = "Error, adding comment failed." });
+            }
+            return Json(BadRequest());
+        }
+        public class AddReplyInput
+        {
+            public int CommentId { get; set; }
+            public int ReplyTo { get; set; }
+            public int Depth { get; set; }
+            public string Content { get; set; }
+
+        }
         [HttpGet]
         public async Task<PartialViewResult> LoadCommentByDeck(int deckId)
         {
