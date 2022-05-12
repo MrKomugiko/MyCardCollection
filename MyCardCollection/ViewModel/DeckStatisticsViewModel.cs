@@ -1,4 +1,5 @@
 ﻿using MyCardCollection.Models;
+using System.Collections.Generic;
 
 namespace MyCardCollection.ViewModel
 {

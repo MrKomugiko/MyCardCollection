@@ -1,0 +1,140 @@
+﻿@using MyCardCollection.Models
+@model ValueTuple<int, List<Comment>>
+
+        
+        <style>
+             .comment {
+                    width: -moz-fit-content;
+                    width: fit-content;
+                    background-color: rgb(238,240,243);
+                    padding: 1em;
+                    padding-bottom: 0.5em;
+                    border-radius:20px;
+                }
+                .reply-btn {
+                    color:gray; 
+                    font-weight:bolder; 
+                    margin-left:1.5em;
+                }
+                .reply-link {
+                    color:darkgray; 
+                    font-weight:500; 
+                    margin-left:1.5em;
+                }
+                .icon-level-down{
+                    font-size:20px; 
+                    font-weight:bold;
+                }
+
+        </style>
+
+    @{
+        int currentDeckId = Model.Item1;
+        IEnumerable<Comment> data = Model.Item2;
+
+        Comment? firstComment = data.FirstOrDefault();
+        int? deckId =firstComment!=null?firstComment.DeckId:null;
+
+        void MainCommentSection(Comment comment)
+        { 
+            <div id="mainComment-@comment.Id" class="card border-0">
+                <div class=" card-body p-0">
+                    <div class="d-flex">
+                        <div class="pt-2 pr-1">
+                            <img alt="Image" src="@comment.Author.AvatarImage" class="avatar avatar-sm d-block">
+                        </div>
+                        <div class="comment">
+                            <div style="font-weight:bold;">  @comment.Author.UserName </div>
+                            <div>  @comment.Content  </div>
+                        </div>
+                    </div>
+                        <a href="*" class="reply-btn"> Reply </a>
+                        <small> @comment.Created.ToLocalTime()</small><br>
+                        @if (comment.Replies != null && comment.Replies.Any())
+                        {
+                            CommentReply lastReply =  comment.Replies.Last();
+
+                            <a href="javascript: void(0);" class="reply-link" onclick="ShowReplies(@Json.Serialize(comment.Replies.Select(x=>x.Id).ToArray()))"> 
+                                <i class="icon-level-down"></i>
+                                @lastReply.Author.UserName - @comment.Replies.Count() Replies 
+                                <small>@lastReply.Created.ToLocalTime()</small>
+                            </a>
+                      
+                            RepliesSection(comment.Replies);// recur replies
+                        }
+               </div>
+            </div>
+        }
+
+        void RepliesSection(IEnumerable<CommentReply> replies)
+        {
+            @foreach (CommentReply reply in replies.ToList())
+            {
+                <div id="replyComment-@reply.Id" class="card border-0 m-0" hidden>
+                    <div class=" card-body p-1 pl-1 pl-md-5">
+                        <div class="d-flex">
+                            <div class="pt-2 pr-1">
+                                <img alt="Image" src="@reply.Author.AvatarImage" class="avatar avatar-sm d-block">
+                            </div>
+                            <div class="comment">
+                                <div style="font-weight:bold;">  @reply.Author.UserName </div>
+                                <div>  @reply.Content  </div>
+                            </div>
+                        </div>
+
+                        @if(reply.Depth < 3)
+                        {
+                            <a href="*" class="reply-btn"> Reply </a>
+                            <small> @reply.Created.ToLocalTime()</small><br>
+                        
+                            @if (reply.ChildReplies!= null && reply.ChildReplies.Any())
+                            {
+                                CommentReply lastDeepReply =  reply.ChildReplies.Last();
+                                <a href="javascript: void(0);" class="reply-link" onclick="ShowReplies(@Json.Serialize(reply.ChildReplies.Select(x=>x.Id).ToArray()))">
+                                    <i class="icon-level-down"></i> 
+                                    @lastDeepReply.Author.UserName - @reply.ChildReplies.Count() Replies 
+                                    <small>@lastDeepReply.Created.ToLocalTime()</small>
+                                </a>
+                                RepliesSection(reply.ChildReplies);
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        }
+    }
+
+    <div class="shadow" style="border-radius:10px; border-style: solid; border-color:white; background-color:white;">
+        <div id="commentsSection-@currentDeckId" class="pt-3 pb-0 pl-2 pl-md-3 pr-3">
+            @if(deckId != null)
+            {
+                @foreach (Comment comment in data)
+                {
+                    MainCommentSection(comment);      
+                }
+            }
+            else
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    <p> there is no comments yet. Add first.</p>
+                }
+                else
+                {
+                    <p class="pb-3"> Create account to add comment.</p>
+                }
+            }
+        </div>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <!-- Comment input -->
+            <div class="pb-2 pr-2 pl-md-3 pl-2 pl-md-3 row mr-1">
+                <form id="form_comment-@currentDeckId" class="form-inline w-100">
+                    <input name="deckId" value="@currentDeckId" type="hidden" > 
+                    <input name="content" class="col mr-1 form-control" type="text" > 
+                    <input type="button" onclick="AddComment(@currentDeckId)" class="btn btn-primary pr-2" value="Comment"/>
+                </form>
+            </div>
+        }
+    </div>

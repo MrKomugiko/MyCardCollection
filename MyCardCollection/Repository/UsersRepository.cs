@@ -51,7 +51,9 @@ namespace MyCardCollection.Repository
                        Name = x.Name,
                        Description = x.Description,
                        CardsNumber = x.CardsNumber,
-                       TotalValue = x.TotalValue
+                       TotalValue = x.TotalValue,
+                       Comments = x.Comments.Select(x=> new Comment 
+                        { Id = x.Id }).ToList()
                    }).ToList()
                })
                .AsNoTracking()

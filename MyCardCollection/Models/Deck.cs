@@ -1,4 +1,6 @@
 using Microsoft.Build.Framework;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribute;
@@ -27,10 +29,10 @@ namespace MyCardCollection.Models
         public DateTime Created { get; set; } = DateTime.Now.ToUniversalTime();
         public DateTime? Updated { get; set; } = DateTime.Now.ToUniversalTime();
 
-
         public string? AppUserId { get; set; }
         [ForeignKey("AppUserId")] public AppUser? AppUser { get; set; }
 
         public ICollection<DecksCollection> Content { get; set; }
+        public ICollection<Comment> Comments { get; set; }
     }
 }

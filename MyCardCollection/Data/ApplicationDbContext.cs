@@ -22,6 +22,7 @@ namespace MyCardCollection.Data
         public DbSet<PrivacySettings> UserPrivacySettings { get; set; }
 
         public DbSet<Deck> Decks { get; set; }
-
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<CommentReply> Comment_Replies { get; set; }
     }
 }
