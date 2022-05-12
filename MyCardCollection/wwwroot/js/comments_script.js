@@ -118,6 +118,9 @@ function AddReply(formId) {
             else {
                 form.insertAdjacentHTML('beforebegin', commentelement);
             }
+
+            // hide input button
+            form.hidden = true;
         },
         error: function (err) {
             console.log(err.Message);
@@ -127,7 +130,7 @@ function AddReply(formId) {
 
     function GetCommentTemplate(template,commentObject) {
         var date = new Date(commentObject.created);
-        var dateString = minTwoDigits(date.getDate()) + '.' +minTwoDigits((date.getMonth() + 1)) + "." +date.getFullYear() + ' ' + minTwoDigits(date.getHours()) + ":" +minTwoDigits(date.getMinutes()) + ":" + minTwoDigits(date.getSeconds());
+        var formattedDate = minTwoDigits(date.getDate()) + '.' +minTwoDigits((date.getMonth() + 1)) + "." +date.getFullYear() + ' ' + minTwoDigits(date.getHours()) + ":" +minTwoDigits(date.getMinutes()) + ":" + minTwoDigits(date.getSeconds());
         var htmldata = "";
         if (template.includes("reply")) {
             htmldata =
@@ -147,7 +150,7 @@ function AddReply(formId) {
                 htmldata+='<a href="*" style="pointer-events: none; cursor: default ; opacity: 0.6; " class="reply-btn"> Reply </a>';
             }
 
-                htmldata+='<small> ' + dateString + ' </small><br>' +
+                htmldata+='<small> ' + formattedDate + ' </small><br>' +
                 '</div>' +
                 '</div>';
         }
@@ -166,7 +169,7 @@ function AddReply(formId) {
                 ' </div>' +
                 '</div>' +
                 '<a href="*" style="pointer-events: none; cursor: default ; opacity: 0.6; " class="reply-btn"> Reply </a>' +
-                '<small> ' + dateString + ' </small><br>' +
+                '<small> ' + formattedDate + ' </small><br>' +
                 '</div>' +
                 '</div>';
         }
@@ -183,18 +186,35 @@ function AddReply(formId) {
         console.log("show replies");
 
         var parent = $(containerId)[0].children[0].children;
-        var p = parent[0];
 
+        // Check what action take first element, than apply this to rest
+        //  when user type new comment, and then open hidden comment, 
+        //  his comment would be set as hidden,
+ 
         for (let item of parent) {
             if (item.id.includes('replyComment-')) {
-
-                console.log(item.id);
-
                 if (item.hasAttribute('hidden')) {
-                    item.removeAttribute('hidden');
+                    revealAll(parent);
+                    return;
                 }
                 else {
+                    hideall(parent);
+                    return;
+                }}
+            }
+        function hideall(items) {
+            for (let item of items) {
+                if (item.id.includes('replyComment-')) {
                     item.hidden = true;
+                }
+            }
+        }
+        function revealAll(items) {
+            for (let item of items) {
+                if (item.id.includes('replyComment-')) {
+                    if (item.hasAttribute('hidden')) {
+                        item.removeAttribute('hidden');
+                    }
                 }
             }
         }
@@ -202,7 +222,6 @@ function AddReply(formId) {
 
     function ToggleReplyForm(_replyToId) {
         console.log("show form input");
-
         var parentForm = $(_replyToId)[0];
 
         if (parentForm.hasAttribute('hidden')) {

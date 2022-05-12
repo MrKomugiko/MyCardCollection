@@ -54,7 +54,10 @@
                                                     <li class="list-inline-item"><i class="icon-message mr-1"></i> 0</li>
                                                 </ul>
                                             </div>
-                                            <button class="btn btn-sm btn-outline-primary w-50" type="button" data-toggle="modal" data-target="#DeckOverviewModal" onclick="LoadDeckOverview(@deck.Id)">
+                                            <a class="btn btn-outline-primary btn-sm" toggled="false" onclick="ToggleComments(this,@deck.Id)">
+                                                Comments
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-primary" type="button" data-toggle="modal" data-target="#DeckOverviewModal" onclick="LoadDeckOverview(@deck.Id)">
                                                 Deck Preview
                                             </button>
                                             <div class="dropup">
@@ -64,7 +67,6 @@
                                                 <div class="dropdown-menu dropdown-menu-sm" aria-labelledby="BenchButton">
                                                     <a class="dropdown-item" onclick="ShowEditLayout(this,@deck.Id);">Edit</a>
                                                     <a class="dropdown-item" >Remove</a>
-                                                    <a class="dropdown-item" href="#">Comment</a>
                                                     <div class="dropdown-divider"></div>
                                                     <a class="dropdown-item" href="#">Report</a>
                                                 </div>
@@ -82,7 +84,9 @@
                                             BackgroundImage = deckimg
                                         })
                                     </div>
+                                    
                                 </li>
+                                    <div id="Comments-@deck.Id"></div>
                             }
                             </ul>
                         </div>
@@ -138,4 +142,5 @@
 {
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
     <script type="text/javascript" src="~/js/decks_scripts.js"></script>
+    <script type="text/javascript" src="/js/comments_script.js" asp-append-version="true"></script>
 }
