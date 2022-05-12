@@ -54,7 +54,7 @@
                         {
                             CommentReply lastReply =  comment.Replies.Last();
 
-                            <a href="javascript: void(0);" class="reply-link" onclick="ShowReplies(@comment.Id)"> 
+                            <a href="javascript: void(0);" class="reply-link" onclick="ShowReplies(@Json.Serialize(comment.Replies.Select(x=>x.Id).ToArray()))"> 
                                 <i class="icon-level-down"></i>
                                 @lastReply.Author.UserName - @comment.Replies.Count() Replies 
                                 <small>@lastReply.Created.ToLocalTime()</small>
@@ -90,7 +90,7 @@
                             @if (reply.ChildReplies!= null && reply.ChildReplies.Any())
                             {
                                 CommentReply lastDeepReply =  reply.ChildReplies.Last();
-                                <a href="*" class="reply-link"> 
+                                <a href="javascript: void(0);" class="reply-link" onclick="ShowReplies(@Json.Serialize(reply.ChildReplies.Select(x=>x.Id).ToArray()))">
                                     <i class="icon-level-down"></i> 
                                     @lastDeepReply.Author.UserName - @reply.ChildReplies.Count() Replies 
                                     <small>@lastDeepReply.Created.ToLocalTime()</small>

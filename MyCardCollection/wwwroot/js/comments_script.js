@@ -65,7 +65,10 @@
     }
 }
    
-function ShowReplies(_replyId) {
+function ShowReplies(_replyIds) {
     console.log("show replies");
-        $("replyComment-" + _replyId).removeAttr("hidden");
-    }
+    _replyIds.forEach( (_id) => {
+        var el = $("#replyComment-" + _id);
+        el[0].removeAttribute("hidden");
+    })
+}
