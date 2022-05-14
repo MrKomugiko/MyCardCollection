@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MyCardCollection.Controllers;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyCardCollection.Models
@@ -49,5 +50,11 @@ namespace MyCardCollection.Models
             };
             return result;
         }
+    }
+
+    public class Author
+    {
+        public string UserName { get; set; }
+        public string AvatarImage { get; set; }
     }
 }

@@ -53,6 +53,7 @@ of the Postgress database by the Heroku host and the need to manually refresh th
 &check; List of Other registered colelctioners with sorting by date,collection size or colelction value  
 &check; Collectioners profile with customized background, easy acces to user top cards and his decks  
 &check; Decks preview with charts - cost, color, set, type  
+&check; Commenting other users decks and adding nested replies
 &cross; Live updating card values (currently, price is locked with date of import).  
 
 <a name="run"/>
@@ -118,6 +119,7 @@ https://localhost:7011/
 ## Overwiew - screens
 ![Manage page](MCC%20album/ManagePAge.png)
 ![Profile](MCC%20album/ProfilePage.png)
+![Comments(MCC%20album/CommentsSystem.png)
 ![Collectioners](MCC%20album/CollectionersPage.png)
 ![Home](MCC%20album/HomePage.png)
 ![Deckspage](MCC%20album/DecksPage.png)

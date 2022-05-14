@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static MyCardCollection.Repository.CommentsRepository;
 
 namespace MyCardCollection.Models
 {
@@ -15,7 +16,8 @@ namespace MyCardCollection.Models
             gravida mauris, fringilla vehicula lacinia non
          */
         [Required] public string AuthorId { get; set; }
-        [ForeignKey("AuthorId")] public AppUser? Author { get; set; }
+        [NotMapped] public AuthorRespond Author { get; set; }
+        [ForeignKey("AuthorId")] public AppUser? AppUser { get; set; }
         public DateTime Created { get; set; } = DateTime.Now.ToUniversalTime();
         public DateTime Updated { get; set; } = DateTime.Now.ToUniversalTime();
 

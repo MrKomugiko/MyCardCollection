@@ -7,7 +7,7 @@ using MyCardCollection.Models;
 
 namespace MyCardCollection.Repository
 {
-    public class CommentsRepository : ICommentsRepository
+    public partial class CommentsRepository : ICommentsRepository
     {
         private readonly ApplicationDbContext _context;
         public CommentsRepository(ApplicationDbContext context)
@@ -28,19 +28,19 @@ namespace MyCardCollection.Repository
             return result;
         }
 
-        public async Task<GetCommentPOST_return> GetCommentPOSTreturn(int _commentId)
+        public async Task<GetCommentRespond> GetCommentPOSTreturn(int _commentId)
         {
             var result = await _context.Comments
                 .Where(x => x.Id == _commentId)
-                .Select(x => new GetCommentPOST_return()
+                .Select(x => new GetCommentRespond()
                 {
                     Id = x.Id,
                     Content = x.Content,
-                    Author = new AuthorSimple
+                    Author = new AuthorRespond
                     {
-                        Id = x.Author.Id,
-                        UserName = x.Author.UserName,
-                        AvatarImage = x.Author.AvatarImage
+                        Id = x.AppUser.Id,
+                        UserName = x.AppUser.UserName,
+                        AvatarImage = x.AppUser.AvatarImage
                     },
                     Created = x.Created
                 })
@@ -49,19 +49,19 @@ namespace MyCardCollection.Repository
 
             return result;
         }
-        public async Task<GetReplyPOST_return> GetReplyPOSTreturn(int _replyId)
+        public async Task<GetReplyRespond> GetReplyPOSTreturn(int _replyId)
         {
             var result = await _context.Comment_Replies
                  .Where(x => x.Id == _replyId)
-                 .Select(x => new GetReplyPOST_return()
+                 .Select(x => new GetReplyRespond()
                  {
                      Id = x.Id,
                      Content = x.Content,
-                     Author = new AuthorSimple
+                     Author = new AuthorRespond
                      {
-                         Id = x.Author.Id,
-                         UserName = x.Author.UserName,
-                         AvatarImage = x.Author.AvatarImage
+                         Id = x.AppUser.Id,
+                         UserName = x.AppUser.UserName,
+                         AvatarImage = x.AppUser.AvatarImage
                      },
                      Created = x.Created,
                      Depth = x.Depth
@@ -108,29 +108,6 @@ namespace MyCardCollection.Repository
                 return newReply.Id;
             else
                 return -1;
-        }
-
-        public class GetCommentPOST_return
-        {
-            public int Id { get; set; }
-            public string Content { get; set; }
-            public AuthorSimple Author { get; set; }
-            public DateTime Created { get; set; }
-        }
-        public class GetReplyPOST_return
-        {
-            public int Id { get; set; }
-            public string Content { get; set; }
-            public int Depth{ get; set; }
-            public AuthorSimple Author { get; set; }
-            public DateTime Created { get; set; }
-
-        }
-        public class AuthorSimple
-        {
-            public string Id { get; set; }
-            public string UserName { get; set; }
-            public string AvatarImage { get; set; }
         }
     }
 
