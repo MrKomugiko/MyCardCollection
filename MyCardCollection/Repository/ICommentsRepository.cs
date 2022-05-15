@@ -1,4 +1,5 @@
-﻿using MyCardCollection.Models;
+﻿using MyCardCollection.Controllers;
+using MyCardCollection.Models;
 using static MyCardCollection.Repository.CommentsRepository;
 
 namespace MyCardCollection.Repository
@@ -10,5 +11,6 @@ namespace MyCardCollection.Repository
         Task<int> AddReply(string userId, int commentId, int? replyTo, string content, int depth);
         Task<GetCommentRespond> GetCommentPOSTreturn(int _commentId);
         Task<GetReplyRespond> GetReplyPOSTreturn(int _replyId);
+        Task Delete(int commentId, CommentController.CommentType category);
     }
 }

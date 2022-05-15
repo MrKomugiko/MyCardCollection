@@ -152,8 +152,8 @@ function GetCommentTemplate(template,commentObject) {
         }
 
         htmldata += '<small> ' + formattedDate + ' </small>' +
-            '<a class="btn btn-outline-info m-0 p-0 px-1 btn-sm" onclick="EditReply(' + commentObject.id + ')"> <i class="icon-pencil" style="color:black;"> </i> </a>' +
-            '<a class="btn btn-outline-danger m-0 p-0 px-1 btn-sm" onclick="DeleteReply(' + commentObject.id + ')"> <i class="icon-trash" style="color:black;"> </i> </a>' +
+            '<a class="btn btn-outline-info m-0 p-0 px-1 btn-sm" onclick="EditComment(' + commentObject.id + ',1)"> <i class="icon-pencil" style="color:black;"> </i> </a>' +
+            '<a class="btn btn-outline-danger m-0 p-0 px-1 btn-sm" onclick="DeleteComment(' + commentObject.id + ',1)"> <i class="icon-trash" style="color:black;"> </i> </a>' +
             '<br> </div>' +
             '</div>';
     }
@@ -173,8 +173,8 @@ function GetCommentTemplate(template,commentObject) {
             '</div>' +
             '<a href="*" style="pointer-events: none; cursor: default ; opacity: 0.6; " class="reply-btn"> Reply </a>' +
             '<small> ' + formattedDate + ' </small>' +
-            '<a class="btn btn-outline-info m-0 p-0 px-1 btn-sm" onclick="EditComment(' + commentObject.id + ')"> <i class="icon-pencil" style="color:black;"> </i> </a>' +
-            '<a class="btn btn-outline-danger m-0 p-0 px-1 btn-sm" onclick="DeleteComment(' + commentObject.id + ')"> <i class="icon-trash" style="color:black;"> </i> </a>' +
+            '<a class="btn btn-outline-info m-0 p-0 px-1 btn-sm" onclick="EditComment(' + commentObject.id + ',0)"> <i class="icon-pencil" style="color:black;"> </i> </a>' +
+            '<a class="btn btn-outline-danger m-0 p-0 px-1 btn-sm" onclick="DeleteComment(' + commentObject.id + ',0)"> <i class="icon-trash" style="color:black;"> </i> </a>' +
             '<br></div>' +
             '</div>';
     }
@@ -247,6 +247,37 @@ function ToggleReplyForm(_replyToId) {
     }
 }
 
+//function EditComment(id) {
+
+//}
+
+function DeleteComment(id,category) {
+    var base = window.location.origin;
+    $.ajax({
+        url: base + '/api/Comments/Delete/'+id,
+        method: "DELETE",
+        dataType: 'json',
+        contentType: "application/json",
+        data: JSON.stringify(category),
+        success: function (result) {
+            console.log('comment deleted');
+            if (category == 1) {
+                var parentcomment = $("#replyComment-" + id)[0].parentNode;
+                if (parentcomment.querySelectorAll('div[id^="replyComment"]').length == 1) {
+                    var x = parentcomment.querySelector(".reply-link");
+                    x.remove();
+                }
+                $("#replyComment-" + id).remove();
+            }
+            else if (category == 0) {
+                $("#mainComment-" + id).remove();
+            }
+        },
+        error: function (err) {
+            console.log(err.Message);
+        }
+    });
+}
 
 
 $(function () {

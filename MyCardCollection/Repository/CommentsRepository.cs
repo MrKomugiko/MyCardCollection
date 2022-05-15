@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using MyCardCollection.Data;
 using MyCardCollection.Models;
-
+using static MyCardCollection.Controllers.CommentController;
 
 namespace MyCardCollection.Repository
 {
@@ -108,6 +108,24 @@ namespace MyCardCollection.Repository
                 return newReply.Id;
             else
                 return -1;
+        }
+
+        public async Task Delete(int commentId, CommentType category)
+        {
+            if(category == CommentType.Main)
+            {
+                Comment? objectToRemove = await _context.Comments.SingleOrDefaultAsync(x=>x.Id == commentId);
+                if(objectToRemove != null)
+                    _context.Remove(objectToRemove);
+            }
+            if (category == CommentType.Reply)
+            {
+                CommentReply? objectToRemove = await _context.Comment_Replies.SingleOrDefaultAsync(x => x.Id == commentId);
+                if (objectToRemove != null)
+                    _context.Remove(objectToRemove);
+            }
+            
+            await _context.SaveChangesAsync();
         }
     }
 

@@ -41,12 +41,12 @@
             switch(comment)
             {
                 case Comment c:
-                    editMethod = "EditComment("+c.Id+")";
-                    deleteMethod =  "DeleteComment("+c.Id+")";
+                    editMethod = "EditComment("+c.Id+",0)";
+                    deleteMethod =  "DeleteComment("+c.Id+",0)";
                     break;
                 case CommentReply r:
-                    editMethod = "EditReply("+r.Id+")";
-                    deleteMethod =  "DeleteReply("+r.Id+")";
+                    editMethod = "EditComment("+r.Id+",1)";
+                    deleteMethod =  "DeleteComment("+r.Id+",1)";
                     break;
             }
 
