@@ -128,109 +128,124 @@ function AddReply(formId) {
     });
 }
 
-    function GetCommentTemplate(template,commentObject) {
-        var date = new Date(commentObject.created);
-        var formattedDate = minTwoDigits(date.getDate()) + '.' +minTwoDigits((date.getMonth() + 1)) + "." +date.getFullYear() + ' ' + minTwoDigits(date.getHours()) + ":" +minTwoDigits(date.getMinutes()) + ":" + minTwoDigits(date.getSeconds());
-        var htmldata = "";
-        if (template.includes("reply")) {
-            htmldata =
-                '<div id="' + template + '-' + commentObject.id + '" class="card border-0 m-0">' +
-                '<div class="card-body pt-1 pb-1 pr-0 pl-1 pl-md-5">' +
-                '<div class="d-flex">' +
-                '<div class="pt-2 pr-1">' +
-                '<img alt="Image" src="' + commentObject.author.avatarImage + '" class="avatar avatar-sm d-block">' +
-                '</div>' +
-                '<div class="comment">' +
-                ' <div style="font-weight:bold;"> ' + commentObject.author.userName + ' </div>' +
-                ' <div>  ' + commentObject.content + '  </div>' +
-                ' </div>' +
-                '</div>';
+function GetCommentTemplate(template,commentObject) {
+    var date = new Date(commentObject.created);
+    var formattedDate = minTwoDigits(date.getDate()) + '.' +minTwoDigits((date.getMonth() + 1)) + "." +date.getFullYear() + ' ' + minTwoDigits(date.getHours()) + ":" +minTwoDigits(date.getMinutes()) + ":" + minTwoDigits(date.getSeconds());
+    var htmldata = "";
+    if (template.includes("reply")) {
+        htmldata =
+            '<div id="' + template + '-' + commentObject.id + '" class="card border-0 m-0">' +
+            '<div class="card-body pt-1 pb-1 pr-0 pl-1 pl-md-5">' +
+            '<div class="d-flex">' +
+            '<div class="pt-2 pr-1">' +
+            '<img alt="Image" src="' + commentObject.author.avatarImage + '" class="avatar avatar-sm d-block">' +
+            '</div>' +
+            '<div class="comment">' +
+            ' <div style="font-weight:bold;"> ' + commentObject.author.userName + ' </div>' +
+            ' <div>  ' + commentObject.content +
+            '  </div>' +
+            ' </div>' +
+        '</div>';
 
-            if (commentObject.depth < 3) {
-                htmldata+='<a href="*" style="pointer-events: none; cursor: default ; opacity: 0.6; " class="reply-btn"> Reply </a>';
-            }
-
-                htmldata+='<small> ' + formattedDate + ' </small><br>' +
-                '</div>' +
-                '</div>';
+        if (commentObject.depth < 3) {
+            htmldata+='<a href="*" style="pointer-events: none; cursor: default ; opacity: 0.6; " class="reply-btn"> Reply </a>';
         }
 
-        else {
-             htmldata =
-                '<div id="' + template + '-' + commentObject.id + '" class="card border-0">' +
-                '<div class=" card-body p-0">' +
-                '<div class="d-flex">' +
-                '<div class="pt-2 pr-1">' +
-                '<img alt="Image" src="' + commentObject.author.avatarImage + '" class="avatar avatar-sm d-block">' +
-                '</div>' +
-                '<div class="comment">' +
-                ' <div style="font-weight:bold;"> ' + commentObject.author.userName + ' </div>' +
-                ' <div>  ' + commentObject.content + '  </div>' +
-                ' </div>' +
-                '</div>' +
-                '<a href="*" style="pointer-events: none; cursor: default ; opacity: 0.6; " class="reply-btn"> Reply </a>' +
-                '<small> ' + formattedDate + ' </small><br>' +
-                '</div>' +
-                '</div>';
-        }
+        htmldata += '<small> ' + formattedDate + ' </small>' +
+            '<a class="btn btn-outline-info m-0 p-0 px-1 btn-sm" onclick="EditReply(' + commentObject.id + ')"> <i class="icon-pencil" style="color:black;"> </i> </a>' +
+            '<a class="btn btn-outline-danger m-0 p-0 px-1 btn-sm" onclick="DeleteReply(' + commentObject.id + ')"> <i class="icon-trash" style="color:black;"> </i> </a>' +
+            '<br> </div>' +
+            '</div>';
+    }
+
+    else {
+        htmldata =
+            '<div id="' + template + '-' + commentObject.id + '" class="card border-0">' +
+            '<div class=" card-body p-0">' +
+            '<div class="d-flex">' +
+            '<div class="pt-2 pr-1">' +
+            '<img alt="Image" src="' + commentObject.author.avatarImage + '" class="avatar avatar-sm d-block">' +
+            '</div>' +
+            '<div class="comment">' +
+            ' <div style="font-weight:bold;"> ' + commentObject.author.userName + ' </div>' +
+            ' <div>  ' + commentObject.content + '  </div>' +
+            ' </div>' +
+            '</div>' +
+            '<a href="*" style="pointer-events: none; cursor: default ; opacity: 0.6; " class="reply-btn"> Reply </a>' +
+            '<small> ' + formattedDate + ' </small>' +
+            '<a class="btn btn-outline-info m-0 p-0 px-1 btn-sm" onclick="EditComment(' + commentObject.id + ')"> <i class="icon-pencil" style="color:black;"> </i> </a>' +
+            '<a class="btn btn-outline-danger m-0 p-0 px-1 btn-sm" onclick="DeleteComment(' + commentObject.id + ')"> <i class="icon-trash" style="color:black;"> </i> </a>' +
+            '<br></div>' +
+            '</div>';
+    }
          
 
-        return htmldata;
+    return htmldata;
 
-        function minTwoDigits(n) {
-            return (n < 10 ? '0' : '') + n;
+    function minTwoDigits(n) {
+        return (n < 10 ? '0' : '') + n;
+    }
+}
+   
+function ToggleRepiles(containerId) {
+    console.log("show replies");
+
+    var parent = $(containerId)[0].children[0].children;
+
+    // Check what action take first element, than apply this to rest
+    //  when user type new comment, and then open hidden comment, 
+    //  his comment would be set as hidden,
+ 
+    for (let item of parent) {
+        if (item.id.includes('replyComment-')) {
+            if (item.hasAttribute('hidden')) {
+                revealAll(parent);
+                return;
+            }
+            else {
+                hideall(parent);
+                return;
+            }}
+        }
+    function hideall(items) {
+        for (let item of items) {
+            if (item.id.includes('replyComment-')) {
+                item.hidden = true;
+            }
         }
     }
-   
-    function ToggleRepiles(containerId) {
-        console.log("show replies");
-
-        var parent = $(containerId)[0].children[0].children;
-
-        // Check what action take first element, than apply this to rest
-        //  when user type new comment, and then open hidden comment, 
-        //  his comment would be set as hidden,
- 
-        for (let item of parent) {
+    function revealAll(items) {
+        for (let item of items) {
             if (item.id.includes('replyComment-')) {
                 if (item.hasAttribute('hidden')) {
-                    revealAll(parent);
-                    return;
-                }
-                else {
-                    hideall(parent);
-                    return;
-                }}
-            }
-        function hideall(items) {
-            for (let item of items) {
-                if (item.id.includes('replyComment-')) {
-                    item.hidden = true;
-                }
-            }
-        }
-        function revealAll(items) {
-            for (let item of items) {
-                if (item.id.includes('replyComment-')) {
-                    if (item.hasAttribute('hidden')) {
-                        item.removeAttribute('hidden');
-                    }
+                    item.removeAttribute('hidden');
                 }
             }
         }
     }
+}
 
-    function ToggleReplyForm(_replyToId) {
-        console.log("show form input");
-        var parentForm = $(_replyToId)[0];
+function ToggleReplyForm(_replyToId) {
+    console.log("show form input");
 
-        if (parentForm.hasAttribute('hidden')) {
-            parentForm.removeAttribute('hidden');
-        }
-        else {
-            parentForm.hidden = true;
-        }
+    var allForms1 = $("form[id^='form_reply']");
+    allForms1.each((x) => {
+        allForms1[x].hidden = true;
+    })
+    var allForms2 = $("form[id^='form_commentreply']");
+    allForms2.each((x) => {
+        allForms2[x].hidden = true;
+    })
+
+    var parentForm = $(_replyToId)[0];
+
+    if (parentForm.hasAttribute('hidden')) {
+        parentForm.removeAttribute('hidden');
     }
+    else {
+        parentForm.hidden = true;
+    }
+}
 
 
 
