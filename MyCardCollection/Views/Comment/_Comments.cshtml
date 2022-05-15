@@ -76,8 +76,8 @@
                 @{await FunctionalButtonsSection(IsAuthernticated, comment);}
                 <br>
                 @if (comment.Replies != null && comment.Replies.Any())
-        {
-            CommentReply lastReply =  comment.Replies.Last();
+                {
+                    CommentReply lastReply =  comment.Replies.Last();
 
                     <a href="javascript: void(0);" class="reply-link" onclick="ToggleRepiles('#mainComment-@comment.Id')"> 
                         <i class="icon-level-down"></i>
@@ -85,44 +85,44 @@
                         <small>@lastReply.Created.ToLocalTime()</small>
                     </a>
                       
-            await RepliesSection(comment.Replies);// recur replies
-        }
+                    await RepliesSection(comment.Replies);// recur replies
+                }
+            <form id="form_commentreply-@comment.Id" class="form-inline w-100" hidden>
+                <input name="commentId" value="@comment.Id" type="hidden" > 
+                <input name="content" class="col mr-1 form-control" type="text" >
+                <input name="replyTo" value=""  class="col mr-1 form-control" type="hidden" > 
+                <input name="depth"  value="1" class="col mr-1 form-control" type="hidden" > 
+                <input type="button" onclick="AddReply('#form_commentreply-@comment.Id')" class="btn btn-primary pr-2" value="Reply to comment @comment.Id"/>
+            </form>
         </div>
     </div>
-    <form id="form_commentreply-@comment.Id" class="form-inline w-100" hidden>
-        <input name="commentId" value="@comment.Id" type="hidden" > 
-        <input name="content" class="col mr-1 form-control" type="text" >
-        <input name="replyTo" value=""  class="col mr-1 form-control" type="hidden" > 
-        <input name="depth"  value="1" class="col mr-1 form-control" type="hidden" > 
-        <input type="button" onclick="AddReply('#form_commentreply-@comment.Id')" class="btn btn-primary pr-2" value="Reply to comment @comment.Id"/>
-    </form>
     }
 
     async Task RepliesSection(IEnumerable<CommentReply> replies)
     {
-    @foreach (CommentReply reply in replies.ToList())
+        @foreach (CommentReply reply in replies.ToList())
         {
-    <div id="replyComment-@reply.Id" class="card border-0 m-0" hidden>
-                    <div class="card-body pt-1 pb-1 pr-0 pl-1 pl-md-5">
-                        <div class="d-flex">
-                            <div class="pt-2 pr-1">
-                                <img alt="Image" src="@reply.Author.AvatarImage" class="avatar avatar-sm d-block">
-                            </div>
-                            <div class="comment">
-                                <div style="font-weight:bold;">  @reply.Author.UserName </div>
-                                <div>  @reply.Content  </div>
-                            </div>
+            <div id="replyComment-@reply.Id" class="card border-0 m-0" hidden>
+                <div class="card-body pt-1 pb-1 pr-0 pl-1 pl-md-5">
+                    <div class="d-flex">
+                        <div class="pt-2 pr-1">
+                            <img alt="Image" src="@reply.Author.AvatarImage" class="avatar avatar-sm d-block">
                         </div>
+                        <div class="comment">
+                            <div style="font-weight:bold;">  @reply.Author.UserName </div>
+                            <div>  @reply.Content  </div>
+                        </div>
+                    </div>
 
-                        @if(reply.Depth < 3)
-                    {
-                            <a href="javascript: void(0);" onclick="ToggleReplyForm('#form_reply-@reply.Id')" class="reply-btn"> Reply </a>
-                            <small> @reply.Created.ToLocalTime()</small>
-                        await FunctionalButtonsSection(IsAuthernticated, reply);
-                            <br>
+                @if(reply.Depth < 3)
+                {
+                    <a href="javascript: void(0);" onclick="ToggleReplyForm('#form_reply-@reply.Id')" class="reply-btn"> Reply </a>
+                    <small> @reply.Created.ToLocalTime()</small>
+                    await FunctionalButtonsSection(IsAuthernticated, reply);
+                    <br>
 
                         
-                            @if (reply.ChildReplies!= null && reply.ChildReplies.Any())
+                    @if (reply.ChildReplies!= null && reply.ChildReplies.Any())
                     {
                         CommentReply lastDeepReply =  reply.ChildReplies.Last();
                                 <a href="javascript: void(0);" class="reply-link" onclick="ToggleRepiles('#replyComment-@reply.Id')">
@@ -132,37 +132,26 @@
                                 </a>
                         RepliesSection(reply.ChildReplies);
                     }
-                        <form id="form_reply-@reply.Id" class="form-inline w-100" hidden>
-                            <input name="commentId" value="@reply.CommentId" type="hidden" > 
-                            <input name="content" class="col mr-1 form-control" type="text" >
-                            <input name="replyTo" value="@reply.Id"  class="col mr-1 form-control" type="hidden" > 
-                            <input name="depth"  value="@(reply.Depth+1)" class="col mr-1 form-control" type="hidden" > 
+              
+                    <form id="form_reply-@reply.Id" class="form-inline w-100" hidden>
+                        <input name="commentId" value="@reply.CommentId" type="hidden" > 
+                        <input name="content" class="col mr-1 form-control" type="text" >
+                        <input name="replyTo" value="@reply.Id"  class="col mr-1 form-control" type="hidden" > 
+                        <input name="depth"  value="@(reply.Depth+1)" class="col mr-1 form-control" type="hidden" > 
                         
-                            <input type="button" onclick="AddReply('#form_reply-@reply.Id')" class="btn btn-primary pr-2" value="reply"/>
-                        </form>
+                        <input type="button" onclick="AddReply('#form_reply-@reply.Id')" class="btn btn-primary pr-2" value="reply"/>
+                    </form>
                 }
                 else
-                {
-                            <small> @reply.Created.ToLocalTime()</small><br>
-                }
-                    </div>
-    </div>
+            {
+                <small> @reply.Created.ToLocalTime()</small><br>
+            }
+
+                </div>
+            </div>
+            }
         }
-
-        var replyingto = replies.First().ReplyTo;
-        string buttonlabel = replyingto>0?("Reply to "+replies.First().ReplyTo):("Reply to comment "+replies.First().CommentId);
-        var FirstReply = replies.First();
-
-    <form id="form_reply-@FirstReply.ReplyTo" class="form-inline w-100" hidden>
-                <input name="commentId" value="@FirstReply.CommentId" type="hidden" > 
-                <input name="content" class="col mr-1 form-control" type="text" >
-                <input name="replyTo" value="@FirstReply.ReplyTo"  class="col mr-1 form-control" type="hidden" > 
-                <input name="depth"  value="@FirstReply.Depth" class="col mr-1 form-control" type="hidden" > 
-                        
-                <input type="button" onclick="AddReply('#form_reply-@FirstReply.ReplyTo')" class="btn btn-primary pr-2" value="@buttonlabel"/>
-    </form>
     }
-}
 
     <div class="shadow" style="border-radius:10px; border-style: solid; border-color:lightgrey; background-color:white;">
         <div id="commentsSection-@currentDeckId" class="pt-3 pb-0 pl-2 pl-md-3 pr-3">

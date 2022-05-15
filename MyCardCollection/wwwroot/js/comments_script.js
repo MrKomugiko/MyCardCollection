@@ -97,7 +97,6 @@ function AddReply(formId) {
             Depth: dataArr[3].value,
             Content: dataArr[1].value,
         })
-    console.log(payload);
 
     console.log(JSON.stringify(payload));
     // send post request
@@ -108,12 +107,36 @@ function AddReply(formId) {
         contentType: "application/json",
         data: payload,
         success: function (result) {
+            // check how many replies is there before add new
+            var parentContainer = form.parentNode;
+            var repliesCount = parentContainer.querySelectorAll(':scope > div[id^="replyComment"]').length;
+
             // fetch respond data
             var commentelement = GetCommentTemplate('replyComment', result.value);
+            var parentId = parentContainer.parentNode.id.split('-')[1];
+
+            var replylinkhtml = "";
+            // generate new updated toggle reply-link
+            if (form.id.includes('commentreply'))
+            {
+                replylinkhtml =  GenerateReplyExpander(parentId, 0, (repliesCount+1), result.value.author.userName); // reply for main comment
+            } else
+            {
+                replylinkhtml = GenerateReplyExpander(parentId, 1, (repliesCount+1), result.value.author.userName); // reply for reply...
+            }
+            if (repliesCount == 0) {
+                // add new toggle
+                parentContainer.querySelector('br').insertAdjacentHTML('afterend', replylinkhtml);
+            }
+            else {
+                // update existing toggle reply-link 
+                parentContainer.querySelector('.reply-link').outerHTML = replylinkhtml;
+                
+            }
 
             if (dataArr[3].value == '1') {
-                var parentContainer = $("#mainComment-" + dataArr[0].value)
-                parentContainer[0].insertAdjacentHTML('beforeend', commentelement);
+               
+                form.insertAdjacentHTML('beforebegin', commentelement);
             }
             else {
                 form.insertAdjacentHTML('beforebegin', commentelement);
@@ -128,9 +151,40 @@ function AddReply(formId) {
     });
 }
 
-function GetCommentTemplate(template,commentObject) {
-    var date = new Date(commentObject.created);
-    var formattedDate = minTwoDigits(date.getDate()) + '.' +minTwoDigits((date.getMonth() + 1)) + "." +date.getFullYear() + ' ' + minTwoDigits(date.getHours()) + ":" +minTwoDigits(date.getMinutes()) + ":" + minTwoDigits(date.getSeconds());
+function GenerateReplyExpander(id, category, newCounter, authorUserName) {
+    // count current elements 
+    var linkctegory = "";
+    if (category == 0)
+        linkcategory = 'mainComment';
+    else
+        linkcategory = 'replyComment';
+
+    return linkHTML =
+        '<a href="javascript: void(0);" class="reply-link" onclick="ToggleRepiles(\'#' + linkcategory + '-' + id + '\')" >' +
+            '<i class="icon-level-down"></i>' +
+            authorUserName + ' - ' + newCounter +' Replies' +
+            '<small>' + GetFormattedDate() +'</small>' +
+        '</a>';
+}
+
+function GetFormattedDate(dateValue = "") {
+
+    var date;
+    if (dateValue == "") {
+        date = new Date();
+    } else {
+        date = new Date(dateValue);
+    }
+    var formattedDate = minTwoDigits(date.getDate()) + '.' + minTwoDigits((date.getMonth() + 1)) + "." + date.getFullYear() + ' ' + minTwoDigits(date.getHours()) + ":" + minTwoDigits(date.getMinutes()) + ":" + minTwoDigits(date.getSeconds())+" ";
+    return formattedDate;
+
+    function minTwoDigits(n) {
+        return (n < 10 ? '0' : '') + n;
+    }
+}
+
+function GetCommentTemplate(template, commentObject) {
+    var formattedDate = GetFormattedDate(commentObject.created);
     var htmldata = "";
     if (template.includes("reply")) {
         htmldata =
@@ -182,9 +236,7 @@ function GetCommentTemplate(template,commentObject) {
 
     return htmldata;
 
-    function minTwoDigits(n) {
-        return (n < 10 ? '0' : '') + n;
-    }
+
 }
    
 function ToggleRepiles(containerId) {
