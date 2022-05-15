@@ -50,8 +50,8 @@
                     break;
             }
 
-            <a class="btn btn-outline-info m-0 p-0 px-1 btn-sm" onclick="@editMethod"> <i class="icon-pencil" style="color:black;"> </i> </a>
-            <a class="btn btn-outline-danger m-0 p-0 px-1 btn-sm" onclick="@deleteMethod"> <i class="icon-trash" style="color:black;"> </i> </a>
+    <a class="btn btn-outline-info m-0 p-0 px-1 btn-sm" onclick="@editMethod"> <i class="icon-pencil" style="color:black;"> </i> </a>
+    <a class="btn btn-outline-danger m-0 p-0 px-1 btn-sm" onclick="@deleteMethod"> <i class="icon-trash" style="color:black;"> </i> </a>
         }
     }
 
@@ -60,21 +60,26 @@
 
     async Task MainCommentSection(Comment comment)
     { 
-    <div id="mainComment-@comment.Id" class="card border-0">
-        <div class=" card-body p-0">
-            <div class="d-flex">
-                <div class="pt-2 pr-1">
-                    <img alt="Image" src="@comment.Author.AvatarImage" class="avatar avatar-sm d-block">
+        <div id="mainComment-@comment.Id" class="card border-0">
+            <div class=" card-body p-0">
+                <div class="d-flex">
+                    <div class="pt-2 pr-1">
+                        <img alt="Image" src="@comment.Author.AvatarImage" class="avatar avatar-sm d-block">
+                    </div>
+                    <div class="comment">
+                        <div style="font-weight:bold;">  @comment.Author.UserName </div>
+                        <div>  @comment.Content  </div>
+                    </div>
                 </div>
-                <div class="comment">
-                    <div style="font-weight:bold;">  @comment.Author.UserName </div>
-                    <div>  @comment.Content  </div>
-                </div>
-            </div>
+                @if (IsAuthernticated)
+                {
                     <a  href="javascript: void(0);" onclick="ToggleReplyForm('#form_commentreply-@comment.Id')" class="reply-btn"> Reply </a>
-                <small> @comment.Created.ToLocalTime()</small>
-                @{await FunctionalButtonsSection(IsAuthernticated, comment);}
-                <br>
+                }
+                    <small> @comment.Created.ToLocalTime()</small>
+                @{
+                    await FunctionalButtonsSection(IsAuthernticated, comment);
+                }
+                    <br>
                 @if (comment.Replies != null && comment.Replies.Any())
                 {
                     CommentReply lastReply =  comment.Replies.Last();
@@ -87,15 +92,18 @@
                       
                     await RepliesSection(comment.Replies);// recur replies
                 }
-            <form id="form_commentreply-@comment.Id" class="form-inline w-100" hidden>
-                <input name="commentId" value="@comment.Id" type="hidden" > 
-                <input name="content" class="col mr-1 form-control" type="text" >
-                <input name="replyTo" value=""  class="col mr-1 form-control" type="hidden" > 
-                <input name="depth"  value="1" class="col mr-1 form-control" type="hidden" > 
-                <input type="button" onclick="AddReply('#form_commentreply-@comment.Id')" class="btn btn-primary pr-2" value="Reply to comment @comment.Id"/>
-            </form>
+            @if(IsAuthernticated)
+            {
+                <form id="form_commentreply-@comment.Id" class="form-inline w-100" hidden>
+                    <input name="commentId" value="@comment.Id" type="hidden" > 
+                    <input name="content" class="col mr-1 form-control" type="text" >
+                    <input name="replyTo" value=""  class="col mr-1 form-control" type="hidden" > 
+                    <input name="depth"  value="1" class="col mr-1 form-control" type="hidden" > 
+                    <input type="button" onclick="AddReply('#form_commentreply-@comment.Id')" class="btn btn-primary pr-2" value="Reply to comment @comment.Id"/>
+                </form>
+            }
+            </div>
         </div>
-    </div>
     }
 
     async Task RepliesSection(IEnumerable<CommentReply> replies)
@@ -116,40 +124,42 @@
 
                 @if(reply.Depth < 3)
                 {
-                    <a href="javascript: void(0);" onclick="ToggleReplyForm('#form_reply-@reply.Id')" class="reply-btn"> Reply </a>
-                    <small> @reply.Created.ToLocalTime()</small>
-                    await FunctionalButtonsSection(IsAuthernticated, reply);
+                    @if (IsAuthernticated)
+                    {
+                        <a href="javascript: void(0);" onclick="ToggleReplyForm('#form_reply-@reply.Id')" class="reply-btn"> Reply </a>
+                    }
+                        <small> @reply.Created.ToLocalTime()</small>
+                        await FunctionalButtonsSection(IsAuthernticated, reply);
                     <br>
-
                         
                     @if (reply.ChildReplies!= null && reply.ChildReplies.Any())
                     {
                         CommentReply lastDeepReply =  reply.ChildReplies.Last();
-                                <a href="javascript: void(0);" class="reply-link" onclick="ToggleRepiles('#replyComment-@reply.Id')">
-                                    <i class="icon-level-down"></i> 
-                                    @lastDeepReply.Author.UserName - @reply.ChildReplies.Count() Replies 
-                                    <small>@lastDeepReply.Created.ToLocalTime()</small>
-                                </a>
+                        <a href="javascript: void(0);" class="reply-link" onclick="ToggleRepiles('#replyComment-@reply.Id')">
+                            <i class="icon-level-down"></i> 
+                            @lastDeepReply.Author.UserName - @reply.ChildReplies.Count() Replies 
+                            <small>@lastDeepReply.Created.ToLocalTime()</small>
+                        </a>
                         RepliesSection(reply.ChildReplies);
                     }
-              
-                    <form id="form_reply-@reply.Id" class="form-inline w-100" hidden>
-                        <input name="commentId" value="@reply.CommentId" type="hidden" > 
-                        <input name="content" class="col mr-1 form-control" type="text" >
-                        <input name="replyTo" value="@reply.Id"  class="col mr-1 form-control" type="hidden" > 
-                        <input name="depth"  value="@(reply.Depth+1)" class="col mr-1 form-control" type="hidden" > 
-                        
-                        <input type="button" onclick="AddReply('#form_reply-@reply.Id')" class="btn btn-primary pr-2" value="reply"/>
-                    </form>
+                    @if(IsAuthernticated)
+                    {
+                        <form id="form_reply-@reply.Id" class="form-inline w-100" hidden>
+                            <input name="commentId" value="@reply.CommentId" type="hidden" > 
+                            <input name="content" class="col mr-1 form-control" type="text" >
+                            <input name="replyTo" value="@reply.Id"  class="col mr-1 form-control" type="hidden" > 
+                            <input name="depth"  value="@(reply.Depth+1)" class="col mr-1 form-control" type="hidden" > 
+                            
+                            <input type="button" onclick="AddReply('#form_reply-@reply.Id')" class="btn btn-primary pr-2" value="reply"/>
+                        </form>
+                    }
                 }
                 else
-            {
-                <small> @reply.Created.ToLocalTime()</small><br>
-            }
-
+                {
+                    <small> @reply.Created.ToLocalTime()</small><br>
+                }
                 </div>
             </div>
-            }
         }
     }
 
@@ -164,7 +174,7 @@
             }
             else
             {
-                if (User.Identity.IsAuthenticated)
+                if (IsAuthernticated)
                 {
                     <p> there is no comments yet. Add first.</p>
                 }
@@ -175,7 +185,7 @@
             }
         </div>
 
-        @if (User.Identity.IsAuthenticated)
+        @if (IsAuthernticated)
         {
             <!-- Comment input -->
             <div class="pb-2 pr-2 pl-md-3 pl-2 pl-md-3 row mr-1">
@@ -187,3 +197,4 @@
             </div>
         }
     </div>
+}

@@ -93,15 +93,22 @@ namespace MyCardCollection.Controllers
         [Route("api/Comments/Delete/{commentId}")]
         public JsonResult Delete(int commentId, [FromBody] int category)
         {
-            var result = _commentRepository.Delete(commentId, (CommentType)category);
-            result.Wait();
-
-            if(result.IsCompletedSuccessfully)
+            try
             {
-                return Json(Ok());
-            }
+                var result = _commentRepository.Delete(commentId, (CommentType)category);
+                    result.Wait();
 
-            return Json(NotFound());
+                if(result.IsCompletedSuccessfully)
+                {
+                    return Json(Ok());
+                }
+
+                return Json(NotFound());
+            }
+            catch (Exception ex)
+            {
+                return Json(BadRequest(ex.Message));
+            }
         }
 
         public enum CommentType {
