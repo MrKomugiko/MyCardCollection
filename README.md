@@ -119,7 +119,7 @@ https://localhost:7011/
 ## Overwiew - screens
 ![Manage page](MCC%20album/ManagePAge.png)
 ![Profile](MCC%20album/ProfilePage.png)
-![Comments(MCC%20album/CommentsSystem.png)
+![Comments](MCC%20album/CommentsSystem.png)
 ![Collectioners](MCC%20album/CollectionersPage.png)
 ![Home](MCC%20album/HomePage.png)
 ![Deckspage](MCC%20album/DecksPage.png)
