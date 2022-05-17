@@ -34,5 +34,7 @@ namespace MyCardCollection.Models
 
         public ICollection<DecksCollection> Content { get; set; }
         public ICollection<Comment> Comments { get; set; }
+        public ICollection<DeckLike> Likes { get; set; }
+
     }
 }

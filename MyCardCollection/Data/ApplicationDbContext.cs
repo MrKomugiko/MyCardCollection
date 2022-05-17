@@ -24,5 +24,7 @@ namespace MyCardCollection.Data
         public DbSet<Deck> Decks { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<CommentReply> Comment_Replies { get; set; }
+        public DbSet<DeckLike> DeckLikes { get; set; }
+
     }
 }

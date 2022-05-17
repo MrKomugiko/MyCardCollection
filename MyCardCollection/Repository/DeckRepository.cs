@@ -180,6 +180,7 @@ namespace MyCardCollection.Repository
            await _context.Decks.Where(x => x.AppUserId == userId)
             .Include(x=>x.Content)
                 .ThenInclude(card => card.CardData)
+            .Include(x=>x.Comments)
             .AsNoTracking()
             .ToListAsync();
 
