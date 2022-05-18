@@ -103,3 +103,75 @@ function lockSelection(img, _newSrc, _deckId) {
     // replace in edit view
     $('#editDeckBackgroundImage-' + _deckId)[0].src = _newSrc;
 }
+
+function Like(_btn, _deckId, _userId) {
+    var base = window.location.origin;
+    var payload = JSON.stringify({
+        deckId: _deckId,
+        userId: _userId,
+    });
+
+    var url = base + '/api/Like/Deck';
+    $.ajax({
+        type: "POST",
+        url: url,
+        content: "json",
+        contentType: "application/json",
+            data: payload,
+            success: function (result) {
+                if (result > 0) {
+                    // deck liked succesfully, get return back its id
+
+                    _btn.classList.remove("btn-outline-primary");
+                    _btn.classList.add("btn-danger");
+
+                    var currentValue = parseInt(_btn.children[0].nextSibling.textContent);
+                    _btn.children[0].nextSibling.textContent = (currentValue + 1); 
+
+                    _btn.onclick = function () {
+                        Disslike(_btn, _deckId, _userId);
+                    }
+
+                    console.log('created new like with Id: #'+result+'. Liked - new value = ' + (currentValue + 1));
+                }
+            },
+            error: function (message) {
+                console.log(message);
+            }
+        });
+    }
+
+function Disslike(_btn, _deckId, _userId) {
+
+    var base = window.location.origin;
+    var payload = JSON.stringify({
+        deckId: _deckId,
+        userId: _userId,
+    });
+
+    var url = base + '/api/Like/Deck';
+    $.ajax({
+        type: "DELETE",
+        url: url,
+        content: "json",
+        contentType: "application/json",
+        data: payload,
+        success: function (result) {
+          
+            _btn.classList.remove("btn-danger");
+            _btn.classList.add("btn-outline-primary");
+
+            var currentValue = parseInt(_btn.children[0].nextSibling.textContent);
+            _btn.children[0].nextSibling.textContent = (currentValue - 1); 
+
+            _btn.onclick = function () {
+                Like(_btn, _deckId, _userId);
+            }
+            console.log('dissliked - new value = '+(currentValue - 1));
+            
+        },
+        error: function (message) {
+            console.log(message);
+        }
+    });
+}

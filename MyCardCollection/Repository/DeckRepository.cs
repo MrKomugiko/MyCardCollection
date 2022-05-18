@@ -181,6 +181,7 @@ namespace MyCardCollection.Repository
             .Include(x=>x.Content)
                 .ThenInclude(card => card.CardData)
             .Include(x=>x.Comments)
+            .Include(x => x.Likes)
             .AsNoTracking()
             .ToListAsync();
 

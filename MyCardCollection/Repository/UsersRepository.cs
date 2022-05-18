@@ -53,7 +53,14 @@ namespace MyCardCollection.Repository
                        CardsNumber = x.CardsNumber,
                        TotalValue = x.TotalValue,
                        Comments = x.Comments.Select(x=> new Comment 
-                        { Id = x.Id }).ToList()
+                        { 
+                           Id = x.Id 
+                        }).ToList(),
+                       Likes = x.Likes.Select(x=> new DeckLike
+                        { 
+                            Id = x.Id,
+                            UserId = x.UserId
+                        }).ToList()
                    }).ToList()
                })
                .AsNoTracking()
@@ -78,7 +85,6 @@ namespace MyCardCollection.Repository
         }
         public async Task<IEnumerable<AppUser>> GetUsersDataAsync(bool includePrivacy)
         {
-            
             if(includePrivacy)
             {
                 return await _context.Users

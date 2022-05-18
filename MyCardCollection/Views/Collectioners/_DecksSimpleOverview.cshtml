@@ -1,4 +1,6 @@
-﻿@model IEnumerable<MyCardCollection.Models.Deck>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<AppUser> _userManager
+@model IEnumerable<MyCardCollection.Models.Deck>
     <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/js/bootstrap.js"></script>
 <div class="container">    
@@ -53,9 +55,21 @@
                                         <div class="text-small">
                                         <ul class="list-inline">
                                             <li class="list-inline-item">
-                                              <a class="btn btn-primary btn-sm" href="#">
-                                                    <i class="icon-heart mr-1"></i> 0
-                                              </a>
+                                                @{
+                                                    string userID = _userManager.GetUserId(User);
+                                                    bool alreadyLiked = deck.Likes.Any(x => x.UserId == userID);
+
+                                                    if(! alreadyLiked)
+                                                    {
+                                                         <button type="button" class="btn btn-outline-primary btn-sm" onclick="Like(this,@deck.Id,'@userID')">
+                                                            <i class="icon-heart mr-1"></i>@deck.Likes.Count()</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button  type="button" class="btn btn-danger btn-sm" onclick="Disslike(this,@deck.Id,'@userID')">
+                                                            <i class="icon-heart mr-1"></i>@deck.Likes.Count()</button>
+                                                    }
+                                                }
                                             </li>
                                             <li class="list-inline-item">
                                              <a class="btn btn-outline-primary btn-sm" toggled="false" onclick="ToggleComments(this,@deck.Id)">
@@ -106,6 +120,8 @@
 
 <script  type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 <script type="text/javascript" src="/js/comments_script.js" asp-append-version="true"></script>
+<script type="text/javascript" src="/js/decks_scripts.js" asp-append-version="true"></script>
+
 
 <script>
     function LoadDeckOverview(_deckId){

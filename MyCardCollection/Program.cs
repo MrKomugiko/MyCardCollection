@@ -33,6 +33,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IDeckLikeRepository, DeckLikesRepository>();
 builder.Services.AddScoped<IScryfallService,ScryfallService>();
 builder.Services.AddScoped<ICollectionRepository, CollectionRepository>();
 builder.Services.AddScoped<IDeckRepository, DeckRepository>();
