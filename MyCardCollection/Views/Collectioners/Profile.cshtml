@@ -1,27 +1,6 @@
 ﻿@model MyCardCollection.ViewModel.CollectionerProfileViewModel;
 
 <div class="main-container"  style="min-height:calc(100vh - 15vh)">
-@*    <nav aria-label="breadcrumb" role="navigation" class="bg-primary text-white">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col">
-          !important         <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#">Home</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="#">Runners</a>
-                        </li>
-
-                        <li class="breadcrumb-item active" aria-current="page">Profile</li>
-                    </ol>
-                </div>
-                <!--end of col-->
-            </div>
-            <!--end of row-->
-        </div>
-        <!--end of container-->
-    </nav>*@
     <section class="bg-dark">
         <img alt="Image" src="@Model.AppUser.AvatarImage" class="bg-image opacity-40 text-center" style="object-position:50% 15%;">
         <div class="container">
@@ -89,15 +68,15 @@
                             <li class="nav-item">
                                 <a class="nav-link active" id="topcards-tab" data-toggle="tab" href="#topcards" role="tab" aria-controls="topcards" aria-selected="true">Top Cards</a>
                             </li>
-                            <li class="nav-item">
+@*                            <li class="nav-item">
                                 <a class="nav-link" id="comments-tab" data-toggle="tab" href="#comments" role="tab" aria-controls="comments" aria-selected="false">Comments</a>
-                            </li>
+                            </li>*@
                             <li class="nav-item">
                                 <a class="nav-link" id="decks-tab" data-toggle="tab" href="#decks" role="tab" aria-controls="decks" aria-selected="false">Decks</a>
                             </li>
-                            <li class="nav-item">
+@*                            <li class="nav-item">
                                 <a class="nav-link" id="followers-tab" data-toggle="tab" href="#followers" role="tab" aria-controls="followers" aria-selected="false">Followers</a>
-                            </li>
+                            </li>*@
                         </ul>
                     </div>
                     <!--end of col-->
@@ -181,7 +160,7 @@
                         <!--end of row-->
                 </div>
 
-            <!-- FOLLOWERS -->
+ @*           <!-- FOLLOWERS -->
 
                 <div class="tab-pane fade" id="followers" role="tabpanel" aria-labelledby="followers-tab">
                     <div class="container">
@@ -810,7 +789,7 @@
                     </div>
                     <!--end of container-->
                 </div>
-
+*@
             </div>
     </section>
 </div>
